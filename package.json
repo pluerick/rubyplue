@@ -1,1 +1,16 @@
-
+{
+  "name": "rubyplue",
+  "version": "1.0.0",
+  "description": "Discord bot for the rubyplue server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Your Name",
+  "dependencies": {
+    "discord.js": "^13.5.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
