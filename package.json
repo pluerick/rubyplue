@@ -24,7 +24,7 @@
   "bugs": {
     "url": "https://github.com/pluerick/rubyplue/issues"
   },
-  //"homepage": "https://github.com/synicalsyntax/discord.js-heroku#readme",
+ 
   "dependencies": {
     "discord.js": "^11.3.0"
   }
