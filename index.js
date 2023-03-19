@@ -1,14 +1,17 @@
 const Discord = require('discord.js');
-const client = new Discord.Client({intents: ["GUILDS", "GUILD_MESSAGES"]});
+const axios = require('axios');
+const client = new Discord.Client();
 
-
-
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+client.once('ready', () => {
+  console.log('ChatGPT bot is online!');
 });
 
-client.on('message', msg => {
- if (message.content.startsWith('?')) {
+client.on('message', async message => {
+  // Only respond to messages sent by humans (not bots)
+  if (message.author.bot) return;
+
+  // Check if the message starts with a question mark
+  if (message.content.startsWith('?')) {
     // Send the user's message to the OpenAI API and get a response
     const userMessage = message.content.slice(1);
     const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
@@ -29,6 +32,5 @@ client.on('message', msg => {
     message.reply(botMessage);
   }
 });
-
 
 client.login(process.env.TOKEN)
