@@ -18,8 +18,8 @@ client.on('message', async message => {
       prompt: `Ask ChatGPT a question: ${userMessage}`,
       max_tokens: 200,
       temperature: 0.5,
-      n: 1,
-      stop: ['?']
+      n: 1
+ 
     }, {
       headers: {
         'Content-Type': 'application/json',
