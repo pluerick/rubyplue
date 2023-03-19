@@ -29,7 +29,7 @@ client.on('message', async message => {
     });
 
     // Send the response back to the user
-    const botMessage = response.data.choices[0].text.trim();
+    const botMessage = response.data;
     message.reply(botMessage);
   }
 });
