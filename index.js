@@ -16,10 +16,10 @@ client.on('message', async message => {
     const userMessage = message.content.slice(1);
     const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
       prompt: `Ask ChatGPT a question: ${userMessage}`,
-      max_tokens: 100,
-      temperature: 0.7,
+      max_tokens: 200,
+      temperature: 0.5,
       n: 1,
-      stop: ['\n']
+      stop: ['?']
     }, {
       headers: {
         'Content-Type': 'application/json',
