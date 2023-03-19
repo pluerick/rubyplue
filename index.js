@@ -32,6 +32,7 @@ client.on('message', async message => {
     const botMessage = response.data.choices[0].text;
     message.reply('logged');
     console.log(userMessage);
+    console.log(response.data.choices[0].text);
     console.log(response.data);
     
   }
