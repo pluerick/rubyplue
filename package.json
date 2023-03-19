@@ -27,5 +27,6 @@
  
   "dependencies": {
     "discord.js": "^11.3.0"
+    "axios": "^0.24.0"
   }
 }
