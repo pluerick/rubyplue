@@ -29,7 +29,7 @@ client.on('message', async message => {
     });
 
     // Send the response back to the user
-    const botMessage = response.data.choices[0].text.replace(/(\r\n|\n|\r)/gm, "");
+    const botMessage = response.data.choices[0].text;
     message.reply(botMessage);
   }
 });
