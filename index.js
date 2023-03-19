@@ -25,6 +25,7 @@ client.on('message', async message => {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY
       }
+      console.log(response.data);
     });
 
     // Send the response back to the user
