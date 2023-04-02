@@ -26,23 +26,52 @@ client.on('message', async message => {
     const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
 
     // Handle the "start" command
-    if (command === 'start') {
-      // Get the player's Discord name
-      const playerName = message.author.username;
-      
-      // Set up a Firebase Realtime Database reference
-      const dbRef = admin.database().ref('test1/players');
-      
-      // Add the player's name to the database
-      dbRef.push({ name: playerName })
-        .then(() => {
-          message.reply(`Welcome to the game, ${playerName}! Your name has been added to the database.`);
-        })
-        .catch((error) => {
-          console.error(error);
-          message.reply(`Sorry, there was an error adding your name to the database.`);
-        });
-    }
+if (command === 'start') {
+  // Get the player's Discord name
+  const playerName = message.author.username;
+
+  // Get the Discord server ID
+  const serverId = message.guild.id;
+
+  // Set up a Firebase Realtime Database reference for the server
+  const dbRefServer = admin.database().ref(`test1/servers/${serverId}`);
+
+  // Check if the server's database table exists, and create it if it doesn't
+  dbRefServer.once("value", serverSnapshot => {
+    const serverExists = serverSnapshot.exists();
+    const roomId = serverExists ? serverSnapshot.child('current_room').val() : 0;
+    const roomRef = admin.database().ref(`test1/rooms/room-${roomId}`);
+
+    // Set up a Firebase Realtime Database reference for the player
+    const dbRefPlayer = admin.database().ref(`test1/players/${playerName}`);
+
+    // Add the player's name and current room to the database
+    dbRefPlayer.set({ name: playerName, current_room: roomId })
+      .then(() => {
+        if (!serverExists) {
+          // Create a new database table for the server with a default room ID
+          dbRefServer.set({ current_room: 1 });
+          roomRef.once("value", roomSnapshot => {
+            if (roomSnapshot.exists()) {
+              message.reply(`Welcome to the game, ${playerName}! A new database table has been created for this server, and you have been added to it with a current room of ${roomId}.`);
+            } else {
+              message.reply(`Sorry, there was an error creating the initial room for the game.`);
+            }
+          });
+        } else {
+          message.reply(`Welcome back, ${playerName}! Your name and current room have been added to the database.`);
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        message.reply(`Sorry, there was an error adding your name and current room to the database.`);
+      });
+  }, error => {
+    console.error(error);
+    message.reply(`Sorry, there was an error accessing the database for this server.`);
+  });
+}
+
 
     // Handle the "look" command
     if (command === 'look') {
