@@ -1,6 +1,15 @@
 const Discord = require('discord.js');
 const axios = require('axios');
 const client = new Discord.Client();
+const admin = require('firebase-admin');
+
+// Parse the service account key JSON string from the environment variable
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+
+// Initialize the Firebase Admin SDK with the service account key
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
 
 client.once('ready', () => {
   console.log('ChatGPT bot is online!');
@@ -16,23 +25,23 @@ client.on('message', async message => {
     const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
 
     // Handle the "start" command
-if (command === 'start') {
-  // Get the player's Discord name
-  const playerName = message.author.username;
-  
-  // Set up a Firebase Realtime Database reference
-  const dbRef = admin.database().ref('test1/players');
-  
-  // Add the player's name to the database
-  dbRef.push({ name: playerName })
-    .then(() => {
-      message.reply(`Welcome to the game, ${playerName}! Your name has been added to the database.`);
-    })
-    .catch((error) => {
-      console.error(error);
-      message.reply(`Sorry, there was an error adding your name to the database.`);
-    });
-}
+    if (command === 'start') {
+      // Get the player's Discord name
+      const playerName = message.author.username;
+      
+      // Set up a Firebase Realtime Database reference
+      const dbRef = admin.database().ref('test1/players');
+      
+      // Add the player's name to the database
+      dbRef.push({ name: playerName })
+        .then(() => {
+          message.reply(`Welcome to the game, ${playerName}! Your name has been added to the database.`);
+        })
+        .catch((error) => {
+          console.error(error);
+          message.reply(`Sorry, there was an error adding your name to the database.`);
+        });
+    }
 
     // Handle the "look" command
     if (command === 'look') {
