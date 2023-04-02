@@ -12,8 +12,10 @@ client.on('message', async message => {
 
   // Check if the message starts with a question mark
   if (message.content.startsWith('?')) {
-    
-        // Handle the "start" command
+    // Parse the command and arguments
+    const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
+
+    // Handle the "start" command
     if (command === 'start') {
       // Do something when the "start" command is used
       message.reply('Starting the game...');
@@ -24,8 +26,6 @@ client.on('message', async message => {
       // Do something when the "look" command is used
       message.reply('You look around and see nothing of interest.');
     }
-      
-    }});
 
     // Send the response back to the user
     const botMessage = response.data.choices[0].text;
@@ -33,8 +33,7 @@ client.on('message', async message => {
     console.log(userMessage);
     console.log(response.data.choices[0].text);
     console.log(response.data);
-    
   }
 });
 
-client.login(process.env.TOKEN)
+client.login(process.env.TOKEN);
