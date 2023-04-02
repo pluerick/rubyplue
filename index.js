@@ -25,7 +25,7 @@ client.on('message', async message => {
       message.reply('You look around and see nothing of interest.');
     }
       
-    });
+    }});
 
     // Send the response back to the user
     const botMessage = response.data.choices[0].text;
