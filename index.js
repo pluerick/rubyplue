@@ -49,6 +49,32 @@ client.on('message', async message => {
       // Do something when the "look" command is used
       message.reply('You look around and see nothing of interest.');
     }
+    
+    // Handle the "generate" command
+    if (command === 'generate') {
+      // Get the name of the Discord server where the command was generated
+      const serverName = message.guild.name;
+      
+      // Set up a Firebase Realtime Database reference
+      const dbRef = admin.database().ref(`test1/${serverName}`);
+      
+      // Check if the server's database table exists, and create it if it doesn't
+      dbRef.once("value", snapshot => {
+        if (!snapshot.exists()) {
+          dbRef.set({
+            message: "This is the first message for this server!"
+          });
+          
+          message.reply(`A new database table has been created for ${serverName}.`);
+        }
+        else {
+          message.reply(`The database table for ${serverName} already exists.`);
+        }
+      }, error => {
+        console.error(error);
+        message.reply(`Sorry, there was an error accessing the database.`);
+      });
+    }    
 
   }
 });
