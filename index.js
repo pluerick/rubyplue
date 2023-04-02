@@ -106,44 +106,54 @@ if (command === 'start') {
 
 
 
-    // Handle the "look" command
+// Handle the "look" command
 if (command === 'look') {
   // Get the player's Discord name
   const playerName = message.author.username;
 
-  // Set up a Firebase Realtime Database reference for the player
-  const dbRefPlayer = admin.database().ref(`test1/players/${playerName}`);
+  // Set up a Firebase Realtime Database reference to the players table
+  const playersRef = admin.database().ref('test1/players');
 
-  // Get the player's current room ID from the database
-  dbRefPlayer.child('current_room').once("value", snapshot => {
-    const currentRoomId = snapshot.val();
-
-    if (currentRoomId) {
-      // Set up a Firebase Realtime Database reference for the current room
-      const dbRefRoom = admin.database().ref(`test1/rooms/room-${currentRoomId}`);
-
-      // Get the current room's data from the database
-      dbRefRoom.once("value", roomSnapshot => {
-        const roomName = roomSnapshot.child('name').val();
-        const roomDescription = roomSnapshot.child('description').val();
-        const directions = ["north", "south", "east", "west"];
-        let availableDirections = [];
-
-        // Check which directions the player can move in
-        for (const direction of directions) {
-          const neighborId = roomSnapshot.child(direction).val();
-          if (neighborId) {
-            availableDirections.push(direction);
-          }
-        }
-
-        message.reply(`You are currently in ${roomName}. ${roomDescription}. You can move in the following directions: ${availableDirections.join(", ")}.`);
-      });
+  // Check if the player exists in the database
+  playersRef.child(playerName).once('value', (snapshot) => {
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
     } else {
-      message.reply(`You are not currently in any room.`);
+      // Get the player's current room ID
+      const currentRoomID = snapshot.val().current_room;
+
+      // Set up a Firebase Realtime Database reference to the rooms table
+      const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
+
+      // Get the current room's data
+      roomsRef.child(currentRoomID).once('value', (snapshot) => {
+        if (!snapshot.exists()) {
+          message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
+        } else {
+          // Get the current room's data
+          const currentRoom = snapshot.val();
+
+          // Create a message with the current room's name and description
+          let replyMessage = `You are currently in ${currentRoom.name}. ${currentRoom.description}\n`;
+
+          // Check each direction for an adjacent room
+          const directions = ["north", "south", "east", "west"];
+          for (const direction of directions) {
+            if (currentRoom[direction]) {
+              const neighborRoomID = currentRoom[direction];
+              const neighborRoomName = (await roomsRef.child(neighborRoomID).child('name').once('value')).val();
+              replyMessage += `To the ${direction}, you can see ${neighborRoomName}.\n`;
+            }
+          }
+
+          // Send the message to the player
+          message.reply(replyMessage);
+        }
+      });
     }
   });
 }
+
 
     
     // Handle the "generate" command
