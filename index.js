@@ -25,6 +25,56 @@ client.on('message', async message => {
     // Parse the command and arguments
     const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
 
+    
+    
+    
+    if (command === 'north') {
+  // Get the player's Discord name
+  const playerName = message.author.username;
+
+  // Set up a Firebase Realtime Database reference for the player
+  const dbRefPlayer = admin.database().ref(`test1/players/${playerName}`);
+
+  // Get the player's current room ID from the database
+  dbRefPlayer.child('current_room').once("value", snapshot => {
+    const currentRoomId = snapshot.val();
+
+    // Set up a Firebase Realtime Database reference for the current room
+    const dbRefRoom = admin.database().ref(`test1/rooms/room-${currentRoomId}`);
+
+    // Get the current room's data from the database
+    dbRefRoom.once("value", roomSnapshot => {
+      const northRoomId = roomSnapshot.child('north').val();
+
+      if (northRoomId) {
+        // Set the player's current room ID to the room to the north
+        dbRefPlayer.update({ current_room: northRoomId })
+          .then(() => {
+            // Set up a Firebase Realtime Database reference for the new room
+            const dbRefNewRoom = admin.database().ref(`test1/rooms/${northRoomId}`);
+
+            // Get the new room's data from the database
+            dbRefNewRoom.once("value", newRoomSnapshot => {
+              const newRoomName = newRoomSnapshot.child('name').val();
+              const newRoomDescription = newRoomSnapshot.child('description').val();
+
+              message.reply(`You move north to ${newRoomName}. ${newRoomDescription}`);
+            });
+          })
+          .catch((error) => {
+            console.error(error);
+            message.reply(`Sorry, there was an error updating your current room in the database.`);
+          });
+      } else {
+        message.reply(`There is no room to the north.`);
+      }
+    });
+  });
+}
+    
+    
+    
+    
     // Handle the "start" command
 if (command === 'start') {
   // Get the player's Discord name
