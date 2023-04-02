@@ -125,22 +125,21 @@ if (command === 'start') {
 
 
 
-
 // Handle the "look" command
 if (command === 'look') {
   // Get the player's Discord name
   const playerName = message.author.username;
 
   // Set up a Firebase Realtime Database reference to the players table
-  const playersRef = admin.database().ref(`test1/${message.guild.name}/players`);
+  const playersRef = admin.database().ref('test1/players');
 
   // Check if the player exists in the database
-  playersRef.child(playerName).once('value', async (snapshot) => {
+  playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
     if (!snapshot.exists()) {
       message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
     } else {
       // Get the player's current room ID
-      const currentRoomID = snapshot.val().current_room;
+      const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
 
       // Set up a Firebase Realtime Database reference to the rooms table
       const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
@@ -173,6 +172,7 @@ if (command === 'look') {
     }
   });
 }
+
 
     
     // Handle the "generate" command
