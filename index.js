@@ -124,10 +124,44 @@ if (command === 'start') {
 
 
     // Handle the "look" command
-    if (command === 'look') {
-      // Do something when the "look" command is used
-      message.reply('You look around and see nothing of interest.');
+if (command === 'look') {
+  // Get the player's Discord name
+  const playerName = message.author.username;
+
+  // Set up a Firebase Realtime Database reference for the player
+  const dbRefPlayer = admin.database().ref(`test1/players/${playerName}`);
+
+  // Get the player's current room ID from the database
+  dbRefPlayer.child('current_room').once("value", snapshot => {
+    const currentRoomId = snapshot.val();
+
+    if (currentRoomId) {
+      // Set up a Firebase Realtime Database reference for the current room
+      const dbRefRoom = admin.database().ref(`test1/rooms/room-${currentRoomId}`);
+
+      // Get the current room's data from the database
+      dbRefRoom.once("value", roomSnapshot => {
+        const roomName = roomSnapshot.child('name').val();
+        const roomDescription = roomSnapshot.child('description').val();
+        const directions = ["north", "south", "east", "west"];
+        let availableDirections = [];
+
+        // Check which directions the player can move in
+        for (const direction of directions) {
+          const neighborId = roomSnapshot.child(direction).val();
+          if (neighborId) {
+            availableDirections.push(direction);
+          }
+        }
+
+        message.reply(`You are currently in ${roomName}. ${roomDescription}. You can move in the following directions: ${availableDirections.join(", ")}.`);
+      });
+    } else {
+      message.reply(`You are not currently in any room.`);
     }
+  });
+}
+
     
     // Handle the "generate" command
 // Handle the "generate" command
