@@ -28,89 +28,71 @@ client.on('message', async message => {
     
     
     
-    if (command === 'north') {
+if (command === 'north') {
   // Get the player's Discord name
   const playerName = message.author.username;
-
+  
   // Set up a Firebase Realtime Database reference for the player
-  const dbRefPlayer = admin.database().ref(`test1/players/${playerName}`);
+  const dbRef = admin.database().ref('test1/players');
+  
+  // Look up the player's data in the database
+  dbRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
+    const playerKey = Object.keys(snapshot.val())[0];
+    const playerData = snapshot.val()[playerKey];
+    const currentRoomId = playerData.current_room;
 
-  // Get the player's current room ID from the database
-  dbRefPlayer.child('current_room').once("value", snapshot => {
-    const currentRoomId = snapshot.val();
+    // Look up the current room's data in the database
+    const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
+    roomsRef.once('value', snapshot => {
+      const currentRoomData = snapshot.val()[currentRoomId];
 
-    // Set up a Firebase Realtime Database reference for the current room
-    const dbRefRoom = admin.database().ref(`test1/rooms/room-${currentRoomId}`);
-
-    // Get the current room's data from the database
-    dbRefRoom.once("value", roomSnapshot => {
-      const northRoomId = roomSnapshot.child('north').val();
-
-      if (northRoomId) {
-        // Set the player's current room ID to the room to the north
-        dbRefPlayer.update({ current_room: northRoomId })
+      // Check if there is a room to the north
+      if (currentRoomData.north) {
+        // Move the player to the room to the north
+        const newRoomId = currentRoomData.north;
+        const updates = {};
+        updates[`test1/players/${playerKey}/current_room`] = newRoomId;
+        admin.database().ref().update(updates)
           .then(() => {
-            // Set up a Firebase Realtime Database reference for the new room
-            const dbRefNewRoom = admin.database().ref(`test1/rooms/${northRoomId}`);
-
-            // Get the new room's data from the database
-            dbRefNewRoom.once("value", newRoomSnapshot => {
-              const newRoomName = newRoomSnapshot.child('name').val();
-              const newRoomDescription = newRoomSnapshot.child('description').val();
-
-              message.reply(`You move north to ${newRoomName}. ${newRoomDescription}`);
-            });
+            message.reply(`You move north to ${snapshot.val()[newRoomId].name}.`);
           })
           .catch((error) => {
             console.error(error);
-            message.reply(`Sorry, there was an error updating your current room in the database.`);
+            message.reply(`Sorry, there was an error updating your current room.`);
           });
       } else {
+        // There is no room to the north
         message.reply(`There is no room to the north.`);
       }
+    }, error => {
+      console.error(error);
+      message.reply(`Sorry, there was an error accessing the database.`);
     });
   });
 }
-    
-    
+ 
     
     
     // Handle the "start" command
 if (command === 'start') {
   // Get the player's Discord name
   const playerName = message.author.username;
-
-  // Get the Discord server ID
-  const serverId = message.guild.id;
-
-  // Set up a Firebase Realtime Database reference for the server
-  const dbRefServer = admin.database().ref(`test1/servers/${serverId}`);
-
-  // Check if the server's database table exists, and create it if it doesn't
-  dbRefServer.once("value", serverSnapshot => {
-    const serverExists = serverSnapshot.exists();
-    const roomId = serverExists ? serverSnapshot.child('current_room').val() : 0;
-    const roomRef = admin.database().ref(`test1/rooms/room-${roomId}`);
-
-    // Set up a Firebase Realtime Database reference for the player
-    const dbRefPlayer = admin.database().ref(`test1/players/${playerName}`);
-
-    // Add the player's name and current room to the database
-    dbRefPlayer.set({ name: playerName, current_room: roomId })
+  
+  // Set up a Firebase Realtime Database reference
+  const dbRef = admin.database().ref('test1/players');
+  
+  // Add the player's name and current room to the database
+  const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
+  roomsRef.once('value', snapshot => {
+    const rooms = snapshot.val();
+    const roomId = rooms ? Object.keys(rooms)[0] : 0; // set current_room to 0 if no rooms are generated yet
+    const playerData = {
+      name: playerName,
+      current_room: roomId,
+    };
+    dbRef.push(playerData)
       .then(() => {
-        if (!serverExists) {
-          // Create a new database table for the server with a default room ID
-          dbRefServer.set({ current_room: 1 });
-          roomRef.once("value", roomSnapshot => {
-            if (roomSnapshot.exists()) {
-              message.reply(`Welcome to the game, ${playerName}! A new database table has been created for this server, and you have been added to it with a current room of ${roomId}.`);
-            } else {
-              message.reply(`Sorry, there was an error creating the initial room for the game.`);
-            }
-          });
-        } else {
-          message.reply(`Welcome back, ${playerName}! Your name and current room have been added to the database.`);
-        }
+        message.reply(`Welcome to the game, ${playerName}! Your name and current room have been added to the database.`);
       })
       .catch((error) => {
         console.error(error);
@@ -118,9 +100,10 @@ if (command === 'start') {
       });
   }, error => {
     console.error(error);
-    message.reply(`Sorry, there was an error accessing the database for this server.`);
+    message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
+
 
 
     // Handle the "look" command
