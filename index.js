@@ -126,14 +126,13 @@ if (command === 'start') {
 
 
 
-
 // Handle the "look" command
 if (command === 'look') {
   // Get the player's Discord name
   const playerName = message.author.username;
 
   // Set up a Firebase Realtime Database reference to the players table
-  const playersRef = admin.database().ref('test1/players');
+  const playersRef = admin.database().ref(`test1/${message.guild.name}/players`);
 
   // Check if the player exists in the database
   playersRef.child(playerName).once('value', async (snapshot) => {
