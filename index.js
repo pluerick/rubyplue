@@ -16,10 +16,23 @@ client.on('message', async message => {
     const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
 
     // Handle the "start" command
-    if (command === 'start') {
-      // Do something when the "start" command is used
-      message.reply('Starting the game...');
-    }
+if (command === 'start') {
+  // Get the player's Discord name
+  const playerName = message.author.username;
+  
+  // Set up a Firebase Realtime Database reference
+  const dbRef = admin.database().ref('test1/players');
+  
+  // Add the player's name to the database
+  dbRef.push({ name: playerName })
+    .then(() => {
+      message.reply(`Welcome to the game, ${playerName}! Your name has been added to the database.`);
+    })
+    .catch((error) => {
+      console.error(error);
+      message.reply(`Sorry, there was an error adding your name to the database.`);
+    });
+}
 
     // Handle the "look" command
     if (command === 'look') {
