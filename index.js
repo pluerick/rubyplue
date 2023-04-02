@@ -8,7 +8,8 @@ const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
 
 // Initialize the Firebase Admin SDK with the service account key
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://rubyplue-a4332-default-rtdb.firebaseio.com"
 });
 
 client.once('ready', () => {
