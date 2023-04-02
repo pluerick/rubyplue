@@ -73,36 +73,46 @@ if (command === 'north') {
  
     
     
-    // Handle the "start" command
 if (command === 'start') {
   // Get the player's Discord name
   const playerName = message.author.username;
   
-  // Set up a Firebase Realtime Database reference
-  const dbRef = admin.database().ref('test1/players');
-  
-  // Add the player's name and current room to the database
-  const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
-  roomsRef.once('value', snapshot => {
-    const rooms = snapshot.val();
-    const roomId = rooms ? Object.keys(rooms)[0] : 0; // set current_room to 0 if no rooms are generated yet
-    const playerData = {
-      name: playerName,
-      current_room: roomId,
-    };
-    dbRef.push(playerData)
-      .then(() => {
-        message.reply(`Welcome to the game, ${playerName}! Your name and current room have been added to the database.`);
-      })
-      .catch((error) => {
+  // Set up a Firebase Realtime Database reference to the players table
+  const playersRef = admin.database().ref('test1/players');
+
+  // Check if the player already exists in the database
+  playersRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
+    if (snapshot.exists()) {
+      message.reply(`You have already started the game!`);
+    } else {
+      // Set up a Firebase Realtime Database reference to the rooms table
+      const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
+
+      // Get the ID of the first room
+      roomsRef.orderByKey().limitToFirst(1).once('value', snapshot => {
+        const roomId = Object.keys(snapshot.val())[0];
+
+        // Add the player's name and current room to the database
+        const playerData = {
+          name: playerName,
+          current_room: roomId,
+        };
+        playersRef.push(playerData)
+          .then(() => {
+            message.reply(`Welcome to the game, ${playerName}! Your name and current room have been added to the database.`);
+          })
+          .catch((error) => {
+            console.error(error);
+            message.reply(`Sorry, there was an error adding your name and current room to the database.`);
+          });
+      }, error => {
         console.error(error);
-        message.reply(`Sorry, there was an error adding your name and current room to the database.`);
+        message.reply(`Sorry, there was an error accessing the database.`);
       });
-  }, error => {
-    console.error(error);
-    message.reply(`Sorry, there was an error accessing the database.`);
+    }
   });
 }
+
 
 
 
