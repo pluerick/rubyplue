@@ -87,7 +87,7 @@ if (command === 'start') {
     } else {
       // The server's data exists in the database, check if the player already exists
       const playerName = message.author.username;
-      const playersRef = serverRef.child("players");
+      const playersRef = admin.database().ref(`test1/${serverName}/players`);
       playersRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
         if (snapshot.exists()) {
           message.reply(`You have already started the game!`);
