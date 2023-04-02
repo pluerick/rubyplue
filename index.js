@@ -12,19 +12,18 @@ client.on('message', async message => {
 
   // Check if the message starts with a question mark
   if (message.content.startsWith('?')) {
-    // Send the user's message to the OpenAI API and get a response
-    const userMessage = message.content.slice(1);
-    const response = await axios.post('https://api.openai.com/v1/engines/davinci-codex/completions', {
-      prompt: `Ask ChatGPT a question: ${userMessage}`,
-      max_tokens: 200,
-      temperature: 0.5,
-      n: 1
- 
-    }, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + process.env.OPENAI_API_KEY
-      }
+    
+        // Handle the "start" command
+    if (command === 'start') {
+      // Do something when the "start" command is used
+      message.reply('Starting the game...');
+    }
+
+    // Handle the "look" command
+    if (command === 'look') {
+      // Do something when the "look" command is used
+      message.reply('You look around and see nothing of interest.');
+    }
       
     });
 
