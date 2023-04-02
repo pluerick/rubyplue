@@ -92,31 +92,32 @@ if (command === 'start') {
         if (snapshot.exists()) {
           message.reply(`You have already started the game!`);
         } else {
-          // Get the ID of the first room
-          const roomsRef = serverRef.child("rooms");
-          roomsRef.orderByKey().limitToFirst(1).once('value', snapshot => {
-            const roomId = Object.keys(snapshot.val())[0];
+  // Get the ID of the first room
+  const roomsRef = serverRef.child("rooms");
+  roomsRef.orderByKey().limitToFirst(1).once('value', snapshot => {
+    const roomId = Object.keys(snapshot.val())[0];
 
-            // Add the player's name and current room to the database
-            const playerData = {
-              name: playerName,
-              current_room: roomId,
-            };
-            playersRef.push(playerData)
-              .then(() => {
-                message.reply(`Welcome to the game, ${playerName}! Your name and current room have been added to the database.`);
-              })
-              .catch((error) => {
-                console.error(error);
-                message.reply(`Sorry, there was an error adding your name and current room to the database.`);
-              });
-          }, error => {
+    // Check if the player is already in the database, if not, add them
+    const playersRef = serverRef.child("players");
+    playersRef.orderByChild("name").equalTo(playerName).once("value", (playerSnapshot) => {
+      if (playerSnapshot.exists()) {
+        message.reply(`You have already started the game!`);
+      } else {
+        // Add the player's name and current room to the database
+        const playerData = {
+          name: playerName,
+          current_room: roomId,
+        };
+        playersRef.push(playerData)
+          .then(() => {
+            message.reply(`Welcome to the game, ${playerName}! Your name and current room have been added to the database.`);
+          })
+          .catch((error) => {
             console.error(error);
-            message.reply(`Sorry, there was an error accessing the database.`);
+            message.reply(`Sorry, there was an error adding your name and current room to the database.`);
           });
-        }
-      });
-    }
+      }
+    });
   }, error => {
     console.error(error);
     message.reply(`Sorry, there was an error accessing the database.`);
