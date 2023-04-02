@@ -72,46 +72,57 @@ if (command === 'north') {
 }
  
     
-    
 if (command === 'start') {
-  // Get the player's Discord name
-  const playerName = message.author.username;
-  
-  // Set up a Firebase Realtime Database reference to the players table
-  const playersRef = admin.database().ref('test1/players');
+  // Get the name of the Discord server where the command was generated
+  const serverName = message.guild.name;
 
-  // Check if the player already exists in the database
-  playersRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
-    if (snapshot.exists()) {
-      message.reply(`You have already started the game!`);
+  // Set up a Firebase Realtime Database reference to the server's data
+  const serverRef = admin.database().ref(`test1/${serverName}`);
+
+  // Check if the server's data exists in the database
+  serverRef.once("value", serverSnapshot => {
+    if (!serverSnapshot.exists()) {
+      // The server's data doesn't exist in the database, inform the user and take no further action
+      message.reply(`Sorry, ${serverName} is not registered in the game. Use the 'generate' command to create a new game database.`);
     } else {
-      // Set up a Firebase Realtime Database reference to the rooms table
-      const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
+      // The server's data exists in the database, check if the player already exists
+      const playerName = message.author.username;
+      const playersRef = serverRef.child("players");
+      playersRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
+        if (snapshot.exists()) {
+          message.reply(`You have already started the game!`);
+        } else {
+          // Get the ID of the first room
+          const roomsRef = serverRef.child("rooms");
+          roomsRef.orderByKey().limitToFirst(1).once('value', snapshot => {
+            const roomId = Object.keys(snapshot.val())[0];
 
-      // Get the ID of the first room
-      roomsRef.orderByKey().limitToFirst(1).once('value', snapshot => {
-        const roomId = Object.keys(snapshot.val())[0];
-
-        // Add the player's name and current room to the database
-        const playerData = {
-          name: playerName,
-          current_room: roomId,
-        };
-        playersRef.push(playerData)
-          .then(() => {
-            message.reply(`Welcome to the game, ${playerName}! Your name and current room have been added to the database.`);
-          })
-          .catch((error) => {
+            // Add the player's name and current room to the database
+            const playerData = {
+              name: playerName,
+              current_room: roomId,
+            };
+            playersRef.push(playerData)
+              .then(() => {
+                message.reply(`Welcome to the game, ${playerName}! Your name and current room have been added to the database.`);
+              })
+              .catch((error) => {
+                console.error(error);
+                message.reply(`Sorry, there was an error adding your name and current room to the database.`);
+              });
+          }, error => {
             console.error(error);
-            message.reply(`Sorry, there was an error adding your name and current room to the database.`);
+            message.reply(`Sorry, there was an error accessing the database.`);
           });
-      }, error => {
-        console.error(error);
-        message.reply(`Sorry, there was an error accessing the database.`);
+        }
       });
     }
+  }, error => {
+    console.error(error);
+    message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
+
 
 
 
