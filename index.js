@@ -115,7 +115,7 @@ if (command === 'look') {
   const playersRef = admin.database().ref('test1/players');
 
   // Check if the player exists in the database
-  playersRef.child(playerName).once('value', (snapshot) => {
+  playersRef.child(playerName).once('value', async (snapshot) => {
     if (!snapshot.exists()) {
       message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
     } else {
@@ -126,7 +126,7 @@ if (command === 'look') {
       const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
 
       // Get the current room's data
-      roomsRef.child(currentRoomID).once('value', (snapshot) => {
+      roomsRef.child(currentRoomID).once('value', async (snapshot) => {
         if (!snapshot.exists()) {
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
         } else {
@@ -153,7 +153,6 @@ if (command === 'look') {
     }
   });
 }
-
 
     
     // Handle the "generate" command
