@@ -20,7 +20,7 @@ client.on('message', async message => {
   // Only respond to messages sent by humans (not bots)
   if (message.author.bot) return;
 
-  /// Check if the message starts with a question mark
+  // Check if the message starts with a question mark
   if (message.content.startsWith('?')) {
     // Parse the command and arguments
     const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
@@ -73,7 +73,57 @@ client.on('message', async message => {
     }
   });
 }
-    
+ 
+// Handle the "south" command
+if (command === 'south') {
+  // Get the player's Discord name
+  const playerName = message.author.username;
+  const serverName = message.guild.name;
+
+  // Set up a Firebase Realtime Database reference for the player
+  const dbRef = admin.database().ref(`test1/${serverName}/players`);
+
+  // Look up the player's data in the database
+  dbRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
+    } else {
+      const playerKey = Object.keys(snapshot.val())[0];
+      const playerData = snapshot.val()[playerKey];
+      const currentRoomId = playerData.current_room;
+
+      // Look up the current room's data in the database
+      const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+      roomsRef.once('value', snapshot => {
+        const currentRoomData = snapshot.val()[currentRoomId];
+
+        // Check if there is a room to the south
+        if (currentRoomData.south) {
+          // Move the player to the room to the south
+          const newRoomId = currentRoomData.south;
+          const updates = {};
+          updates[`test1/${serverName}/players/${playerKey}/current_room`] = newRoomId;
+          admin.database().ref().update(updates)
+            .then(() => {
+              message.reply(`You move south to ${snapshot.val()[newRoomId].name}.`);
+            })
+            .catch((error) => {
+              console.error(error);
+              message.reply(`Sorry, there was an error updating your current room.`);
+            });
+        } else {
+          // There is no room to the south
+          message.reply(`There is no room to the south.`);
+        }
+      }, error => {
+        console.error(error);
+        message.reply(`Sorry, there was an error accessing the database.`);
+      });
+    }
+  });
+}
+
+
  
     if (command === 'start') {
   // Get the name of the Discord server where the command was generated
