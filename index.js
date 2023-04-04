@@ -20,7 +20,7 @@ client.on('message', async message => {
   // Only respond to messages sent by humans (not bots)
   if (message.author.bot) return;
 
-  // Check if the message starts with a question mark
+  /// Check if the message starts with a question mark
   if (message.content.startsWith('?')) {
     // Parse the command and arguments
     const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
