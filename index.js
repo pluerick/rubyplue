@@ -348,10 +348,14 @@ if (command === 'map') {
   dbRef.once("value", snapshot => {
     const rooms = snapshot.val();
 
-    // Define the canvas size and room size
-    const canvasWidth = 800;
-    const canvasHeight = 600;
+    // Define the room size and grid size
     const roomSize = 50;
+    const gridSize = 5;
+    const gridSpacing = 100;
+
+    // Calculate the canvas size based on the grid size and spacing
+    const canvasWidth = (gridSize + 1) * gridSpacing;
+    const canvasHeight = (Math.ceil(Object.keys(rooms).length / gridSize) + 1) * gridSpacing;
 
     // Create a new canvas
     const Canvas = require('canvas');
@@ -363,12 +367,13 @@ if (command === 'map') {
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     // Draw each room and its connections
+    let i = 0;
     for (const roomId in rooms) {
       const room = rooms[roomId];
 
-      // Calculate the room position
-      const x = getRandomInt(roomSize, canvasWidth - roomSize);
-      const y = getRandomInt(roomSize, canvasHeight - roomSize);
+      // Calculate the room position based on the grid
+      const x = ((i % gridSize) + 1) * gridSpacing;
+      const y = (Math.floor(i / gridSize) + 1) * gridSpacing;
 
       // Draw the room circle
       ctx.fillStyle = '#000';
@@ -389,9 +394,10 @@ if (command === 'map') {
         if (neighborId) {
           const neighborRoom = rooms[neighborId];
 
-          // Calculate the neighbor room position
-          const neighborX = getRandomInt(roomSize, canvasWidth - roomSize);
-          const neighborY = getRandomInt(roomSize, canvasHeight - roomSize);
+          // Calculate the neighbor room position based on the grid
+          const neighborIndex = Object.keys(rooms).indexOf(neighborId);
+          const neighborX = ((neighborIndex % gridSize) + 1) * gridSpacing;
+          const neighborY = (Math.floor(neighborIndex / gridSize) + 1) * gridSpacing;
 
           // Draw the connection line
           ctx.strokeStyle = '#000';
@@ -408,6 +414,8 @@ if (command === 'map') {
           ctx.fillText(neighborRoom.name, neighborX, neighborY);
         }
       }
+      
+      i++;
     }
 
     // Convert the canvas to a buffer and send it to Discord
@@ -418,6 +426,8 @@ if (command === 'map') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
+
+
 
     
 
