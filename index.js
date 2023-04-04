@@ -27,27 +27,21 @@ client.on('message', async message => {
     const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
 
 
-    if (command === 'dragon') {
-      // Set up the canvas
-      const canvas = Canvas.createCanvas(300, 300);
-      const ctx = canvas.getContext('2d');
 
-      // Draw the dragon
-      ctx.fillStyle = 'green';
-      ctx.beginPath();
-      ctx.moveTo(150, 75);
-      ctx.lineTo(225, 150);
-      ctx.lineTo(150, 225);
-      ctx.lineTo(75, 150);
-      ctx.closePath();
-      ctx.fill();
+ if (command === 'dragon') {
+    const canvas = Canvas.createCanvas(300, 300);
+    const ctx = canvas.getContext('2d');
 
-      // Convert the canvas to a buffer and send it as a message
-      const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'dragon.png');
-      message.channel.send(attachment);
-    }
-  
-    
+    const background = await Canvas.loadImage('https://i.imgur.com/9XG2EoQ.jpg');
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+    const cat = await Canvas.loadImage('https://i.imgur.com/4MCjKZM.png');
+    ctx.drawImage(cat, 100, 100, 100, 100);
+
+    const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'cat.png');
+    message.channel.send(attachment);
+  }
+
     
 if (command === 'north') {
   // Get the player's Discord name
@@ -203,7 +197,6 @@ if (command === 'look') {
   });
 }
 
-//Handle the "dragon" command
     
     // Handle the "generate" command
 // Handle the "generate" command
