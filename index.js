@@ -3,6 +3,9 @@ const axios = require('axios');
 const client = new Discord.Client();
 const admin = require('firebase-admin');
 
+// Define the cardinal directions
+const directions = ["north", "south", "east", "west"];
+
 // Parse the service account key JSON string from the environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
 
@@ -447,8 +450,6 @@ if (command === 'generate') {
 function generateRooms() {
   const rooms = {};
 
-  // Define the cardinal directions
-  const directions = ["north", "south", "east", "west"];
 
   // Generate 25 rooms
   for (let i = 1; i <= 25; i++) {
