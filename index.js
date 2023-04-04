@@ -2,7 +2,9 @@ const Discord = require('discord.js');
 const axios = require('axios');
 const client = new Discord.Client();
 const admin = require('firebase-admin');
-const { createCanvas, Canvas } = require('canvas');
+
+// Define the cardinal directions
+const directions = ["north", "south", "east", "west"];
 
 // Parse the service account key JSON string from the environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
@@ -26,66 +28,203 @@ client.on('message', async message => {
     // Parse the command and arguments
     const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
 
-
-
- if (command === 'dragon') {
-    const canvas = Canvas.createCanvas(300, 300);
-    const ctx = canvas.getContext('2d');
-
-    const background = await Canvas.loadImage('https://i.imgur.com/9XG2EoQ.jpg');
-    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-
-    const cat = await Canvas.loadImage('https://i.imgur.com/4MCjKZM.png');
-    ctx.drawImage(cat, 100, 100, 100, 100);
-
-    const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'cat.png');
-    message.channel.send(attachment);
-  }
-
     
-if (command === 'north') {
+  if (command === 'north') {
   // Get the player's Discord name
   const playerName = message.author.username;
   const serverName = message.guild.name;
-  
+
   // Set up a Firebase Realtime Database reference for the player
-  const dbRef = admin.database().ref('test1/players');
-  
+  const dbRef = admin.database().ref(`test1/${serverName}/players`);
+
   // Look up the player's data in the database
   dbRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
-    const playerKey = Object.keys(snapshot.val())[0];
-    const playerData = snapshot.val()[playerKey];
-    const currentRoomId = playerData.current_room;
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
+    } else {
+      const playerKey = Object.keys(snapshot.val())[0];
+      const playerData = snapshot.val()[playerKey];
+      const currentRoomId = playerData.current_room;
 
-    // Look up the current room's data in the database
-    const roomsRef = admin.database().ref(`test1/${ServerName}/rooms`);
-    roomsRef.once('value', snapshot => {
-      const currentRoomData = snapshot.val()[currentRoomId];
+      // Look up the current room's data in the database
+      const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+      roomsRef.once('value', snapshot => {
+        const currentRoomData = snapshot.val()[currentRoomId];
 
-      // Check if there is a room to the north
-      if (currentRoomData.north) {
-        // Move the player to the room to the north
-        const newRoomId = currentRoomData.north;
-        const updates = {};
-        updates[`test1/players/${playerKey}/current_room`] = newRoomId;
-        admin.database().ref().update(updates)
-          .then(() => {
-            message.reply(`You move north to ${snapshot.val()[newRoomId].name}.`);
-          })
-          .catch((error) => {
-            console.error(error);
-            message.reply(`Sorry, there was an error updating your current room.`);
-          });
-      } else {
-        // There is no room to the north
-        message.reply(`There is no room to the north.`);
-      }
-    }, error => {
-      console.error(error);
-      message.reply(`Sorry, there was an error accessing the database.`);
-    });
+        // Check if there is a room to the north
+        if (currentRoomData.north) {
+          // Move the player to the room to the north
+          const newRoomId = currentRoomData.north;
+          const updates = {};
+          updates[`test1/${serverName}/players/${playerKey}/current_room`] = newRoomId;
+          admin.database().ref().update(updates)
+            .then(() => {
+              message.reply(`You move north to ${snapshot.val()[newRoomId].name}.`);
+            })
+            .catch((error) => {
+              console.error(error);
+              message.reply(`Sorry, there was an error updating your current room.`);
+            });
+        } else {
+          // There is no room to the north
+          message.reply(`There is no room to the north.`);
+        }
+      }, error => {
+        console.error(error);
+        message.reply(`Sorry, there was an error accessing the database.`);
+      });
+    }
   });
 }
+ 
+// Handle the "south" command
+if (command === 'south') {
+  // Get the player's Discord name
+  const playerName = message.author.username;
+  const serverName = message.guild.name;
+
+  // Set up a Firebase Realtime Database reference for the player
+  const dbRef = admin.database().ref(`test1/${serverName}/players`);
+
+  // Look up the player's data in the database
+  dbRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
+    } else {
+      const playerKey = Object.keys(snapshot.val())[0];
+      const playerData = snapshot.val()[playerKey];
+      const currentRoomId = playerData.current_room;
+
+      // Look up the current room's data in the database
+      const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+      roomsRef.once('value', snapshot => {
+        const currentRoomData = snapshot.val()[currentRoomId];
+
+        // Check if there is a room to the south
+        if (currentRoomData.south) {
+          // Move the player to the room to the south
+          const newRoomId = currentRoomData.south;
+          const updates = {};
+          updates[`test1/${serverName}/players/${playerKey}/current_room`] = newRoomId;
+          admin.database().ref().update(updates)
+            .then(() => {
+              message.reply(`You move south to ${snapshot.val()[newRoomId].name}.`);
+            })
+            .catch((error) => {
+              console.error(error);
+              message.reply(`Sorry, there was an error updating your current room.`);
+            });
+        } else {
+          // There is no room to the south
+          message.reply(`There is no room to the south.`);
+        }
+      }, error => {
+        console.error(error);
+        message.reply(`Sorry, there was an error accessing the database.`);
+      });
+    }
+  });
+}
+
+
+// Handle the "west" command
+if (command === 'west') {
+  // Get the player's Discord name
+  const playerName = message.author.username;
+  const serverName = message.guild.name;
+
+  // Set up a Firebase Realtime Database reference for the player
+  const dbRef = admin.database().ref(`test1/${serverName}/players`);
+
+  // Look up the player's data in the database
+  dbRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
+    } else {
+      const playerKey = Object.keys(snapshot.val())[0];
+      const playerData = snapshot.val()[playerKey];
+      const currentRoomId = playerData.current_room;
+
+      // Look up the current room's data in the database
+      const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+      roomsRef.once('value', snapshot => {
+        const currentRoomData = snapshot.val()[currentRoomId];
+
+        // Check if there is a room to the west
+        if (currentRoomData.west) {
+          // Move the player to the room to the west
+          const newRoomId = currentRoomData.west;
+          const updates = {};
+          updates[`test1/${serverName}/players/${playerKey}/current_room`] = newRoomId;
+          admin.database().ref().update(updates)
+            .then(() => {
+              message.reply(`You move west to ${snapshot.val()[newRoomId].name}.`);
+            })
+            .catch((error) => {
+              console.error(error);
+              message.reply(`Sorry, there was an error updating your current room.`);
+            });
+        } else {
+          // There is no room to the west
+          message.reply(`There is no room to the west.`);
+        }
+      }, error => {
+        console.error(error);
+        message.reply(`Sorry, there was an error accessing the database.`);
+      });
+    }
+  });
+}
+
+// Handle the "east" command
+if (command === 'east') {
+  // Get the player's Discord name
+  const playerName = message.author.username;
+  const serverName = message.guild.name;
+
+  // Set up a Firebase Realtime Database reference for the player
+  const dbRef = admin.database().ref(`test1/${serverName}/players`);
+
+  // Look up the player's data in the database
+  dbRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
+    } else {
+      const playerKey = Object.keys(snapshot.val())[0];
+      const playerData = snapshot.val()[playerKey];
+      const currentRoomId = playerData.current_room;
+
+      // Look up the current room's data in the database
+      const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+      roomsRef.once('value', snapshot => {
+        const currentRoomData = snapshot.val()[currentRoomId];
+
+        // Check if there is a room to the east
+        if (currentRoomData.east) {
+          // Move the player to the room to the east
+          const newRoomId = currentRoomData.east;
+          const updates = {};
+          updates[`test1/${serverName}/players/${playerKey}/current_room`] = newRoomId;
+          admin.database().ref().update(updates)
+            .then(() => {
+              message.reply(`You move east to ${snapshot.val()[newRoomId].name}.`);
+            })
+            .catch((error) => {
+              console.error(error);
+              message.reply(`Sorry, there was an error updating your current room.`);
+            });
+        } else {
+          // There is no room to the east
+          message.reply(`There is no room to the east.`);
+        }
+      }, error => {
+        console.error(error);
+        message.reply(`Sorry, there was an error accessing the database.`);
+      });
+    }
+  });
+}
+
  
     if (command === 'start') {
   // Get the name of the Discord server where the command was generated
@@ -197,8 +336,10 @@ if (command === 'look') {
   });
 }
 
+
+
     
-    // Handle the "generate" command
+
 // Handle the "generate" command
 if (command === 'generate') {
   // Get the name of the Discord server where the command was generated
@@ -228,25 +369,44 @@ if (command === 'generate') {
 function generateRooms() {
   const rooms = {};
 
-  // Define the cardinal directions
-  const directions = ["north", "south", "east", "west"];
+  // Define the dimensions of the grid
+  const numRows = 5;
+  const numCols = 5;
 
-  // Generate 25 rooms
-  for (let i = 1; i <= 25; i++) {
-    const id = `room-${i}`;
-    const room = {
-      name: `Room ${i}`,
-      description: `This is Room ${i}`,
-    };
+  // Generate rooms for each position in the grid
+  for (let row = 0; row < numRows; row++) {
+    for (let col = 0; col < numCols; col++) {
+      const id = `room-${row}-${col}`;
+      const room = {
+        name: `Room ${id}`,
+        description: `This is Room ${id}`,
+      };
 
-    // Connect the room to random neighboring rooms
-    for (const direction of directions) {
-      const neighborId = `room-${getRandomInt(1, 25)}`;
-      room[direction] = neighborId;
+      // Connect the room to its neighbors in the grid
+      if (row > 0) {
+        // Connect to the room above
+        const neighborId = `room-${row - 1}-${col}`;
+        room.north = neighborId;
+      }
+      if (col < numCols - 1) {
+        // Connect to the room to the right
+        const neighborId = `room-${row}-${col + 1}`;
+        room.east = neighborId;
+      }
+      if (row < numRows - 1) {
+        // Connect to the room below
+        const neighborId = `room-${row + 1}-${col}`;
+        room.south = neighborId;
+      }
+      if (col > 0) {
+        // Connect to the room to the left
+        const neighborId = `room-${row}-${col - 1}`;
+        room.west = neighborId;
+      }
+
+      // Add the room to the rooms object
+      rooms[id] = room;
     }
-
-    // Add the room to the rooms object
-    rooms[id] = room;
   }
 
   return rooms;
