@@ -352,6 +352,7 @@ if (command === 'map') {
     const roomSize = 50;
     const gridSize = 5;
     const gridSpacing = 100;
+    const labelPadding = 10;
 
     // Calculate the canvas size based on the grid size and spacing
     const canvasWidth = (gridSize + 1) * gridSpacing;
@@ -375,18 +376,16 @@ if (command === 'map') {
       const x = ((i % gridSize) + 1) * gridSpacing;
       const y = (Math.floor(i / gridSize) + 1) * gridSpacing;
 
-      // Draw the room circle
+      // Draw the room square
       ctx.fillStyle = '#000';
-      ctx.beginPath();
-      ctx.arc(x, y, roomSize / 2, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.fillRect(x - (roomSize / 2), y - (roomSize / 2), roomSize, roomSize);
 
       // Draw the room label
       ctx.fillStyle = '#fff';
-      ctx.font = '16px sans-serif';
+      ctx.font = '12px sans-serif';
       ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText(room.name, x, y);
+      ctx.textBaseline = 'bottom';
+      ctx.fillText(room.name, x, y - (roomSize / 2) - labelPadding);
 
       // Draw the connections to neighboring rooms
       for (const direction of directions) {
@@ -408,10 +407,10 @@ if (command === 'map') {
 
           // Draw the neighbor room label
           ctx.fillStyle = '#000';
-          ctx.font = '12px sans-serif';
+          ctx.font = '10px sans-serif';
           ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(neighborRoom.name, neighborX, neighborY);
+          ctx.textBaseline = 'top';
+          ctx.fillText(neighborRoom.name, neighborX, neighborY + (roomSize / 2) + labelPadding);
         }
       }
       
@@ -421,12 +420,6 @@ if (command === 'map') {
     // Convert the canvas to a buffer and send it to Discord
     const buffer = canvas.toBuffer();
     message.reply({ files: [buffer] });
-  }, error => {
-    console.error(error);
-    message.reply(`Sorry, there was an error accessing the database.`);
-  });
-}
-
 
 
     
