@@ -123,7 +123,7 @@ if (command === 'start') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
-
+	  }
 
 
 // Handle the "look" command
