@@ -333,9 +333,91 @@ if (command === 'look') {
   });
 }
 
+// Handle the "map" command
+if (command === 'map') {
+  // Get the name of the Discord server where the command was generated
+  const serverName = message.guild.name;
+
+  // Set up a Firebase Realtime Database reference
+  const dbRef = admin.database().ref(`test1/${serverName}/rooms`);
+
+  // Get the list of rooms from the database
+  dbRef.once("value", snapshot => {
+    const rooms = snapshot.val();
+
+    // Define the canvas size and room size
+    const canvasWidth = 800;
+    const canvasHeight = 600;
+    const roomSize = 50;
+
+    // Create a new canvas
+    const Canvas = require('canvas');
+    const canvas = Canvas.createCanvas(canvasWidth, canvasHeight);
+    const ctx = canvas.getContext('2d');
+
+    // Clear the canvas
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    // Draw each room and its connections
+    for (const roomId in rooms) {
+      const room = rooms[roomId];
+
+      // Calculate the room position
+      const x = getRandomInt(roomSize, canvasWidth - roomSize);
+      const y = getRandomInt(roomSize, canvasHeight - roomSize);
+
+      // Draw the room circle
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.arc(x, y, roomSize / 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw the room label
+      ctx.fillStyle = '#fff';
+      ctx.font = '16px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(room.name, x, y);
+
+      // Draw the connections to neighboring rooms
+      for (const direction of directions) {
+        const neighborId = room[direction];
+        if (neighborId) {
+          const neighborRoom = rooms[neighborId];
+
+          // Calculate the neighbor room position
+          const neighborX = getRandomInt(roomSize, canvasWidth - roomSize);
+          const neighborY = getRandomInt(roomSize, canvasHeight - roomSize);
+
+          // Draw the connection line
+          ctx.strokeStyle = '#000';
+          ctx.beginPath();
+          ctx.moveTo(x, y);
+          ctx.lineTo(neighborX, neighborY);
+          ctx.stroke();
+
+          // Draw the neighbor room label
+          ctx.fillStyle = '#000';
+          ctx.font = '12px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(neighborRoom.name, neighborX, neighborY);
+        }
+      }
+    }
+
+    // Convert the canvas to a buffer and send it to Discord
+    const buffer = canvas.toBuffer();
+    message.reply({ files: [buffer] });
+  }, error => {
+    console.error(error);
+    message.reply(`Sorry, there was an error accessing the database.`);
+  });
+}
 
     
-    // Handle the "generate" command
+
 // Handle the "generate" command
 if (command === 'generate') {
   // Get the name of the Discord server where the command was generated
