@@ -142,6 +142,7 @@ client.on('message', async message => {
 if (command === 'look') {
   // Get the player's Discord name
   const playerName = message.author.username;
+  const serverName = message.guild.name;
 
   // Set up a Firebase Realtime Database reference to the players table
   const playersRef = admin.database().ref(`test1/${serverName}/players`);
