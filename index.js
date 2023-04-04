@@ -138,7 +138,7 @@ if (command === 'look') {
   const playerName = message.author.username;
 
   // Set up a Firebase Realtime Database reference to the players table
-  const playersRef = admin.database().ref('test1/players');
+  const playersRef = admin.database().ref(`test1/${serverName}/players`);
 
   // Check if the player exists in the database
   playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
