@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const axios = require('axios');
 const client = new Discord.Client();
 const admin = require('firebase-admin');
+const { createCanvas } = require('canvas');
 
 // Parse the service account key JSON string from the environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
@@ -26,7 +27,7 @@ client.on('message', async message => {
     const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
 
 
-        if (command === 'dragon') {
+    if (command === 'dragon') {
       // Set up the canvas
       const canvas = Canvas.createCanvas(300, 300);
       const ctx = canvas.getContext('2d');
