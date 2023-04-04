@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const axios = require('axios');
 const client = new Discord.Client();
 const admin = require('firebase-admin');
-const { createCanvas } = require('canvas');
+const { createCanvas, Canvas } = require('canvas');
 
 // Parse the service account key JSON string from the environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
