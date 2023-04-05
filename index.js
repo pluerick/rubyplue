@@ -448,7 +448,6 @@ function generateRooms() {
       }
     }
   }
-
   // Define a function to get the opposite direction of a given direction
   function getOppositeDirection(direction) {
     switch (direction) {
