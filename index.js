@@ -429,6 +429,7 @@ function generateRooms() {
         // Connect the current room to the neighboring room in the current direction
         const neighborId = `room-${newRow}-${newCol}`;
         room[direction] = neighborId;
+        rooms[neighborId] = rooms[neighborId] || {}; // Initialize neighbor room if not exists
         rooms[neighborId][getOppositeDirection(direction)] = id;
 
         // Recursively generate the maze from the neighboring room
@@ -458,6 +459,7 @@ function generateRooms() {
 
   return rooms;
 }
+
 
 // Function to generate a random integer between min and max (inclusive)
 function getRandomInt(min, max) {
