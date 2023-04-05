@@ -379,48 +379,84 @@ function generateRooms() {
   const numRows = 5;
   const numCols = 5;
 
-  // Generate rooms for each position in the grid
-  for (let row = 0; row < numRows; row++) {
-    for (let col = 0; col < numCols; col++) {
-      const id = `room-${row}-${col}`;
-      const room = {
-        name: `Room ${id}`,
-        description: `This is Room ${id}`,
-      };
+  // Create a two-dimensional array to keep track of which rooms have been visited
+  const visited = new Array(numRows);
+  for (let i = 0; i < numRows; i++) {
+    visited[i] = new Array(numCols).fill(false);
+  }
 
-      // Connect the room to its neighbors in the grid
-      if (row > 0) {
-        // Connect to the room above
-        const neighborId = `room-${row - 1}-${col}`;
-        room.north = neighborId;
-      }
-      if (col < numCols - 1) {
-        // Connect to the room to the right
-        const neighborId = `room-${row}-${col + 1}`;
-        room.east = neighborId;
-      }
-      if (row < numRows - 1) {
-        // Connect to the room below
-        const neighborId = `room-${row + 1}-${col}`;
-        room.south = neighborId;
-      }
-      if (col > 0) {
-        // Connect to the room to the left
-        const neighborId = `room-${row}-${col - 1}`;
-        room.west = neighborId;
+  // Define a function to recursively generate the maze
+  function generateMaze(row, col) {
+    // Mark the current room as visited
+    visited[row][col] = true;
+
+    // Create a new room object
+    const id = `room-${row}-${col}`;
+    const room = {
+      name: `Room ${id}`,
+      description: `This is Room ${id}`,
+    };
+
+    // Add the room to the rooms object
+    rooms[id] = room;
+
+    // Shuffle the order of directions to visit neighboring rooms
+    const directions = ['north', 'south', 'east', 'west'];
+    for (let i = directions.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [directions[i], directions[j]] = [directions[j], directions[i]];
+    }
+
+    // Visit neighboring rooms that haven't been visited yet
+    for (const direction of directions) {
+      let newRow = row, newCol = col;
+      switch (direction) {
+        case 'north':
+          newRow--;
+          break;
+        case 'south':
+          newRow++;
+          break;
+        case 'east':
+          newCol++;
+          break;
+        case 'west':
+          newCol--;
+          break;
       }
 
-      // Add the room to the rooms object
-      rooms[id] = room;
+      if (newRow >= 0 && newRow < numRows && newCol >= 0 && newCol < numCols && !visited[newRow][newCol]) {
+        // Connect the current room to the neighboring room in the current direction
+        const neighborId = `room-${newRow}-${newCol}`;
+        room[direction] = neighborId;
+        rooms[neighborId][getOppositeDirection(direction)] = id;
+
+        // Recursively generate the maze from the neighboring room
+        generateMaze(newRow, newCol);
+      }
     }
   }
 
-  return rooms;
-}
+  // Define a function to get the opposite direction of a given direction
+  function getOppositeDirection(direction) {
+    switch (direction) {
+      case 'north':
+        return 'south';
+      case 'south':
+        return 'north';
+      case 'east':
+        return 'west';
+      case 'west':
+        return 'east';
+    }
+  }
 
-// Function to generate a random integer between min and max (inclusive)
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  // Start generating the maze from a random starting position
+  const startRow = getRandomInt(0, numRows - 1);
+  const startCol = getRandomInt(0, numCols - 1);
+  generateMaze(startRow, startCol);
+
+  return rooms;
 }
 }});
 
