@@ -285,7 +285,13 @@ if (command === 'east') {
   });
 }
 
-
+// Handle the "test" command
+if (command === 'test') {
+  // Get the player's Discord name
+  const playerName = message.author.username;
+  const serverName = message.guild.name;
+  message.reply(`You are ${playerName} on ${serverName}.`);
+}
 
 // Handle the "look" command
 if (command === 'look') {
