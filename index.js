@@ -389,24 +389,24 @@ function generateRooms() {
   function generateMaze(row, col) {
     // Mark the current room as visited
     visited[row][col] = true;
-
+  
     // Create a new room object
     const id = `room-${row}-${col}`;
     const room = {
       name: `Room ${id}`,
       description: `This is Room ${id}`,
     };
-
+  
     // Add the room to the rooms object
     rooms[id] = room;
-
+  
     // Shuffle the order of directions to visit neighboring rooms
     const directions = ['north', 'south', 'east', 'west'];
     for (let i = directions.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [directions[i], directions[j]] = [directions[j], directions[i]];
     }
-
+  
     // Visit neighboring rooms that haven't been visited yet
     for (const direction of directions) {
       let newRow = row, newCol = col;
@@ -424,14 +424,25 @@ function generateRooms() {
           newCol--;
           break;
       }
-
+  
       if (newRow >= 0 && newRow < numRows && newCol >= 0 && newCol < numCols && !visited[newRow][newCol]) {
         // Connect the current room to the neighboring room in the current direction
         const neighborId = `room-${newRow}-${newCol}`;
         room[direction] = neighborId;
         rooms[neighborId] = rooms[neighborId] || {}; // Initialize neighbor room if not exists
         rooms[neighborId][getOppositeDirection(direction)] = id;
-
+  
+        // Add the connection to the database
+        const connectionsRef = admin.database().ref(`test1/${serverName}/connections`);
+        const connectionId = `${id}-${direction}`;
+        const connection = {
+          from: id,
+          to: neighborId,
+          direction: direction,
+          oppositeDirection: getOppositeDirection(direction)
+        };
+        connectionsRef.child(connectionId).set(connection);
+  
         // Recursively generate the maze from the neighboring room
         generateMaze(newRow, newCol);
       }
