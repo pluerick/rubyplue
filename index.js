@@ -347,7 +347,6 @@ if (command === 'look') {
 
 
     
-
 // Handle the "generate" command
 if (command === 'generate') {
   // Get the name of the Discord server where the command was generated
@@ -391,24 +390,24 @@ function generateRooms() {
   function generateMaze(row, col) {
     // Mark the current room as visited
     visited[row][col] = true;
-  
+
     // Create a new room object
     const id = `room-${row}-${col}`;
     const room = {
       name: `Room ${id}`,
       description: `This is Room ${id}`,
     };
-  
+
     // Add the room to the rooms object
     rooms[id] = room;
-  
+
     // Shuffle the order of directions to visit neighboring rooms
     const directions = ['north', 'south', 'east', 'west'];
     for (let i = directions.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [directions[i], directions[j]] = [directions[j], directions[i]];
     }
-  
+
     // Visit neighboring rooms that haven't been visited yet
     for (const direction of directions) {
       let newRow = row, newCol = col;
@@ -426,51 +425,125 @@ function generateRooms() {
           newCol--;
           break;
       }
-  
+
       if (newRow >= 0 && newRow < numRows && newCol >= 0 && newCol < numCols && !visited[newRow][newCol]) {
         // Connect the current room to the neighboring room in the current direction
         const neighborId = `room-${newRow}-${newCol}`;
         room[direction] = neighborId;
         rooms[neighborId] = rooms[neighborId] || {}; // Initialize neighbor room if not exists
         rooms[neighborId][getOppositeDirection(direction)] = id;
-  
-        // Add the connection to the database
-        const connectionsRef = admin.database().ref(`test1/${serverName}/connections`);
-        const connectionId = `${id}-${direction}`;
-        const connection = {
-          from: id,
-          to: neighborId,
-          direction: direction,
-          oppositeDirection: getOppositeDirection(direction)
-        };
-        connectionsRef.child(connectionId).set(connection);
-  
+
         // Recursively generate the maze from the neighboring room
         generateMaze(newRow, newCol);
       }
     }
-  }
-  // Define a function to get the opposite direction of a given direction
-  function getOppositeDirection(direction) {
-    switch (direction) {
-      case 'north':
-        return 'south';
-      case 'south':
-        return 'north';
-      case 'east':
-        return 'west';
-      case 'west':
-        return 'east';
+
+    // If the current room is the starting room (room 0-0), create a connection to one of its neighbors that has already been visited
+    if (row === 0 && col === 0) {
+        let connected = false;
+  
+        // Check if any of the neighbors have already been visited
+        for (const direction of directions) {
+          let newRow = row, newCol = col;
+          switch (direction) {
+            case 'north':
+              newRow--;
+              break;
+            case 'south':
+              newRow++;
+              break;
+            case 'east':
+              newCol++;
+              break;
+            case 'west':
+              newCol--;
+              break;
+          }
+  
+          if (newRow >= 0 && newRow < numRows && newCol >= 0 && newCol < numCols && visited[newRow][newCol]) {
+            // Connect the starting room to the neighboring room in the current direction
+            const neighborId = `room-${newRow}-${newCol}`;
+            room[direction] = neighborId;
+            rooms[neighborId][getOppositeDirection(direction)] = id;
+            connected = true;
+            break;
+          }
+        }
+  
+        // If none of the neighbors have been visited, connect the starting room to a random neighbor
+        if (!connected) {
+          const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+          let newRow = row, newCol = col;
+          switch (randomDirection) {
+            case 'north':
+              newRow--;
+              break;
+            case 'south':
+              newRow++;
+              break;
+            case 'east':
+              newCol++;
+              break;
+            case 'west':
+              newCol--;
+              break;
+          }
+  
+          const neighborId = `room-${newRow}-${newCol}`;
+          room[randomDirection] = neighborId;
+          rooms[neighborId][getOppositeDirection(randomDirection)] = id;
+        }
+      }
     }
+  
+    // Define a function to get the opposite direction of a given direction
+    function getOppositeDirection(direction) {
+      switch (direction) {
+        case 'north':
+          return 'south';
+        case 'south':
+          return 'north';
+        case 'east':
+          return 'west';
+        case 'west':
+          return 'east';
+      }
+    }
+  
+    // Start generating the maze from a random starting position
+    const startRow = getRandomInt(0, numRows - 1);
+    const startCol = getRandomInt(0, numCols - 1);
+    generateMaze(startRow, startCol);
+  
+    // Create a connection between the starting room and one of its neighbors that has already been visited
+    for (const direction of ['north', 'south', 'east', 'west']) {
+      let newRow = 0, newCol = 0;
+      switch (direction) {
+        case 'north':
+          newRow--;
+          break;
+        case 'south':
+          newRow++;
+          break;
+        case 'east':
+          newCol++;
+          break;
+        case 'west':
+          newCol--;
+          break;
+      }
+  
+      if (newRow >= 0 && newRow < numRows && newCol >= 0 && newCol < numCols && visited[newRow][newCol]) {
+        const neighborId = `room-${newRow}-${newCol}`;
+        rooms[`room-0-0`][direction] = neighborId;
+        rooms[neighborId][getOppositeDirection(direction)] = `room-0-0`;
+        break;
+      }
+    }
+  
+    return rooms;
   }
-
-  // Start generating the maze from a random starting position
-  const startRow = getRandomInt(0, numRows - 1);
-  const startCol = getRandomInt(0, numCols - 1);
-  generateMaze(startRow, startCol);
-
-  return rooms;
-}
+  
 
 
 // Function to generate a random integer between min and max (inclusive)
