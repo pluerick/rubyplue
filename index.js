@@ -2,7 +2,7 @@ const Discord = require('discord.js');
 const axios = require('axios');
 const client = new Discord.Client();
 const admin = require('firebase-admin');
-const serverName = message.guild.name;
+
 
 // Define the cardinal directions
 const directions = ["north", "south", "east", "west"];
@@ -28,6 +28,7 @@ client.on('message', async message => {
   if (message.content.startsWith('?')) {
     // Parse the command and arguments
     const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
+    const serverName = message.guild.name;
 
     
   if (command === 'north') {
