@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const axios = require('axios');
 const client = new Discord.Client();
 const admin = require('firebase-admin');
+const serverName = message.guild.name;
 
 // Define the cardinal directions
 const directions = ["north", "south", "east", "west"];
