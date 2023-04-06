@@ -436,15 +436,6 @@ if (command === 'map') {
       }
     }
 
-    // Scale the image down and send it back to the user
-    const scaleFactor = Math.min(1, 2048 / canvas.width);
-    const scaledWidth = Math.floor(canvas.width * scaleFactor);
-    const scaledHeight = Math.floor(canvas.height * scaleFactor);
-    const scaledCanvas = Canvas.createCanvas(scaledWidth, scaledHeight);
-    const scaledCtx = scaledCanvas.getContext('2d');
-    scaledCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, scaledWidth, scaledHeight);
-    const attachment = new Discord.MessageAttachment(scaledCanvas.toBuffer(), 'maze_map.png');
-    message.channel.send(attachment);
 
     // Upload the canvas to Imgur and send the image URL to the user
     const form = new FormData();
