@@ -373,8 +373,8 @@ if (command === 'map') {
     const numCols = Math.ceil(numRooms / numRows);
 
     // Determine the size of the canvas based on the number of rows and columns in the maze
-    const canvasWidth = Math.max(numCols * roomSize, 2000);
-    const canvasWidth = Math.max(numCols * roomSize, 2000);
+    const canvasWidth = numCols * roomSize * 3;
+    const canvasHeight = numRows * roomSize * 3;
 
     // Create a new canvas element
     const Canvas = require('canvas');
