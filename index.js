@@ -344,8 +344,6 @@ if (command === 'look') {
   });
 }
 
-
-
 // Handle the "map" command
 if (command === 'map') {
   const serverName = message.guild.name;
@@ -358,13 +356,13 @@ if (command === 'map') {
     const rooms = snapshot.val();
 
     // Define the size of each room on the map
-    const roomSize = 40;
+    const roomSize = 120;
 
     // Determine the size of the canvas based on the number of rows and columns in the maze
     const numRows = 5;
     const numCols = 5;
-    const canvasWidth = numCols * roomSize;
-    const canvasHeight = numRows * roomSize;
+    const canvasWidth = numCols * roomSize + roomSize / 2;
+    const canvasHeight = numRows * roomSize + roomSize / 2;
 
     // Create a new canvas element
     const Canvas = require('canvas');
@@ -372,7 +370,7 @@ if (command === 'map') {
     const ctx = canvas.getContext('2d');
 
     // Set the font and font size for the room labels
-    ctx.font = 'bold 16px Arial';
+    ctx.font = 'bold 24px Arial';
 
     // Draw the rooms and connections on the canvas
     for (const roomId in rooms) {
@@ -381,62 +379,42 @@ if (command === 'map') {
       // Calculate the position of the room on the canvas
       const row = parseInt(roomId.split('-')[1]);
       const col = parseInt(roomId.split('-')[2]);
-      const x = col * roomSize + roomSize / 2;
-      const y = row * roomSize + roomSize / 2;
+      const x = col * roomSize + roomSize / 4;
+      const y = row * roomSize + roomSize / 4;
 
-      // Draw the room as a square with a label
+      // Draw the room as a square with openings where the doors are
       ctx.fillStyle = 'white';
-      ctx.fillRect(col * roomSize, row * roomSize, roomSize, roomSize);
-      ctx.fillStyle = 'black';
-      ctx.fillText(room.name, x - ctx.measureText(room.name).width / 2, y + 6);
-
-      // Draw the connections to neighboring rooms
+      ctx.fillRect(x, y, roomSize / 2, roomSize / 2);
       ctx.strokeStyle = 'black';
       ctx.lineWidth = 2;
-      if (room.north) {
-        const neighborId = room.north;
-        const neighborRow = parseInt(neighborId.split('-')[1]);
-        const neighborCol = parseInt(neighborId.split('-')[2]);
-        const neighborX = neighborCol * roomSize + roomSize / 2;
-        const neighborY = neighborRow * roomSize + roomSize / 2;
+      if (!room.north) {
         ctx.beginPath();
         ctx.moveTo(x, y);
-        ctx.lineTo(neighborX, neighborY);
+        ctx.lineTo(x + roomSize / 2, y);
         ctx.stroke();
       }
-      if (room.south) {
-        const neighborId = room.south;
-        const neighborRow = parseInt(neighborId.split('-')[1]);
-        const neighborCol = parseInt(neighborId.split('-')[2]);
-        const neighborX = neighborCol * roomSize + roomSize / 2;
-        const neighborY = neighborRow * roomSize + roomSize / 2;
+      if (!room.south) {
+        ctx.beginPath();
+        ctx.moveTo(x, y + roomSize / 2);
+        ctx.lineTo(x + roomSize / 2, y + roomSize / 2);
+        ctx.stroke();
+      }
+      if (!room.east) {
+        ctx.beginPath();
+        ctx.moveTo(x + roomSize / 2, y);
+        ctx.lineTo(x + roomSize / 2, y + roomSize / 2);
+        ctx.stroke();
+      }
+      if (!room.west) {
         ctx.beginPath();
         ctx.moveTo(x, y);
-        ctx.lineTo(neighborX, neighborY);
+        ctx.lineTo(x, y + roomSize / 2);
         ctx.stroke();
       }
-      if (room.east) {
-        const neighborId = room.east;
-        const neighborRow = parseInt(neighborId.split('-')[1]);
-        const neighborCol = parseInt(neighborId.split('-')[2]);
-        const neighborX = neighborCol * roomSize + roomSize / 2;
-        const neighborY = neighborRow * roomSize + roomSize / 2;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(neighborX, neighborY);
-        ctx.stroke();
-      }
-      if (room.west) {
-        const neighborId = room.west;
-        const neighborRow = parseInt(neighborId.split('-')[1]);
-        const neighborCol = parseInt(neighborId.split('-')[2]);
-        const neighborX = neighborCol * roomSize + roomSize / 2;
-        const neighborY = neighborRow * roomSize + roomSize / 2;
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(neighborX, neighborY);
-        ctx.stroke();
-      }
+
+      // Draw the room label
+      ctx.fillStyle = 'black';
+      ctx.fillText(room.name, x + roomSize / 4 - ctx.measureText(room.name).width / 2, y + roomSize / 2 + 18);
     }
 
     // Convert the canvas to a base64-encoded PNG image
