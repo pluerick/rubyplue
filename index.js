@@ -343,7 +343,6 @@ if (command === 'look') {
     }
   });
 }
-
 // Handle the "map" command
 if (command === 'map') {
   const serverName = message.guild.name;
@@ -355,77 +354,90 @@ if (command === 'map') {
   dbRef.once('value', snapshot => {
     const rooms = snapshot.val();
 
-    // Define the size of each room on the map
-    const roomSize = 120;
+    // Determine the total number of rooms in the maze
+    const numRooms = Object.keys(rooms).length;
+
+    // Set the maximum number of rooms that can fit on the map in a row or column
+    const maxRoomsPerRow = 20;
+    const maxRoomsPerCol = 20;
+
+    // Calculate the size of each room based on the maximum number of rooms that can fit on the map
+    const roomSize = Math.min(100, Math.floor(5000 / Math.max(maxRoomsPerRow, maxRoomsPerCol), numRooms));
+
+    // Determine the number of rows and columns needed to fit all the rooms on the map
+    const numRows = Math.ceil(Math.sqrt(numRooms));
+    const numCols = Math.ceil(numRooms / numRows);
 
     // Determine the size of the canvas based on the number of rows and columns in the maze
-    const numRows = 5;
-    const numCols = 5;
-    const canvasWidth = numCols * roomSize + roomSize / 2;
-    const canvasHeight = numRows * roomSize + roomSize / 2;
+    const canvasWidth = numCols * roomSize;
+    const canvasHeight = numRows * roomSize;
 
     // Create a new canvas element
     const Canvas = require('canvas');
     const canvas = Canvas.createCanvas(canvasWidth, canvasHeight);
     const ctx = canvas.getContext('2d');
 
-    // Set the font and font size for the room labels
-    ctx.font = 'bold 24px Arial';
-
     // Draw the rooms and connections on the canvas
-    for (const roomId in rooms) {
-      const room = rooms[roomId];
+    let roomId = 0;
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < numCols; col++) {
+        if (roomId >= numRooms) {
+          break;
+        }
 
-      // Calculate the position of the room on the canvas
-      const row = parseInt(roomId.split('-')[1]);
-      const col = parseInt(roomId.split('-')[2]);
-      const x = col * roomSize + roomSize / 4;
-      const y = row * roomSize + roomSize / 4;
+        const room = rooms[`room-${row}-${col}`];
 
-      // Draw the room as a square with openings where the doors are
-      ctx.fillStyle = 'white';
-      ctx.fillRect(x, y, roomSize / 2, roomSize / 2);
-      ctx.strokeStyle = 'black';
-      ctx.lineWidth = 2;
-      if (!room.north) {
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + roomSize / 2, y);
-        ctx.stroke();
-      }
-      if (!room.south) {
-        ctx.beginPath();
-        ctx.moveTo(x, y + roomSize / 2);
-        ctx.lineTo(x + roomSize / 2, y + roomSize / 2);
-        ctx.stroke();
-      }
-      if (!room.east) {
-        ctx.beginPath();
-        ctx.moveTo(x + roomSize / 2, y);
-        ctx.lineTo(x + roomSize / 2, y + roomSize / 2);
-        ctx.stroke();
-      }
-      if (!room.west) {
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x, y + roomSize / 2);
-        ctx.stroke();
-      }
+        // Calculate the position of the room on the canvas
+        const x = col * roomSize + roomSize / 2;
+        const y = row * roomSize + roomSize / 2;
 
-      // Draw the room label
-      ctx.fillStyle = 'black';
-      ctx.fillText(room.name, x + roomSize / 4 - ctx.measureText(room.name).width / 2, y + roomSize / 2 + 18);
+        // Draw the room as a square with openings where the doors are
+        ctx.fillStyle = 'white';
+        ctx.fillRect(x - roomSize / 2, y - roomSize / 2, roomSize, roomSize);
+        ctx.strokeStyle = 'black';
+        ctx.lineWidth = 2;
+        if (!room.north) {
+          ctx.beginPath();
+          ctx.moveTo(x - roomSize / 2, y - roomSize / 2);
+          ctx.lineTo(x + roomSize / 2, y - roomSize / 2);
+          ctx.stroke();
+        }
+        if (!room.south) {
+          ctx.beginPath();
+          ctx.moveTo(x - roomSize / 2, y + roomSize / 2);
+          ctx.lineTo(x + roomSize / 2, y + roomSize / 2);
+          ctx.stroke();
+        }
+        if (!room.east) {
+          ctx.beginPath();
+          ctx.moveTo(x + roomSize / 2, y - roomSize / 2);
+          ctx.lineTo(x + roomSize / 2, y + roomSize / 2);
+          ctx.stroke();
+        }
+        if (!room.west) {
+          ctx.beginPath();
+          ctx.moveTo(x - roomSize / 2, y - roomSize / 2);
+          ctx.lineTo(x - roomSize / 2, y + roomSize / 2);
+          ctx.stroke();
+        }
+
+        // Draw the room number in the center of the room
+        ctx.fillStyle = 'black';
+        ctx.font = `${roomSize / 2}px Arial`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`${roomId + 1}`, x, y);
+
+        roomId++;
+      }
     }
 
-    // Convert the canvas to a base64-encoded PNG image
-    const buffer = canvas.toBuffer('image/png');
-    const base64Image = buffer.toString('base64');
-
-    // Send the image back to the user
-    message.channel.send({
+    // Convert the canvas to a buffer and send it back to the user
+    const buffer = canvas.toBuffer();
+    message.reply({
       files: [{
-        attachment: Buffer.from(base64Image, 'base64'),
-        name: 'map.png'
+        attachment: buffer,
+        name: 'maze-map.png'
       }]
     });
   }, error => {
@@ -433,7 +445,6 @@ if (command === 'map') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
-
 
     
 // Handle the "generate" command
