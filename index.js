@@ -379,6 +379,10 @@ if (command === 'map') {
     const canvas = Canvas.createCanvas(canvasWidth, canvasHeight);
     const ctx = canvas.getContext('2d');
 
+    // Fill the canvas with a white background
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
     // Draw the rooms and connections on the canvas
     let roomId = 0;
     for (let row = 0; row < numRows; row++) {
@@ -394,12 +398,12 @@ if (command === 'map') {
           ctx.lineWidth = 2;
           ctx.strokeRect(x, y, roomSize, roomSize);
 
-          // Draw the room number in the center of the room
+          // Draw the room label in the center of the room
           ctx.fillStyle = 'black';
           ctx.font = `${roomSize / 2}px Arial`;
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillText(`${roomId + 1}`, x + roomSize / 2, y + roomSize / 2);
+          ctx.fillText(`${row}-${col}`, x + roomSize / 2, y + roomSize / 2);
 
           // Draw the openings between rooms
           if (room.north !== undefined && !room.north) {
