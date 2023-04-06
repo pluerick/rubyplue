@@ -377,19 +377,19 @@ if (command === 'map') {
     const canvas = Canvas.createCanvas(canvasWidth, canvasHeight);
     const ctx = canvas.getContext('2d');
 
+    // Calculate the position of the first room
+    const startX = canvasWidth / 2 - numCols / 2 * roomSize * 3 + roomSize * 1.5;
+    const startY = canvasHeight / 2 - numRows / 2 * roomSize * 3 + roomSize * 1.5;
+
     // Draw the rooms and connections on the canvas
     let roomId = 0;
     for (let row = 0; row < numRows; row++) {
       for (let col = 0; col < numCols; col++) {
-        if (roomId >= numRooms) {
-          break;
-        }
-
         const room = rooms[`room-${row}-${col}`];
         if (room) {
           // Calculate the position of the room on the canvas
-          const x = col * roomSize * 3 + roomSize * 1.5;
-          const y = row * roomSize * 3 + roomSize * 1.5;
+          const x = startX + col * roomSize * 3;
+          const y = startY + row * roomSize * 3;
 
           // Draw the room as a square with openings where the doors are
           ctx.fillStyle = 'white';
@@ -420,10 +420,18 @@ if (command === 'map') {
             ctx.lineTo(x - roomSize * 1.5, y + roomSize * 1.5);
             ctx.stroke();
           }
+
           // Draw a small gap between each room
           ctx.fillStyle = 'white';
           ctx.fillRect(x - roomSize * 1.5, y - roomSize / 4, roomSize * 3, roomSize / 2);
           ctx.fillRect(x - roomSize / 4, y - roomSize * 1.5, roomSize / 2, roomSize * 3);
+
+          // Draw the room number in the center of the room
+          ctx.fillStyle = 'black';
+          ctx.font = `${roomSize / 2}px Arial`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`${roomId + 1}`, x, y);
         }
         roomId++;
       }
@@ -442,6 +450,8 @@ if (command === 'map') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
+
+
 
 
     
