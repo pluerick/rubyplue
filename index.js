@@ -362,15 +362,15 @@ if (command === 'map') {
     const maxRoomsPerCol = 20;
 
     // Calculate the size of each room based on the maximum number of rooms that can fit on the map
-    const roomSize = Math.min(100, Math.floor(5000 / Math.max(maxRoomsPerRow, maxRoomsPerCol), numRooms));
+    const roomSize = Math.min(100, Math.floor(5000 / Math.max(maxRoomsPerRow, maxRoomsPerCol) * numRooms));
 
     // Determine the number of rows and columns needed to fit all the rooms on the map
     const numRows = Math.ceil(Math.sqrt(numRooms));
     const numCols = Math.ceil(numRooms / numRows);
 
     // Determine the size of the canvas based on the number of rows and columns in the maze
-    const canvasWidth = numCols * roomSize;
-    const canvasHeight = numRows * roomSize;
+    const canvasWidth = numCols * roomSize * 3;
+    const canvasHeight = numRows * roomSize * 3;
 
     // Create a new canvas element
     const Canvas = require('canvas');
@@ -387,46 +387,44 @@ if (command === 'map') {
 
         const room = rooms[`room-${row}-${col}`];
         if (room) {
-        // Calculate the position of the room on the canvas
-        const x = col * roomSize + roomSize / 2;
-        const y = row * roomSize + roomSize / 2;
+          // Calculate the position of the room on the canvas
+          const x = col * roomSize * 3 + roomSize * 1.5;
+          const y = row * roomSize * 3 + roomSize * 1.5;
 
-        // Draw the room as a square with openings where the doors are
-        ctx.fillStyle = 'white';
-        ctx.fillRect(x - roomSize / 2, y - roomSize / 2, roomSize, roomSize);
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 2;
-        if (room.north !== undefined && !room.north) {
-          ctx.beginPath();
-          ctx.moveTo(x - roomSize / 2, y - roomSize / 2);
-          ctx.lineTo(x + roomSize / 2, y - roomSize / 2);
-          ctx.stroke();
+          // Draw the room as a square with openings where the doors are
+          ctx.fillStyle = 'white';
+          ctx.fillRect(x - roomSize * 1.5, y - roomSize * 1.5, roomSize, roomSize);
+          ctx.strokeStyle = 'black';
+          ctx.lineWidth = 2;
+          if (room.north !== undefined && !room.north) {
+            ctx.beginPath();
+            ctx.moveTo(x - roomSize * 1.5, y - roomSize * 1.5);
+            ctx.lineTo(x + roomSize * 1.5, y - roomSize * 1.5);
+            ctx.stroke();
+          }
+          if (room.south !== undefined && !room.south) {
+            ctx.beginPath();
+            ctx.moveTo(x - roomSize * 1.5, y + roomSize * 1.5);
+            ctx.lineTo(x + roomSize * 1.5, y + roomSize * 1.5);
+            ctx.stroke();
+          }
+          if (room.east !== undefined && !room.east) {
+            ctx.beginPath();
+            ctx.moveTo(x + roomSize * 1.5, y - roomSize * 1.5);
+            ctx.lineTo(x + roomSize * 1.5, y + roomSize * 1.5);
+            ctx.stroke();
+          }
+          if (room.west !== undefined && !room.west) {
+            ctx.beginPath();
+            ctx.moveTo(x - roomSize * 1.5, y - roomSize * 1.5);
+            ctx.lineTo(x - roomSize * 1.5, y + roomSize * 1.5);
+            ctx.stroke();
+          }
+          // Draw a small gap between each room
+          ctx.fillStyle = 'white';
+          ctx.fillRect(x - roomSize * 1.5, y - roomSize / 4, roomSize * 3, roomSize / 2);
+          ctx.fillRect(x - roomSize / 4, y - roomSize * 1.5, roomSize / 2, roomSize * 3);
         }
-        if (room.south !== undefined && !room.south) {
-          ctx.beginPath();
-          ctx.moveTo(x - roomSize / 2, y + roomSize / 2);
-          ctx.lineTo(x + roomSize / 2, y + roomSize / 2);
-          ctx.stroke();
-        }
-        if (room.east !== undefined && !room.east) {
-          ctx.beginPath();
-          ctx.moveTo(x + roomSize / 2, y - roomSize / 2);
-          ctx.lineTo(x + roomSize / 2, y + roomSize / 2);
-          ctx.stroke();
-        }
-        if (room.west !== undefined && !room.west) {
-          ctx.beginPath();
-          ctx.moveTo(x - roomSize / 2, y - roomSize / 2);
-          ctx.lineTo(x - roomSize / 2, y + roomSize / 2);
-          ctx.stroke();
-        }
-        // Draw the room number in the center of the room
-        ctx.fillStyle = 'black';
-        ctx.font = `${roomSize / 2}px Arial`;
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(`${roomId + 1}`, x, y);
-      }
         roomId++;
       }
     }
@@ -444,6 +442,7 @@ if (command === 'map') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
+
 
     
 // Handle the "generate" command
