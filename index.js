@@ -346,6 +346,117 @@ if (command === 'look') {
 
 
 
+// Handle the "map" command
+if (command === 'map') {
+  const serverName = message.guild.name;
+
+  // Set up a Firebase Realtime Database reference for the rooms
+  const dbRef = admin.database().ref(`test1/${serverName}/rooms`);
+
+  // Get the rooms data from the database
+  dbRef.once('value', snapshot => {
+    const rooms = snapshot.val();
+
+    // Define the size of each room on the map
+    const roomSize = 40;
+
+    // Determine the size of the canvas based on the number of rows and columns in the maze
+    const numRows = 5;
+    const numCols = 5;
+    const canvasWidth = numCols * roomSize;
+    const canvasHeight = numRows * roomSize;
+
+    // Create a new canvas element
+    const Canvas = require('canvas');
+    const canvas = Canvas.createCanvas(canvasWidth, canvasHeight);
+    const ctx = canvas.getContext('2d');
+
+    // Set the font and font size for the room labels
+    ctx.font = 'bold 16px Arial';
+
+    // Draw the rooms and connections on the canvas
+    for (const roomId in rooms) {
+      const room = rooms[roomId];
+
+      // Calculate the position of the room on the canvas
+      const row = parseInt(roomId.split('-')[1]);
+      const col = parseInt(roomId.split('-')[2]);
+      const x = col * roomSize + roomSize / 2;
+      const y = row * roomSize + roomSize / 2;
+
+      // Draw the room as a square with a label
+      ctx.fillStyle = 'white';
+      ctx.fillRect(col * roomSize, row * roomSize, roomSize, roomSize);
+      ctx.fillStyle = 'black';
+      ctx.fillText(room.name, x - ctx.measureText(room.name).width / 2, y + 6);
+
+      // Draw the connections to neighboring rooms
+      ctx.strokeStyle = 'black';
+      ctx.lineWidth = 2;
+      if (room.north) {
+        const neighborId = room.north;
+        const neighborRow = parseInt(neighborId.split('-')[1]);
+        const neighborCol = parseInt(neighborId.split('-')[2]);
+        const neighborX = neighborCol * roomSize + roomSize / 2;
+        const neighborY = neighborRow * roomSize + roomSize / 2;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(neighborX, neighborY);
+        ctx.stroke();
+      }
+      if (room.south) {
+        const neighborId = room.south;
+        const neighborRow = parseInt(neighborId.split('-')[1]);
+        const neighborCol = parseInt(neighborId.split('-')[2]);
+        const neighborX = neighborCol * roomSize + roomSize / 2;
+        const neighborY = neighborRow * roomSize + roomSize / 2;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(neighborX, neighborY);
+        ctx.stroke();
+      }
+      if (room.east) {
+        const neighborId = room.east;
+        const neighborRow = parseInt(neighborId.split('-')[1]);
+        const neighborCol = parseInt(neighborId.split('-')[2]);
+        const neighborX = neighborCol * roomSize + roomSize / 2;
+        const neighborY = neighborRow * roomSize + roomSize / 2;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(neighborX, neighborY);
+        ctx.stroke();
+      }
+      if (room.west) {
+        const neighborId = room.west;
+        const neighborRow = parseInt(neighborId.split('-')[1]);
+        const neighborCol = parseInt(neighborId.split('-')[2]);
+        const neighborX = neighborCol * roomSize + roomSize / 2;
+        const neighborY = neighborRow * roomSize + roomSize / 2;
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(neighborX, neighborY);
+        ctx.stroke();
+      }
+    }
+
+    // Convert the canvas to a base64-encoded PNG image
+    const buffer = canvas.toBuffer('image/png');
+    const base64Image = buffer.toString('base64');
+
+    // Send the image back to the user
+    message.channel.send({
+      files: [{
+        attachment: Buffer.from(base64Image, 'base64'),
+        name: 'map.png'
+      }]
+    });
+  }, error => {
+    console.error(error);
+    message.reply(`Sorry, there was an error accessing the database.`);
+  });
+}
+
+
     
 // Handle the "generate" command
 if (command === 'generate') {
