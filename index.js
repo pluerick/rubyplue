@@ -2,6 +2,7 @@ const Discord = require('discord.js');
 const axios = require('axios');
 const client = new Discord.Client();
 const admin = require('firebase-admin');
+const FormData = require('form-data');
 
 
 // Define the cardinal directions
@@ -343,6 +344,9 @@ if (command === 'look') {
     }
   });
 }
+const axios = require('axios');
+const FormData = require('form-data');
+
 // Handle the "map" command
 if (command === 'map') {
   const serverName = message.guild.name;
@@ -408,49 +412,57 @@ if (command === 'map') {
             ctx.lineTo(x + roomSize * 1.5, y + roomSize * 1.5);
             ctx.stroke();
           }
-          if (room.east !== undefined && !room.east) {
-            ctx.beginPath();
-            ctx.moveTo(x + roomSize * 1.5, y - roomSize * 1.5);
-            ctx.lineTo(x + roomSize * 1.5, y + roomSize * 1.5);
-            ctx.stroke();
-          }
-          if (room.west !== undefined && !room.west) {
-            ctx.beginPath();
-            ctx.moveTo(x - roomSize * 1.5, y - roomSize * 1.5);
-            ctx.lineTo(x - roomSize * 1.5, y + roomSize * 1.5);
-            ctx.stroke();
-          }
 
-          // Draw a small gap between each room
-          ctx.fillStyle = 'white';
-          ctx.fillRect(x - roomSize * 1.5, y - roomSize / 4, roomSize * 3, roomSize / 2);
-          ctx.fillRect(x - roomSize / 4, y - roomSize * 1.5, roomSize / 2, roomSize * 3);
-
-          // Draw the room number in the center of the room
-          ctx.fillStyle = 'black';
-          ctx.font = `${roomSize / 2}px Arial`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(`${roomId + 1}`, x, y);
+              if (room.east !== undefined && !room.east) {
+                ctx.beginPath();
+                ctx.moveTo(x + roomSize * 1.5, y - roomSize * 1.5);
+                ctx.lineTo(x + roomSize * 1.5, y + roomSize * 1.5);
+                ctx.stroke();
+              }
+              if (room.west !== undefined && !room.west) {
+                ctx.beginPath();
+                ctx.moveTo(x - roomSize * 1.5, y - roomSize * 1.5);
+                ctx.lineTo(x - roomSize * 1.5, y + roomSize * 1.5);
+                ctx.stroke();
+              }
+    
+              // Draw a small gap between each room
+              ctx.fillStyle = 'white';
+              ctx.fillRect(x - roomSize * 1.5, y - roomSize / 4, roomSize * 3, roomSize / 2);
+              ctx.fillRect(x - roomSize / 4, y - roomSize * 1.5, roomSize / 2, roomSize * 3);
+    
+              // Draw the room number in the center of the room
+              ctx.fillStyle = 'black';
+              ctx.font = `${roomSize / 2}px Arial`;
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.fillText(`${roomId + 1}`, x, y);
+            }
+            roomId++;
+          }
         }
-        roomId++;
-      }
+    
+        // Upload the canvas to Imgur and send the image URL to the user
+        const form = new FormData();
+        form.append('image', canvas.toBuffer());
+        axios.post('https://api.imgur.com/3/image', form, {
+          headers: {
+            'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`,
+            ...form.getHeaders()
+          }
+        }).then(response => {
+          const imageUrl = response.data.data.link;
+          message.reply(`Here's the maze map: ${imageUrl}`);
+        }).catch(error => {
+          console.error(error);
+          message.reply(`Sorry, there was an error uploading the image.`);
+        });
+      }, error => {
+        console.error(error);
+        message.reply(`Sorry, there was an error accessing the database.`);
+      });
     }
-
-    // Convert the canvas to a buffer and send it back to the user
-    const buffer = canvas.toBuffer();
-    message.reply({
-      files: [{
-        attachment: buffer,
-        name: 'maze-map.png'
-      }]
-    });
-  }, error => {
-    console.error(error);
-    message.reply(`Sorry, there was an error accessing the database.`);
-  });
-}
-
+    
 
 
 
