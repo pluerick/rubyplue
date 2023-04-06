@@ -445,35 +445,31 @@ if (command === 'map') {
     scaledCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, scaledWidth, scaledHeight);
     const attachment = new Discord.MessageAttachment(scaledCanvas.toBuffer(), 'maze_map.png');
     message.channel.send(attachment);
+
+    // Upload the canvas to Imgur and send the image URL to the user
+    const form = new FormData();
+    form.append('image', canvas.toBuffer());
+    axios.post('https://api.imgur.com/3/image', form, {
+      headers: {
+        'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`,
+        ...form.getHeaders()
+      }
+    }).then(response => {
+      const imageUrl = response.data.data.link;
+      message.reply(`Here's the maze map: ${imageUrl}`);
+    }).catch(error => {
+      console.error(error);
+      message.reply(`Sorry, there was an error uploading the image.`);
+    });
+
   }, error => {
     console.error(error);
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
 
+         
 
-    
-        // Upload the canvas to Imgur and send the image URL to the user
-        const form = new FormData();
-        form.append('image', canvas.toBuffer());
-        axios.post('https://api.imgur.com/3/image', form, {
-          headers: {
-            'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`,
-            ...form.getHeaders()
-          }
-        }).then(response => {
-          const imageUrl = response.data.data.link;
-          message.reply(`Here's the maze map: ${imageUrl}`);
-        }).catch(error => {
-          console.error(error);
-          message.reply(`Sorry, there was an error uploading the image.`);
-        });
-      }, error => {
-        console.error(error);
-        message.reply(`Sorry, there was an error accessing the database.`);
-      });
-    }
-    
 
 
 
