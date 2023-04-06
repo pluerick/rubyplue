@@ -561,7 +561,18 @@ function generateRooms() {
   return rooms;
 }
   
-
+function getOppositeDirection(direction) {
+  switch (direction) {
+    case 'north':
+      return 'south';
+    case 'south':
+      return 'north';
+    case 'east':
+      return 'west';
+    case 'west':
+      return 'east';
+  }
+}
 
 // Function to generate a random integer between min and max (inclusive)
 function getRandomInt(min, max) {
