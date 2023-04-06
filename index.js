@@ -386,7 +386,7 @@ if (command === 'map') {
         }
 
         const room = rooms[`room-${row}-${col}`];
-
+        if (room) {
         // Calculate the position of the room on the canvas
         const x = col * roomSize + roomSize / 2;
         const y = row * roomSize + roomSize / 2;
@@ -426,7 +426,7 @@ if (command === 'map') {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(`${roomId + 1}`, x, y);
-
+      }
         roomId++;
       }
     }
