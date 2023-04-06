@@ -396,31 +396,30 @@ if (command === 'map') {
         ctx.fillRect(x - roomSize / 2, y - roomSize / 2, roomSize, roomSize);
         ctx.strokeStyle = 'black';
         ctx.lineWidth = 2;
-        if (!room.north) {
+        if (room.north !== undefined && !room.north) {
           ctx.beginPath();
           ctx.moveTo(x - roomSize / 2, y - roomSize / 2);
           ctx.lineTo(x + roomSize / 2, y - roomSize / 2);
           ctx.stroke();
         }
-        if (!room.south) {
+        if (room.south !== undefined && !room.south) {
           ctx.beginPath();
           ctx.moveTo(x - roomSize / 2, y + roomSize / 2);
           ctx.lineTo(x + roomSize / 2, y + roomSize / 2);
           ctx.stroke();
         }
-        if (!room.east) {
+        if (room.east !== undefined && !room.east) {
           ctx.beginPath();
           ctx.moveTo(x + roomSize / 2, y - roomSize / 2);
           ctx.lineTo(x + roomSize / 2, y + roomSize / 2);
           ctx.stroke();
         }
-        if (!room.west) {
+        if (room.west !== undefined && !room.west) {
           ctx.beginPath();
           ctx.moveTo(x - roomSize / 2, y - roomSize / 2);
           ctx.lineTo(x - roomSize / 2, y + roomSize / 2);
           ctx.stroke();
         }
-
         // Draw the room number in the center of the room
         ctx.fillStyle = 'black';
         ctx.font = `${roomSize / 2}px Arial`;
