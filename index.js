@@ -377,8 +377,8 @@ function generateRooms() {
   const rooms = {};
 
   // Define the dimensions of the grid
-  const numRows = 5;
-  const numCols = 5;
+  const numRows = 2;
+  const numCols = 2;
 
   // Create a two-dimensional array to keep track of which rooms have been visited
   const visited = new Array(numRows);
