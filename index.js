@@ -447,38 +447,12 @@ if (command === 'map') {
 }
 
     
-// Handle the "generate" command
-if (command === 'generate') {
-  // Get the name of the Discord server where the command was generated
-  const serverName = message.guild.name;
-
-  // Set up a Firebase Realtime Database reference
-  const dbRef = admin.database().ref(`test1/${serverName}`);
-
-  // Check if the server's database table exists, and create it if it doesn't
-  dbRef.once("value", snapshot => {
-    if (!snapshot.exists()) {
-      // Create a new database table with 25 randomly generated rooms
-      const rooms = generateRooms();
-      dbRef.set({ rooms });
-
-      message.reply(`A new database table has been created for ${serverName}.`);
-    } else {
-      message.reply(`The database table for ${serverName} already exists.`);
-    }
-  }, error => {
-    console.error(error);
-    message.reply(`Sorry, there was an error accessing the database.`);
-  });
-}
-
-// Function to generate 25 randomized rooms
 function generateRooms() {
   const rooms = {};
 
   // Define the dimensions of the grid
-  const numRows = 2;
-  const numCols = 2;
+  const numRows = 5;
+  const numCols = 3;
 
   // Create a two-dimensional array to keep track of which rooms have been visited
   const visited = new Array(numRows);
@@ -537,112 +511,29 @@ function generateRooms() {
         generateMaze(newRow, newCol);
       }
     }
-
-    // If the current room is the starting room (room 0-0), create a connection to one of its neighbors that has already been visited
-    if (row === 0 && col === 0) {
-        let connected = false;
-  
-        // Check if any of the neighbors have already been visited
-        for (const direction of directions) {
-          let newRow = row, newCol = col;
-          switch (direction) {
-            case 'north':
-              newRow--;
-              break;
-            case 'south':
-              newRow++;
-              break;
-            case 'east':
-              newCol++;
-              break;
-            case 'west':
-              newCol--;
-              break;
-          }
-  
-          if (newRow >= 0 && newRow < numRows && newCol >= 0 && newCol < numCols && visited[newRow][newCol]) {
-            // Connect the starting room to the neighboring room in the current direction
-            const neighborId = `room-${newRow}-${newCol}`;
-            room[direction] = neighborId;
-            rooms[neighborId][getOppositeDirection(direction)] = id;
-            connected = true;
-            break;
-          }
-        }
-  
-        // If none of the neighbors have been visited, connect the starting room to a random neighbor
-        if (!connected) {
-          const randomDirection = directions[Math.floor(Math.random() * directions.length)];
-          let newRow = row, newCol = col;
-          switch (randomDirection) {
-            case 'north':
-              newRow--;
-              break;
-            case 'south':
-              newRow++;
-              break;
-            case 'east':
-              newCol++;
-              break;
-            case 'west':
-              newCol--;
-              break;
-          }
-  
-          const neighborId = `room-${newRow}-${newCol}`;
-          room[randomDirection] = neighborId;
-          rooms[neighborId][getOppositeDirection(randomDirection)] = id;
-        }
-      }
-    }
-  
-    // Define a function to get the opposite direction of a given direction
-    function getOppositeDirection(direction) {
-      switch (direction) {
-        case 'north':
-          return 'south';
-        case 'south':
-          return 'north';
-        case 'east':
-          return 'west';
-        case 'west':
-          return 'east';
-      }
-    }
-  
-    // Start generating the maze from a random starting position
-    const startRow = getRandomInt(0, numRows - 1);
-    const startCol = getRandomInt(0, numCols - 1);
-    generateMaze(startRow, startCol);
-  
-    // Create a connection between the starting room and one of its neighbors that has already been visited
-    for (const direction of ['north', 'south', 'east', 'west']) {
-      let newRow = 0, newCol = 0;
-      switch (direction) {
-        case 'north':
-          newRow--;
-          break;
-        case 'south':
-          newRow++;
-          break;
-        case 'east':
-          newCol++;
-          break;
-        case 'west':
-          newCol--;
-          break;
-      }
-  
-      if (newRow >= 0 && newRow < numRows && newCol >= 0 && newCol < numCols && visited[newRow][newCol]) {
-        const neighborId = `room-${newRow}-${newCol}`;
-        rooms[`room-0-0`][direction] = neighborId;
-        rooms[neighborId][getOppositeDirection(direction)] = `room-0-0`;
-        break;
-      }
-    }
-  
-    return rooms;
   }
+
+  // Start generating the maze from the top left room
+  generateMaze(0, 0);
+
+  // Connect the top and bottom rows
+  for (let col = 0; col < numCols; col++) {
+    const topRoomId = `room-0-${col}`;
+    const bottomRoomId = `room-${numRows - 1}-${col}`;
+    rooms[topRoomId].north = bottomRoomId;
+    rooms[bottomRoomId].south = topRoomId;
+  }
+
+  // Connect the left and right columns
+  for (let row = 0; row < numRows; row++) {
+    const leftRoomId = `room-${row}-0`;
+    const rightRoomId = `room-${row}-${numCols - 1}`;
+    rooms[leftRoomId].west = rightRoomId;
+    rooms[rightRoomId].east = leftRoomId;
+  }
+
+  return rooms;
+}
   
 
 
