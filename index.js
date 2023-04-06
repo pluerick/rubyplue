@@ -361,29 +361,21 @@ if (command === 'map') {
     // Determine the total number of rooms in the maze
     const numRooms = Object.keys(rooms).length;
 
-    // Set the maximum number of rooms that can fit on the map in a row or column
-    const maxRoomsPerRow = 20;
-    const maxRoomsPerCol = 20;
-
-    // Calculate the size of each room based on the maximum number of rooms that can fit on the map
-    const roomSize = Math.min(100, Math.floor(5000 / Math.max(maxRoomsPerRow, maxRoomsPerCol) * numRooms));
+    // Calculate the size of each room based on the number of rooms in the maze
+    const roomSize = Math.min(30, Math.floor(Math.sqrt((window.innerWidth * window.innerHeight * 0.75) / numRooms)));
 
     // Determine the number of rows and columns needed to fit all the rooms on the map
     const numRows = Math.ceil(Math.sqrt(numRooms));
     const numCols = Math.ceil(numRooms / numRows);
 
     // Determine the size of the canvas based on the number of rows and columns in the maze
-    const canvasWidth = numCols * roomSize * 3;
-    const canvasHeight = numRows * roomSize * 3;
+    const canvasWidth = numCols * roomSize;
+    const canvasHeight = numRows * roomSize;
 
     // Create a new canvas element
     const Canvas = require('canvas');
     const canvas = Canvas.createCanvas(canvasWidth, canvasHeight);
     const ctx = canvas.getContext('2d');
-
-    // Calculate the position of the first room
-    const startX = canvasWidth / 2 - numCols / 2 * roomSize * 3 + roomSize * 1.5;
-    const startY = canvasHeight / 2 - numRows / 2 * roomSize * 3 + roomSize * 1.5;
 
     // Draw the rooms and connections on the canvas
     let roomId = 0;
@@ -392,55 +384,51 @@ if (command === 'map') {
         const room = rooms[`room-${row}-${col}`];
         if (room) {
           // Calculate the position of the room on the canvas
-          const x = startX + col * roomSize * 3;
-          const y = startY + row * roomSize * 3;
+          const x = col * roomSize;
+          const y = row * roomSize;
 
-          // Draw the room as a square with openings where the doors are
-          ctx.fillStyle = 'white';
-          ctx.fillRect(x - roomSize * 1.5, y - roomSize * 1.5, roomSize, roomSize);
+          // Draw the room outline
           ctx.strokeStyle = 'black';
           ctx.lineWidth = 2;
+          ctx.strokeRect(x, y, roomSize, roomSize);
+
+          // Draw the room number in the center of the room
+          ctx.fillStyle = 'black';
+          ctx.font = `${roomSize / 2}px Arial`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`${roomId + 1}`, x + roomSize / 2, y + roomSize / 2);
+
+          // Draw the openings between rooms
           if (room.north !== undefined && !room.north) {
             ctx.beginPath();
-            ctx.moveTo(x - roomSize * 1.5, y - roomSize * 1.5);
-            ctx.lineTo(x + roomSize * 1.5, y - roomSize * 1.5);
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + roomSize, y);
             ctx.stroke();
           }
           if (room.south !== undefined && !room.south) {
             ctx.beginPath();
-            ctx.moveTo(x - roomSize * 1.5, y + roomSize * 1.5);
-            ctx.lineTo(x + roomSize * 1.5, y + roomSize * 1.5);
+            ctx.moveTo(x, y + roomSize);
+            ctx.lineTo(x + roomSize, y + roomSize);
             ctx.stroke();
           }
-
-              if (room.east !== undefined && !room.east) {
-                ctx.beginPath();
-                ctx.moveTo(x + roomSize * 1.5, y - roomSize * 1.5);
-                ctx.lineTo(x + roomSize * 1.5, y + roomSize * 1.5);
-                ctx.stroke();
-              }
-              if (room.west !== undefined && !room.west) {
-                ctx.beginPath();
-                ctx.moveTo(x - roomSize * 1.5, y - roomSize * 1.5);
-                ctx.lineTo(x - roomSize * 1.5, y + roomSize * 1.5);
-                ctx.stroke();
-              }
-    
-              // Draw a small gap between each room
-              ctx.fillStyle = 'white';
-              ctx.fillRect(x - roomSize * 1.5, y - roomSize / 4, roomSize * 3, roomSize / 2);
-              ctx.fillRect(x - roomSize / 4, y - roomSize * 1.5, roomSize / 2, roomSize * 3);
-    
-              // Draw the room number in the center of the room
-              ctx.fillStyle = 'black';
-              ctx.font = `${roomSize / 2}px Arial`;
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.fillText(`${roomId + 1}`, x, y);
-            }
-            roomId++;
+          if (room.east !== undefined && !room.east) {
+            ctx.beginPath();
+            ctx.moveTo(x + roomSize, y);
+            ctx.lineTo(x + roomSize, y + roomSize);
+            ctx.stroke();
+          }
+          if (room.west !== undefined && !room.west) {
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x, y + roomSize);
+            ctx.stroke();
           }
         }
+        roomId++;
+      }
+    }
+
     
         // Upload the canvas to Imgur and send the image URL to the user
         const form = new FormData();
