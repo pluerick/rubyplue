@@ -364,15 +364,15 @@ if (command === 'map') {
     // Calculate the size of each room based on the number of rooms in the maze and a default screen size
     const defaultScreenWidth = 1600;
     const defaultScreenHeight = 900;
-    const roomSize = Math.min(40, Math.floor(Math.sqrt((defaultScreenWidth * defaultScreenHeight * 0.75) / numRooms)));
+    const roomSize = Math.min(50, Math.floor(Math.sqrt((defaultScreenWidth * defaultScreenHeight * 0.75) / numRooms)));
 
     // Determine the number of rows and columns needed to fit all the rooms on the map
     const numRows = Math.ceil(Math.sqrt(numRooms));
     const numCols = Math.ceil(numRooms / numRows);
 
     // Determine the size of the canvas based on the number of rows and columns in the maze
-    const canvasWidth = numCols * roomSize;
-    const canvasHeight = numRows * roomSize;
+    const canvasWidth = numCols * roomSize - roomSize / 2;
+    const canvasHeight = numRows * roomSize - roomSize / 2;
 
     // Create a new canvas element
     const Canvas = require('canvas');
@@ -390,8 +390,8 @@ if (command === 'map') {
         const room = rooms[`room-${row}-${col}`];
         if (room) {
           // Calculate the position of the room on the canvas
-          const x = col * roomSize;
-          const y = row * roomSize;
+          const x = col * roomSize - roomSize / 4;
+          const y = row * roomSize - roomSize / 4;
 
           // Draw the room outline
           ctx.strokeStyle = 'black';
@@ -435,6 +435,22 @@ if (command === 'map') {
         }
       }
     }
+
+    // Scale the image down and send it back to the user
+    const scaleFactor = Math.min(1, 2048 / canvas.width);
+    const scaledWidth = Math.floor(canvas.width * scaleFactor);
+    const scaledHeight = Math.floor(canvas.height * scaleFactor);
+    const scaledCanvas = Canvas.createCanvas(scaledWidth, scaledHeight);
+    const scaledCtx = scaledCanvas.getContext('2d');
+    scaledCtx.drawImage(canvas, 0, 0, canvas.width, canvas.height, 0, 0, scaledWidth, scaledHeight);
+    const attachment = new Discord.MessageAttachment(scaledCanvas.toBuffer(), 'maze_map.png');
+    message.channel.send(attachment);
+  }, error => {
+    console.error(error);
+    message.reply(`Sorry, there was an error accessing the database.`);
+  });
+}
+
 
     
         // Upload the canvas to Imgur and send the image URL to the user
