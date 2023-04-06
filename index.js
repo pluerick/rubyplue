@@ -447,6 +447,32 @@ if (command === 'map') {
 }
 
     
+// Handle the "generate" command
+if (command === 'generate') {
+  // Get the name of the Discord server where the command was generated
+  const serverName = message.guild.name;
+
+  // Set up a Firebase Realtime Database reference
+  const dbRef = admin.database().ref(`test1/${serverName}`);
+
+  // Check if the server's database table exists, and create it if it doesn't
+  dbRef.once("value", snapshot => {
+    if (!snapshot.exists()) {
+      // Create a new database table with 25 randomly generated rooms
+      const rooms = generateRooms();
+      dbRef.set({ rooms });
+
+      message.reply(`A new database table has been created for ${serverName}.`);
+    } else {
+      message.reply(`The database table for ${serverName} already exists.`);
+    }
+  }, error => {
+    console.error(error);
+    message.reply(`Sorry, there was an error accessing the database.`);
+  });
+}
+
+// Function to generate 25 randomized rooms
 function generateRooms() {
   const rooms = {};
 
