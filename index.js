@@ -374,6 +374,9 @@ if (command === 'map') {
     //const canvasWidth = numCols * roomSize - roomSize / 2;
     //const canvasHeight = numRows * roomSize - roomSize / 2;
 
+    const canvasWidth = 1600;
+    const canvasHeight = 900;
+
     // Create a new canvas element
     const Canvas = require('canvas');
     const canvas = Canvas.createCanvas(canvasWidth, canvasHeight);
