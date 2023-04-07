@@ -361,10 +361,10 @@ if (command === 'map') {
     // Determine the total number of rooms in the maze
     const numRooms = Object.keys(rooms).length;
 
-    // Calculate the size of each room based on the number of rooms in the maze and a default screen size
-    const defaultScreenWidth = 1600;
-    const defaultScreenHeight = 900;
-    const roomSize = Math.min(50, Math.floor(Math.sqrt((defaultScreenWidth * defaultScreenHeight * 0.75) / numRooms)));
+    // // Calculate the size of each room based on the number of rooms in the maze and a default screen size
+    // const defaultScreenWidth = 1600;
+    // const defaultScreenHeight = 900;
+    // const roomSize = Math.min(50, Math.floor(Math.sqrt((defaultScreenWidth * defaultScreenHeight * 0.75) / numRooms)));
 
     // Determine the number of rows and columns needed to fit all the rooms on the map
     const numRows = Math.ceil(Math.sqrt(numRooms));
