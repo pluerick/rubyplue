@@ -347,6 +347,7 @@ if (command === 'look') {
 }
 const axios = require('axios');
 const FormData = require('form-data');
+
 if (command === 'map') {
   const serverName = message.guild.name;
 
@@ -369,6 +370,7 @@ if (command === 'map') {
     const canvasHeight = rows * cellSize + (rows + 1) * margin;
 
     // Set up the canvas
+    const { createCanvas } = require('canvas');
     const canvas = createCanvas(canvasWidth, canvasHeight);
     const context = canvas.getContext('2d');
     context.fillStyle = '#fff';
@@ -378,15 +380,13 @@ if (command === 'map') {
     let x = margin, y = margin;
     Object.keys(rooms).forEach((roomId, index) => {
       const room = rooms[roomId];
-      const name = room.name;
-      const description = room.description;
+      const roomNumber = roomId.substring(5); // Extract the room number from the room ID
 
       context.fillStyle = '#ccc';
       context.fillRect(x, y, cellSize, cellSize);
 
       context.fillStyle = '#000';
-      context.fillText(name, x + margin / 2, y + margin / 2);
-      context.fillText(description, x + margin / 2, y + margin / 2 + 16);
+      context.fillText(roomNumber, x + cellSize / 2, y + cellSize / 2);
 
       x += cellSize + margin;
       if (x >= canvasWidth - margin) {
@@ -416,6 +416,7 @@ if (command === 'map') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
+
 
 
          
