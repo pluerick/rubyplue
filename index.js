@@ -355,6 +355,9 @@ const FormData = require('form-data');
 if (command === 'map') {
   const serverName = message.guild.name;
   const cellSize = 64; // Define cellSize here
+  const numRows = 5; // Define numRows here
+  const numCols = 5; // Define numCols here
+  
   
   // Set up a Firebase Realtime Database reference for the rooms
   const dbRef = admin.database().ref(`test1/${serverName}/rooms`);
