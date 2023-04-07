@@ -357,7 +357,7 @@ if (command === 'map') {
   const cellSize = 64; // Define cellSize here
   const numRows = 5; // Define numRows here
   const numCols = 5; // Define numCols here
-  
+
   
   // Set up a Firebase Realtime Database reference for the rooms
   const dbRef = admin.database().ref(`test1/${serverName}/rooms`);
@@ -383,7 +383,7 @@ if (command === 'map') {
     // Set up the connected rooms object
     const connectedRooms = {};
     Object.keys(rooms).forEach(roomId => {
-      connectedRooms[roomId] = {
+      connectedRooms[roomNumber] = {
         north: rooms[roomId]['north'] || null,
         east: rooms[roomId]['east'] || null,
         south: rooms[roomId]['south'] || null,
@@ -450,7 +450,7 @@ if (command === 'map') {
             console.error(error);
             message.reply(`Sorry, there was an error uploading the image.`);
           });
-          break;
+          break outerloop;
         }
       }
 
