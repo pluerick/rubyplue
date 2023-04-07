@@ -376,11 +376,37 @@ if (command === 'map') {
     context.fillStyle = '#fff';
     context.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    // Draw the rooms
+    // Arrange the rooms based on their connections to other rooms
+    let currentRoomId = Object.keys(rooms)[0];
+    let currentRoom = rooms[currentRoomId];
+    const roomMap = {};
     let x = margin, y = margin;
-    Object.keys(rooms).forEach((roomId, index) => {
+    for (let i = 0; i < numRooms; i++) {
+      const roomId = currentRoomId;
+      roomMap[roomId] = { x, y };
+      const connectedRooms = ['north', 'east', 'south', 'west'].map(dir => currentRoom[dir]).filter(roomId => roomId);
+      const nextRoomId = connectedRooms[Math.floor(Math.random() * connectedRooms.length)];
+      if (!nextRoomId) {
+        break;
+      }
+      const nextRoom = rooms[nextRoomId];
+      if (!roomMap[nextRoomId]) {
+        if (x + cellSize + margin > canvasWidth - margin) {
+          x = margin;
+          y += cellSize + margin;
+        } else {
+          x += cellSize + margin;
+        }
+      }
+      currentRoomId = nextRoomId;
+      currentRoom = nextRoom;
+    }
+
+    // Draw the rooms
+    Object.keys(roomMap).forEach(roomId => {
       const room = rooms[roomId];
       const roomNumber = roomId.substring(5); // Extract the room number from the room ID
+      const { x, y } = roomMap[roomId];
 
       context.fillStyle = '#ccc';
       context.fillRect(x, y, cellSize, cellSize);
@@ -388,14 +414,35 @@ if (command === 'map') {
       context.fillStyle = '#000';
       context.fillText(roomNumber, x + cellSize / 2, y + cellSize / 2);
 
-      x += cellSize + margin;
-      if (x >= canvasWidth - margin) {
-        x = margin;
-        y += cellSize + margin;
-      }
+      // Draw the connections to other rooms
+      ['north', 'east', 'south', 'west'].forEach(dir => {
+        const connectedRoomId = room[dir];
+        if (!connectedRoomId) {
+          return;
+        }
+        const connectedRoomPos = roomMap[connectedRoomId];
+        const connectedRoomX = connectedRoomPos.x + cellSize / 2;
+        const connectedRoomY = connectedRoomPos.y + cellSize / 2;
+        context.beginPath();
+        context.moveTo(x + cellSize / 2, y + cellSize / 2);
+        if (dir === 'north') {
+          context.lineTo(connectedRoomX, connectedRoomY - cellSize / 2);
+        } else if (dir === 'east') {
+          context.lineTo(connectedRoomX - cellSize / 2, connectedRoomY);
+
+
+        } else if (dir === 'south') {
+          context.lineTo(connectedRoomX, connectedRoomY + cellSize / 2);
+        } else if (dir === 'west') {
+          context.lineTo(connectedRoomX + cellSize / 2, connectedRoomY);
+        }
+        context.stroke();
+      });
     });
 
     // Upload the canvas to Imgur and send the image URL to the user
+    const { FormData } = require('form-data');
+    const axios = require('axios');
     const form = new FormData();
     form.append('image', canvas.toBuffer());
     axios.post('https://api.imgur.com/3/image', form, {
@@ -416,7 +463,6 @@ if (command === 'map') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
-
 
 
          
