@@ -383,7 +383,7 @@ if (command === 'map') {
     // Set up the connected rooms object
     const connectedRooms = {};
     Object.keys(rooms).forEach(roomId => {
-      connectedRooms[roomNumber] = {
+      connectedRooms[roomId] = {
         north: rooms[roomId]['north'] || null,
         east: rooms[roomId]['east'] || null,
         south: rooms[roomId]['south'] || null,
