@@ -346,8 +346,6 @@ if (command === 'look') {
 }
 const axios = require('axios');
 const FormData = require('form-data');
-
-// Handle the "map" command
 if (command === 'map') {
   const serverName = message.guild.name;
 
@@ -361,84 +359,40 @@ if (command === 'map') {
     // Determine the total number of rooms in the maze
     const numRooms = Object.keys(rooms).length;
 
-    // // Calculate the size of each room based on the number of rooms in the maze and a default screen size
-    // const defaultScreenWidth = 1600;
-    // const defaultScreenHeight = 900;
-     const roomSize = Math.min(50, Math.floor(Math.sqrt((defaultScreenWidth * defaultScreenHeight * 0.75) / numRooms)));
+    // Calculate the dimensions of the canvas based on the number of rooms
+    const rows = Math.ceil(Math.sqrt(numRooms));
+    const cols = Math.ceil(numRooms / rows);
+    const cellSize = 32;
+    const margin = 32;
+    const canvasWidth = cols * cellSize + (cols + 1) * margin;
+    const canvasHeight = rows * cellSize + (rows + 1) * margin;
 
-    // Determine the number of rows and columns needed to fit all the rooms on the map
-    const numRows = Math.ceil(Math.sqrt(numRooms));
-    const numCols = Math.ceil(numRooms / numRows);
+    // Set up the canvas
+    const canvas = createCanvas(canvasWidth, canvasHeight);
+    const context = canvas.getContext('2d');
+    context.fillStyle = '#fff';
+    context.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    // Determine the size of the canvas based on the number of rows and columns in the maze
-    //const canvasWidth = numCols * roomSize - roomSize / 2;
-    //const canvasHeight = numRows * roomSize - roomSize / 2;
+    // Draw the rooms
+    let x = margin, y = margin;
+    Object.keys(rooms).forEach((roomId, index) => {
+      const room = rooms[roomId];
+      const name = room.name;
+      const description = room.description;
 
-    const canvasWidth = 1600;
-    const canvasHeight = 900;
+      context.fillStyle = '#ccc';
+      context.fillRect(x, y, cellSize, cellSize);
 
-    // Create a new canvas element
-    const Canvas = require('canvas');
-    const canvas = Canvas.createCanvas(canvasWidth, canvasHeight);
-    const ctx = canvas.getContext('2d');
+      context.fillStyle = '#000';
+      context.fillText(name, x + margin / 2, y + margin / 2);
+      context.fillText(description, x + margin / 2, y + margin / 2 + 16);
 
-    // Fill the canvas with a white background
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-
-    // Draw the rooms and connections on the canvas
-    let roomId = 0;
-    for (let row = 0; row < numRows; row++) {
-      for (let col = 0; col < numCols; col++) {
-        const room = rooms[`room-${row}-${col}`];
-        if (room) {
-          // Calculate the position of the room on the canvas
-          const x = col * roomSize - roomSize / 4;
-          const y = row * roomSize - roomSize / 4;
-
-          // Draw the room outline
-          ctx.strokeStyle = 'black';
-          ctx.lineWidth = 2;
-          ctx.strokeRect(x, y, roomSize, roomSize);
-
-          // Draw the room label in the center of the room
-          ctx.fillStyle = 'black';
-          ctx.font = `${roomSize / 2}px Arial`;
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(`${row}-${col}`, x + roomSize / 2, y + roomSize / 2);
-
-          // Draw the openings between rooms
-          if (room.north !== undefined && !room.north) {
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x + roomSize, y);
-            ctx.stroke();
-          }
-          if (room.south !== undefined && !room.south) {
-            ctx.beginPath();
-            ctx.moveTo(x, y + roomSize);
-            ctx.lineTo(x + roomSize, y + roomSize);
-            ctx.stroke();
-          }
-          if (room.east !== undefined && !room.east) {
-            ctx.beginPath();
-            ctx.moveTo(x + roomSize, y);
-            ctx.lineTo(x + roomSize, y + roomSize);
-            ctx.stroke();
-          }
-          if (room.west !== undefined && !room.west) {
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-            ctx.lineTo(x, y + roomSize);
-            ctx.stroke();
-          }
-
-          roomId++;
-        }
+      x += cellSize + margin;
+      if (x >= canvasWidth - margin) {
+        x = margin;
+        y += cellSize + margin;
       }
-    }
-
+    });
 
     // Upload the canvas to Imgur and send the image URL to the user
     const form = new FormData();
@@ -461,6 +415,7 @@ if (command === 'map') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
+
 
          
 
