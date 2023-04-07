@@ -348,6 +348,10 @@ if (command === 'look') {
 const axios = require('axios');
 const FormData = require('form-data');
 
+
+//MAP COMMAND GO HERE//////////////////////////
+
+// Handle the "map" command
 if (command === 'map') {
   const serverName = message.guild.name;
 
@@ -361,111 +365,96 @@ if (command === 'map') {
     // Determine the total number of rooms in the maze
     const numRooms = Object.keys(rooms).length;
 
-    // Calculate the dimensions of the canvas based on the number of rooms
-    const rows = Math.ceil(Math.sqrt(numRooms));
-    const cols = Math.ceil(numRooms / rows);
-    const cellSize = 32;
-    const margin = 32;
-    const canvasWidth = cols * cellSize + (cols + 1) * margin;
-    const canvasHeight = rows * cellSize + (rows + 1) * margin;
-
     // Set up the canvas
-    const { createCanvas } = require('canvas');
+    const canvasWidth = cellSize * numCols;
+    const canvasHeight = cellSize * numRows;
     const canvas = createCanvas(canvasWidth, canvasHeight);
     const context = canvas.getContext('2d');
-    context.fillStyle = '#fff';
-    context.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    // Arrange the rooms based on their connections to other rooms
-    let currentRoomId = Object.keys(rooms)[0];
-    let currentRoom = rooms[currentRoomId];
+    // Set up the room map and starting room
     const roomMap = {};
-    let x = margin, y = margin;
-    for (let i = 0; i < numRooms; i++) {
-      const roomId = currentRoomId;
-      roomMap[roomId] = { x, y };
-      const connectedRooms = ['north', 'east', 'south', 'west'].map(dir => currentRoom[dir]).filter(roomId => roomId);
-      const nextRoomId = connectedRooms[Math.floor(Math.random() * connectedRooms.length)];
-      if (!nextRoomId) {
-        break;
+    let roomId = Object.keys(rooms)[0];
+    roomMap[roomId] = { x: 0, y: 0 };
+
+    // Set up the connected rooms object
+    const connectedRooms = {};
+    Object.keys(rooms).forEach(roomId => {
+      connectedRooms[roomId] = {
+        north: rooms[roomId]['north'] || null,
+        east: rooms[roomId]['east'] || null,
+        south: rooms[roomId]['south'] || null,
+        west: rooms[roomId]['west'] || null
+      };
+    });
+
+    // Generate the room positions on the map
+    let numRoomsProcessed = 0;
+    let currentX = 0;
+    let currentY = 0;
+    while (numRoomsProcessed < numRooms) {
+      roomMap[roomId] = { x: currentX, y: currentY };
+      numRoomsProcessed++;
+
+      // Move to the next position on the map
+      if (currentX < (numCols - 1) * cellSize) {
+        currentX += cellSize;
+      } else {
+        currentX = 0;
+        currentY += cellSize;
       }
-      const nextRoom = rooms[nextRoomId];
-      if (!roomMap[nextRoomId]) {
-        if (x + cellSize + margin > canvasWidth - margin) {
-          x = margin;
-          y += cellSize + margin;
-        } else {
-          x += cellSize + margin;
+
+      // Choose a random connected room to visit next
+      const connectedRoomIds = Object.keys(connectedRooms[roomId]);
+      connectedRoomIds.forEach(connectedRoomId => {
+        if (!roomMap[connectedRoomId]) {
+          switch (connectedRooms[roomId][connectedRoomId]) {
+            case connectedRooms[roomId]['north']:
+              roomMap[connectedRoomId] = { x: currentX, y: currentY - cellSize };
+              break;
+            case connectedRooms[roomId]['east']:
+              roomMap[connectedRoomId] = { x: currentX + cellSize, y: currentY };
+              break;
+            case connectedRooms[roomId]['south']:
+              roomMap[connectedRoomId] = { x: currentX, y: currentY + cellSize };
+              break;
+            case connectedRooms[roomId]['west']:
+              roomMap[connectedRoomId] = { x: currentX - cellSize, y: currentY };
+              break;
+          }
+          numRoomsProcessed++;
         }
-      }
-      currentRoomId = nextRoomId;
-      currentRoom = nextRoom;
-    }
-
-    // Draw the rooms
-    Object.keys(roomMap).forEach(roomId => {
-      const room = rooms[roomId];
-      const roomNumber = roomId.substring(5); // Extract the room number from the room ID
-      const { x, y } = roomMap[roomId];
-
-      context.fillStyle = '#ccc';
-      context.fillRect(x, y, cellSize, cellSize);
-
-      context.fillStyle = '#000';
-      context.fillText(roomNumber, x + cellSize / 2, y + cellSize / 2);
-
-      // Draw the connections to other rooms
-      ['north', 'east', 'south', 'west'].forEach(dir => {
-        const connectedRoomId = room[dir];
-        if (!connectedRoomId) {
-          return;
-        }
-        const connectedRoomPos = roomMap[connectedRoomId];
-        const connectedRoomX = connectedRoomPos.x + cellSize / 2;
-        const connectedRoomY = connectedRoomPos.y + cellSize / 2;
-        context.beginPath();
-        context.moveTo(x + cellSize / 2, y + cellSize / 2);
-        if (dir === 'north') {
-          context.lineTo(connectedRoomX, connectedRoomY - cellSize / 2);
-        } else if (dir === 'east') {
-          context.lineTo(connectedRoomX - cellSize / 2, connectedRoomY);
-
-
-        } else if (dir === 'south') {
-          context.lineTo(connectedRoomX, connectedRoomY + cellSize / 2);
-        } else if (dir === 'west') {
-          context.lineTo(connectedRoomX + cellSize / 2, connectedRoomY);
-        }
-        context.stroke();
       });
-    });
 
-    // Upload the canvas to Imgur and send the image URL to the user
-    const { FormData } = require('form-data');
-    const axios = require('axios');
-    const form = new FormData();
-    form.append('image', canvas.toBuffer());
-    axios.post('https://api.imgur.com/3/image', form, {
-      headers: {
-        'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`,
-        ...form.getHeaders()
+        // Choose the next connected room to visit
+        if (numRoomsProcessed < numRooms) {
+          const connectedRoomIds = Object.keys(connectedRooms[roomId]);
+          roomId = connectedRoomIds[Math.floor(Math.random() * connectedRoomIds.length)];
+          numRoomsProcessed++;
+        } else {
+          // Upload the canvas to Imgur and send the image URL to the user
+          const form = new FormData();
+          form.append('image', canvas.toBuffer());
+          axios.post('https://api.imgur.com/3/image', form, {
+            headers: {
+              'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`,
+              ...form.getHeaders()
+            }
+          }).then(response => {
+            const imageUrl = response.data.data.link;
+            message.reply(`Here's the maze map: ${imageUrl}`);
+          }).catch(error => {
+            console.error(error);
+            message.reply(`Sorry, there was an error uploading the image.`);
+          });
+          break;
+        }
       }
-    }).then(response => {
-      const imageUrl = response.data.data.link;
-      message.reply(`Here's the maze map: ${imageUrl}`);
-    }).catch(error => {
+
+    }, error => {
       console.error(error);
-      message.reply(`Sorry, there was an error uploading the image.`);
+      message.reply(`Sorry, there was an error accessing the database.`);
     });
-
-  }, error => {
-    console.error(error);
-    message.reply(`Sorry, there was an error accessing the database.`);
-  });
-}
-
-
-         
+  }
 
 
 
