@@ -450,7 +450,7 @@ if (command === 'map') {
             console.error(error);
             message.reply(`Sorry, there was an error uploading the image.`);
           });
-          break outerloop;
+          break;
         }
       }
 
