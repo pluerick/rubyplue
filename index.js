@@ -5,7 +5,7 @@ const admin = require('firebase-admin');
 const FormData = require('form-data');
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID;
 const canvas = require('canvas');
-
+const { createCanvas, loadImage } = require('canvas');
 
 // Define the cardinal directions
 const directions = ["north", "south", "east", "west"];
@@ -291,12 +291,11 @@ if (command === 'east') {
 }
 
 
-// Handle the "dragon" command
+
+
 if (command === 'dragon') {
-  // Set the canvas size and context
-  const canvas = document.createElement('canvas');
-  canvas.width = 400;
-  canvas.height = 300;
+  // Create a new canvas and set the context
+  const canvas = createCanvas(400, 300);
   const ctx = canvas.getContext('2d');
   
   // Draw the dragon on the canvas
@@ -309,31 +308,34 @@ if (command === 'dragon') {
   ctx.closePath(); // Close the path
   ctx.fill(); // Fill the path with the fill color
 
-  // Upload the canvas to imgur
-  const dataURI = canvas.toDataURL('image/png');
-  const formData = new FormData();
-  formData.append('image', dataURI.split(',')[1]);
-  fetch('https://api.imgur.com/3/image', {
-    method: 'POST',
-    headers: {
-      Authorization: 'Client-ID {{client_id}}',
-    },
-    body: formData,
-  })
-    .then(response => response.json())
-    .then(data => {
-      // Reply to the user with the imgur link to the dragon image
-      const dragonUrl = data.data.link;
-      const message = `Here's a dragon for you: ${dragonUrl}`;
-      chatClient.say(channel, message);
+  // Save the canvas to a file
+  const out = fs.createWriteStream('dragon.png');
+  const stream = canvas.createPNGStream();
+  stream.pipe(out);
+  out.on('finish', () => {
+    // Upload the dragon image to imgur
+    const data = fs.readFileSync('dragon.png');
+    fetch('https://api.imgur.com/3/image', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Client-ID {{IMGUR_CLIENT_ID}}',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: data,
     })
-    .catch(error => {
-      console.error(error);
-      chatClient.say(channel, `Sorry, there was an error uploading the dragon.`);
-    });
+      .then(response => response.json())
+      .then(data => {
+        // Reply to the user with the imgur link to the dragon image
+        const dragonUrl = data.data.link;
+        const message = `Here's a dragon for you: ${dragonUrl}`;
+        chatClient.say(channel, message);
+      })
+      .catch(error => {
+        console.error(error);
+        chatClient.say(channel, `Sorry, there was an error uploading the dragon.`);
+      });
+  });
 }
-
-
 
 // Handle the "test" command
 if (command === 'test') {
