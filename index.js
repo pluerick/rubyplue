@@ -350,7 +350,6 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 if (command === 'map') {
-  const Imgur = require('imgur');
   const Canvas = require('canvas');
   const { registerFont } = require('canvas');
   
