@@ -333,7 +333,7 @@ if (command === 'dragon') {
       })
       .catch(error => {
         console.error(error);
-        
+        const message = `Here's a dragon for you: ${dragonUrl}`;
       });
   });
 }
