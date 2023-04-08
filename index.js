@@ -350,12 +350,78 @@ const FormData = require('form-data');
 
 
 //MAP COMMAND GO HERE//////////////////////////
-
 // Handle the "map" command
 if (command === 'map') {
-  
+  const rooms = {
+    // Add room objects from JSON data here
+  };
 
+  const playerPosition = {
+    // Add player's current room ID here
+  };
+
+  // Initialize canvas
+  const canvas = Canvas.createCanvas(300, 300);
+  const ctx = canvas.getContext('2d');
+
+  // Draw the map
+  for (const roomId in rooms) {
+    const room = rooms[roomId];
+
+    // Calculate the x and y coordinates for the room
+    const [x, y] = roomId.split('-').map(Number);
+    const xPos = 50 + x * 50;
+    const yPos = 50 + y * 50;
+
+    // Draw the room
+    ctx.fillStyle = playerPosition === roomId ? 'red' : 'blue';
+    ctx.fillRect(xPos, yPos, 20, 20);
+
+    // Draw connections between rooms
+    const directions = ['north', 'south', 'east', 'west'];
+    for (const direction of directions) {
+      if (room[direction]) {
+        const [nx, ny] = room[direction].split('-').map(Number);
+        const nxPos = 50 + nx * 50;
+        const nyPos = 50 + ny * 50;
+        ctx.beginPath();
+        ctx.moveTo(xPos + 10, yPos + 10);
+        ctx.lineTo(nxPos + 10, nyPos + 10);
+        ctx.stroke();
+      }
+    }
+  }
+
+  // Save the map to a temporary file
+  const tempFilePath = './tempMap.png';
+  const out = fs.createWriteStream(tempFilePath);
+  const stream = canvas.createPNGStream();
+  stream.pipe(out);
+  out.on('finish', async () => {
+    // Upload the map to Imgur
+    const imgurHeaders = {
+      'Authorization': `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
+      'Content-Type': 'multipart/form-data',
+    };
+
+    const imageBuffer = fs.readFileSync(tempFilePath);
+    const imgurResponse = await axios.post('https://api.imgur.com/3/image', imageBuffer, {
+      headers: imgurHeaders,
+    });
+
+    // Send the Imgur link to the user
+    const imageUrl = imgurResponse.data.data.link;
+    const mapEmbed = new Discord.MessageEmbed()
+      .setTitle('Map')
+      .setImage(imageUrl);
+
+    message.channel.send(mapEmbed);
+
+    // Remove the temporary file
+    fs.unlinkSync(tempFilePath);
+  });
 }
+
 
 
 
