@@ -348,79 +348,80 @@ if (command === 'look') {
 const axios = require('axios');
 const FormData = require('form-data');
 
-
-//MAP COMMAND GO HERE//////////////////////////
-// Handle the "map" command
 if (command === 'map') {
-  const rooms = {
-    // Add room objects from JSON data here
-  };
-
-  const playerPosition = {
-    // Add player's current room ID here
-  };
-
-  // Initialize canvas
-  const canvas = Canvas.createCanvas(300, 300);
-  const ctx = canvas.getContext('2d');
-
-  // Draw the map
-  for (const roomId in rooms) {
-    const room = rooms[roomId];
-
-    // Calculate the x and y coordinates for the room
-    const [x, y] = roomId.split('-').map(Number);
-    const xPos = 50 + x * 50;
-    const yPos = 50 + y * 50;
-
-    // Draw the room
-    ctx.fillStyle = playerPosition === roomId ? 'red' : 'blue';
-    ctx.fillRect(xPos, yPos, 20, 20);
-
-    // Draw connections between rooms
-    const directions = ['north', 'south', 'east', 'west'];
-    for (const direction of directions) {
-      if (room[direction]) {
-        const [nx, ny] = room[direction].split('-').map(Number);
-        const nxPos = 50 + nx * 50;
-        const nyPos = 50 + ny * 50;
+  const Imgur = require('imgur');
+  const Canvas = require('canvas');
+  const { registerFont } = require('canvas');
+  
+  // Set up a Firebase Realtime Database reference to the rooms table
+  const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+  
+  // Fetch the rooms data from the database
+  roomsRef.once('value', (snapshot) => {
+    const rooms = snapshot.val();
+  
+    // Determine the grid size based on the number of rooms
+    const gridSize = Math.ceil(Math.sqrt(Object.keys(rooms).length));
+  
+    // Define the size of each room in the grid
+    const roomSize = 50;
+  
+    // Define the margin between each room in the grid
+    const roomMargin = 10;
+  
+    // Set up the canvas
+    const canvas = Canvas.createCanvas(gridSize * (roomSize + roomMargin) + roomMargin, gridSize * (roomSize + roomMargin) + roomMargin);
+    const ctx = canvas.getContext('2d');
+  
+    // Register the font to use for room names
+    registerFont('./font.ttf', { family: 'Arial' });
+  
+    // Loop through the rooms and their exits to determine their relative positions in the grid
+    Object.keys(rooms).forEach((roomId, index) => {
+      const room = rooms[roomId];
+      const row = Math.floor(index / gridSize);
+      const col = index % gridSize;
+      const x = col * (roomSize + roomMargin) + roomMargin;
+      const y = row * (roomSize + roomMargin) + roomMargin;
+      
+      // Draw the room on the canvas
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(x, y, roomSize, roomSize);
+      ctx.fillStyle = '#000000';
+      ctx.font = '20px Arial';
+      ctx.fillText(room.name, x + roomSize / 2 - ctx.measureText(room.name).width / 2, y + roomSize / 2 + 10);
+      
+      // Draw the exits as lines connecting the rooms
+      room.exits.forEach((exit) => {
+        const targetRoom = rooms[exit.targetRoom];
+        const targetRow = Math.floor(exit.targetRoom / gridSize);
+        const targetCol = exit.targetRoom % gridSize;
+        const targetX = targetCol * (roomSize + roomMargin) + roomMargin + roomSize / 2;
+        const targetY = targetRow * (roomSize + roomMargin) + roomMargin + roomSize / 2;
+        
         ctx.beginPath();
-        ctx.moveTo(xPos + 10, yPos + 10);
-        ctx.lineTo(nxPos + 10, nyPos + 10);
+        ctx.moveTo(x + roomSize / 2, y + roomSize / 2);
+        ctx.lineTo(targetX, targetY);
         ctx.stroke();
-      }
-    }
-  }
-
-  // Save the map to a temporary file
-  const tempFilePath = './tempMap.png';
-  const out = fs.createWriteStream(tempFilePath);
-  const stream = canvas.createPNGStream();
-  stream.pipe(out);
-  out.on('finish', async () => {
-    // Upload the map to Imgur
-    const imgurHeaders = {
-      'Authorization': `Client-ID ${process.env.IMGUR_CLIENT_ID}`,
-      'Content-Type': 'multipart/form-data',
-    };
-
-    const imageBuffer = fs.readFileSync(tempFilePath);
-    const imgurResponse = await axios.post('https://api.imgur.com/3/image', imageBuffer, {
-      headers: imgurHeaders,
+      });
     });
-
-    // Send the Imgur link to the user
-    const imageUrl = imgurResponse.data.data.link;
-    const mapEmbed = new Discord.MessageEmbed()
-      .setTitle('Map')
-      .setImage(imageUrl);
-
-    message.channel.send(mapEmbed);
-
-    // Remove the temporary file
-    fs.unlinkSync(tempFilePath);
+    
+    // Convert the canvas to a PNG image
+    const buffer = canvas.toBuffer();
+    
+    // Upload the image to Imgur using their API
+    Imgur.uploadBase64(buffer.toString('base64'))
+      .then((response) => {
+        // Send the Imgur link to the user
+        message.channel.send(`Here's the map: ${response.data.link}`);
+      })
+      .catch((err) => {
+        console.log(err);
+        message.channel.send('An error occurred while uploading the map image.');
+      });
   });
 }
+
 
 
 
