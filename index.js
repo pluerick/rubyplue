@@ -350,74 +350,61 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 
-// Handle the "map" command
 if (command === 'map') {
+  const serverName = message.guild.name;
+
   // Set up a Firebase Realtime Database reference to the rooms table
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
 
-  // Get all the rooms data from the database
-  roomsRef.once('value', snapshot => {
-    const roomsData = snapshot.val();
+  // Get all rooms in the database
+  roomsRef.once('value', async (snapshot) => {
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, there are no rooms in the database.`);
+    } else {
+      // Determine the size of the grid
+      const numRows = 5;
+      const numCols = 3;
 
-    // Define the dimensions of the map grid
-    const numRows = 5;
-    const numCols = 3;
-
-    // Define the size of each room square in pixels
-    const squareSize = 30;
-
-    // Create a new canvas object to draw the map on
-    const canvas = createCanvas(numCols * squareSize, numRows * squareSize);
-    const context = canvas.getContext('2d');
-
-    // Draw each room square on the canvas
-    for (let row = 0; row < numRows; row++) {
-      for (let col = 0; col < numCols; col++) {
-        const roomId = `room-${row}-${col}`;
-        const roomData = roomsData[roomId] || {};
-
-        // Draw the room square
-        context.beginPath();
-        context.rect(col * squareSize, row * squareSize, squareSize, squareSize);
-        context.fillStyle = roomData.name ? '#FFFFFF' : '#CCCCCC';
-        context.fill();
-        context.lineWidth = 1;
-        context.strokeStyle = '#000000';
-        context.stroke();
-
-        // Draw the room label
-        context.fillStyle = '#000000';
-        context.font = '14px Arial';
-        context.textAlign = 'center';
-        context.textBaseline = 'middle';
-        context.fillText(`${row}-${col}`, (col + 0.5) * squareSize, (row + 0.5) * squareSize);
+      // Create a two-dimensional array to store the rooms
+      const grid = new Array(numRows);
+      for (let i = 0; i < numRows; i++) {
+        grid[i] = new Array(numCols).fill(null);
       }
-    }
 
-    // Convert the canvas to a PNG image and upload it to Imgur
-    const form = new FormData();
-    form.append('image', canvas.toBuffer(), { filename: 'map.png' });
-    axios.post('https://api.imgur.com/3/image', form, {
-      headers: {
-        'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`,
-        ...form.getHeaders(),
-      },
-    })
-      .then(response => {
-        const imageUrl = response.data.data.link;
-        message.channel.send(`Here's the map of the game: ${imageUrl}`);
-      })
-      .catch(error => {
-        console.error(error);
-        message.reply('Sorry, there was an error uploading the map image to Imgur.');
+      // Populate the grid with the rooms
+      snapshot.forEach((roomSnapshot) => {
+        const room = roomSnapshot.val();
+        const [row, col] = getRoomPosition(room.name);
+        grid[row][col] = room.name;
       });
+
+      // Create the message with the grid
+      let replyMessage = '';
+      for (let row = 0; row < numRows; row++) {
+        for (let col = 0; col < numCols; col++) {
+          const roomName = grid[row][col];
+          if (roomName) {
+            replyMessage += `|${roomName}|`;
+          } else {
+            replyMessage += '|   |';
+          }
+        }
+        replyMessage += '\n';
+      }
+
+      // Send the message to the player
+      message.reply(replyMessage);
+    }
   }, error => {
     console.error(error);
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
 
-
+function getRoomPosition(roomName) {
+  const match = roomName.match(/room-(\d+)-(\d+)/);
+  return [parseInt(match[1]), parseInt(match[2])];
+}
 
     
 // Handle the "generate" command
