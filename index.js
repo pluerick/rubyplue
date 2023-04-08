@@ -6,6 +6,7 @@ const FormData = require('form-data');
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID;
 const canvas = require('canvas');
 const { createCanvas, loadImage } = require('canvas');
+const fs = require('fs');
 
 // Define the cardinal directions
 const directions = ["north", "south", "east", "west"];
