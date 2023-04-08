@@ -4,7 +4,7 @@ const client = new Discord.Client();
 const admin = require('firebase-admin');
 const FormData = require('form-data');
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID;
-const { createCanvas } = require('canvas');
+const canvas = require('canvas');
 
 
 // Define the cardinal directions
