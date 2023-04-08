@@ -30,7 +30,6 @@
     "axios": "^0.24.0",
     "firebase-admin": "^10.0.0",
     "canvas": "^2.8.0",
-    "form-data": "^3.0.0",
-    "imgur": "^0.9.8"
+    "form-data": "^3.0.0"
   }
 }
