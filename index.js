@@ -350,6 +350,92 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 
+// Handle the "map" command
+if (command === 'map') {
+  // Get the player's Discord name
+  const playerName = message.author.username;
+  const serverName = message.guild.name;
+
+  // Set up a Firebase Realtime Database reference to the players table
+  const playersRef = admin.database().ref(`test1/${serverName}/players`);
+
+  // Check if the player exists in the database
+  playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
+    } else {
+      // Get the player's current room ID
+      const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
+
+      // Set up a Firebase Realtime Database reference to the rooms table
+      const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
+
+      // Get the current room's data
+      roomsRef.child(currentRoomID).once('value', async (snapshot) => {
+        if (!snapshot.exists()) {
+          message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
+        } else {
+          // Get the current room's data
+          const currentRoom = snapshot.val();
+
+          // Create a canvas for drawing the map
+          const canvas = createCanvas(400, 400);
+          const ctx = canvas.getContext('2d');
+
+          // Define the dimensions of the grid
+          const numRows = 5;
+          const numCols = 3;
+
+          // Define the width and height of each cell in the grid
+          const cellWidth = canvas.width / numCols;
+          const cellHeight = canvas.height / numRows;
+
+          // Draw the grid
+          for (let row = 0; row < numRows; row++) {
+            for (let col = 0; col < numCols; col++) {
+              // Calculate the x and y coordinates of the top-left corner of the cell
+              const x = col * cellWidth;
+              const y = row * cellHeight;
+
+              // Get the room ID for the current cell
+              const roomId = `room-${row}-${col}`;
+
+              // Check if the room exists in the database
+              if (currentRoom[roomId]) {
+                // The room exists in the database, fill the cell with green
+                ctx.fillStyle = '#00ff00';
+              } else {
+                // The room does not exist in the database, fill the cell with red
+                ctx.fillStyle = '#ff0000';
+              }
+
+              // Draw the cell
+              ctx.fillRect(x, y, cellWidth, cellHeight);
+
+              // Draw the room ID in the cell
+              ctx.fillStyle = '#ffffff';
+              ctx.textAlign = 'center';
+              ctx.textBaseline = 'middle';
+              ctx.font = '20px Arial';
+              ctx.fillText(roomId, x + cellWidth / 2, y + cellHeight / 2);
+            }
+          }
+
+          // Convert the canvas to a buffer
+          const buffer = canvas.toBuffer();
+
+          // Send the buffer as a message attachment
+          message.reply({
+            files: [{
+              attachment: buffer,
+              name: 'map.png'
+            }]
+          });
+        }
+      });
+    }
+  });
+}
 
 
 
