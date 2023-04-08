@@ -350,80 +350,70 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 
-
+// Handle the "map" command
 if (command === 'map') {
-  // Get the player's Discord name
-  const playerName = message.author.username;
-  const serverName = message.guild.name;
+  // Set up a Firebase Realtime Database reference to the rooms table
+  const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
 
-  // Set up a Firebase Realtime Database reference to the players table
-  const playersRef = admin.database().ref(`test1/${serverName}/players`);
+  // Get all the rooms data from the database
+  roomsRef.once('value', snapshot => {
+    const roomsData = snapshot.val();
 
-  // Check if the player exists in the database
-  playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
-    if (!snapshot.exists()) {
-      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
-    } else {
-      // Get the player's current room ID
-      const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
+    // Define the dimensions of the map grid
+    const numRows = 5;
+    const numCols = 3;
 
-      // Set up a Firebase Realtime Database reference to the rooms table
-      const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+    // Define the size of each room square in pixels
+    const squareSize = 30;
 
-      // Get the current room's data
-      roomsRef.child(currentRoomID).once('value', async (snapshot) => {
-        if (!snapshot.exists()) {
-          message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
-        } else {
-          // Get the current room's data
-          const currentRoom = snapshot.val();
+    // Create a new canvas object to draw the map on
+    const canvas = createCanvas(numCols * squareSize, numRows * squareSize);
+    const context = canvas.getContext('2d');
 
-          // Create a 2D array to hold the room names
-          const map = Array(5).fill().map(() => Array(3).fill(''));
+    // Draw each room square on the canvas
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < numCols; col++) {
+        const roomId = `room-${row}-${col}`;
+        const roomData = roomsData[roomId] || {};
 
-          // Set the current room name in the center of the map
-          map[2][1] = currentRoom.name;
+        // Draw the room square
+        context.beginPath();
+        context.rect(col * squareSize, row * squareSize, squareSize, squareSize);
+        context.fillStyle = roomData.name ? '#FFFFFF' : '#CCCCCC';
+        context.fill();
+        context.lineWidth = 1;
+        context.strokeStyle = '#000000';
+        context.stroke();
 
-          // Set the neighbor room names in the map
-          if (currentRoom.north) {
-            const northRoomID = currentRoom.north;
-            const northRoomName = (await roomsRef.child(northRoomID).child('name').once('value')).val();
-            map[1][1] = northRoomName;
-          }
-          if (currentRoom.south) {
-            const southRoomID = currentRoom.south;
-            const southRoomName = (await roomsRef.child(southRoomID).child('name').once('value')).val();
-            map[3][1] = southRoomName;
-          }
-          if (currentRoom.east) {
-            const eastRoomID = currentRoom.east;
-            const eastRoomName = (await roomsRef.child(eastRoomID).child('name').once('value')).val();
-            map[2][2] = eastRoomName;
-          }
-          if (currentRoom.west) {
-            const westRoomID = currentRoom.west;
-            const westRoomName = (await roomsRef.child(westRoomID).child('name').once('value')).val();
-            map[2][0] = westRoomName;
-          }
-
-          // Construct the map message
-          let replyMessage = '```';
-          for (let i = 0; i < map.length; i++) {
-            for (let j = 0; j < map[i].length; j++) {
-              replyMessage += map[i][j] ? map[i][j] : ' ';
-              if (j < map[i].length - 1) {
-                replyMessage += '  ';
-              }
-            }
-            replyMessage += '\n';
-          }
-          replyMessage += '```';
-
-          // Send the map message to the player
-          message.reply(replyMessage);
-        }
-      });
+        // Draw the room label
+        context.fillStyle = '#000000';
+        context.font = '14px Arial';
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+        context.fillText(`${row}-${col}`, (col + 0.5) * squareSize, (row + 0.5) * squareSize);
+      }
     }
+
+    // Convert the canvas to a PNG image and upload it to Imgur
+    const form = new FormData();
+    form.append('image', canvas.toBuffer(), { filename: 'map.png' });
+    axios.post('https://api.imgur.com/3/image', form, {
+      headers: {
+        'Authorization': `Client-ID ${IMGUR_CLIENT_ID}`,
+        ...form.getHeaders(),
+      },
+    })
+      .then(response => {
+        const imageUrl = response.data.data.link;
+        message.channel.send(`Here's the map of the game: ${imageUrl}`);
+      })
+      .catch(error => {
+        console.error(error);
+        message.reply('Sorry, there was an error uploading the map image to Imgur.');
+      });
+  }, error => {
+    console.error(error);
+    message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
 
