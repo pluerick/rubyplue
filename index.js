@@ -408,7 +408,6 @@ function getRoomPosition(roomName) {
   const match = roomName.match(/room-(\d+)-(\d+)/);
   return [parseInt(match[1]), parseInt(match[2])];
 }
-
     
 // Handle the "generate" command
 if (command === 'generate') {
@@ -434,6 +433,45 @@ if (command === 'generate') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
+
+
+if (command === 'haiku') {
+  const haiku = await generateHaiku();
+  message.reply(haiku);
+}
+
+
+
+
+
+async function generateHaiku() {
+  const OpenAI = require('openai-api');
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Make sure you have an API key and set it as an environment variable
+
+  const openai = new OpenAI(OPENAI_API_KEY);
+
+  const prompt = 'Generate a haiku about nature';
+  const model = 'text-davinci-002';
+
+  const gptResponse = await openai.complete({
+    engine: model,
+    prompt: prompt,
+    maxTokens: 50,
+    n: 1,
+    temperature: 0.7
+  });
+
+  const haiku = gptResponse.data.choices[0].text.trim();
+
+  return haiku;
+}
+
+
+
+
+
+
+
 
 
 }});
