@@ -350,7 +350,7 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 
-// Handle the "map" command
+
 if (command === 'map') {
   // Get the player's Discord name
   const playerName = message.author.username;
@@ -368,7 +368,7 @@ if (command === 'map') {
       const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
 
       // Set up a Firebase Realtime Database reference to the rooms table
-      const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
+      const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
 
       // Get the current room's data
       roomsRef.child(currentRoomID).once('value', async (snapshot) => {
@@ -378,65 +378,54 @@ if (command === 'map') {
           // Get the current room's data
           const currentRoom = snapshot.val();
 
-          // Create a canvas for drawing the map
-          const canvas = createCanvas(400, 400);
-          const ctx = canvas.getContext('2d');
+          // Create a 2D array to hold the room names
+          const map = Array(5).fill().map(() => Array(3).fill(''));
 
-          // Define the dimensions of the grid
-          const numRows = 5;
-          const numCols = 3;
+          // Set the current room name in the center of the map
+          map[2][1] = currentRoom.name;
 
-          // Define the width and height of each cell in the grid
-          const cellWidth = canvas.width / numCols;
-          const cellHeight = canvas.height / numRows;
-
-          // Draw the grid
-          for (let row = 0; row < numRows; row++) {
-            for (let col = 0; col < numCols; col++) {
-              // Calculate the x and y coordinates of the top-left corner of the cell
-              const x = col * cellWidth;
-              const y = row * cellHeight;
-
-              // Get the room ID for the current cell
-              const roomId = `room-${row}-${col}`;
-
-              // Check if the room exists in the database
-              if (currentRoom[roomId]) {
-                // The room exists in the database, fill the cell with green
-                ctx.fillStyle = '#00ff00';
-              } else {
-                // The room does not exist in the database, fill the cell with red
-                ctx.fillStyle = '#ff0000';
-              }
-
-              // Draw the cell
-              ctx.fillRect(x, y, cellWidth, cellHeight);
-
-              // Draw the room ID in the cell
-              ctx.fillStyle = '#ffffff';
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'middle';
-              ctx.font = '20px Arial';
-              ctx.fillText(roomId, x + cellWidth / 2, y + cellHeight / 2);
-            }
+          // Set the neighbor room names in the map
+          if (currentRoom.north) {
+            const northRoomID = currentRoom.north;
+            const northRoomName = (await roomsRef.child(northRoomID).child('name').once('value')).val();
+            map[1][1] = northRoomName;
+          }
+          if (currentRoom.south) {
+            const southRoomID = currentRoom.south;
+            const southRoomName = (await roomsRef.child(southRoomID).child('name').once('value')).val();
+            map[3][1] = southRoomName;
+          }
+          if (currentRoom.east) {
+            const eastRoomID = currentRoom.east;
+            const eastRoomName = (await roomsRef.child(eastRoomID).child('name').once('value')).val();
+            map[2][2] = eastRoomName;
+          }
+          if (currentRoom.west) {
+            const westRoomID = currentRoom.west;
+            const westRoomName = (await roomsRef.child(westRoomID).child('name').once('value')).val();
+            map[2][0] = westRoomName;
           }
 
-          // Convert the canvas to a buffer
-          const buffer = canvas.toBuffer();
+          // Construct the map message
+          let replyMessage = '```';
+          for (let i = 0; i < map.length; i++) {
+            for (let j = 0; j < map[i].length; j++) {
+              replyMessage += map[i][j] ? map[i][j] : ' ';
+              if (j < map[i].length - 1) {
+                replyMessage += '  ';
+              }
+            }
+            replyMessage += '\n';
+          }
+          replyMessage += '```';
 
-          // Send the buffer as a message attachment
-          message.reply({
-            files: [{
-              attachment: buffer,
-              name: 'map.png'
-            }]
-          });
+          // Send the map message to the player
+          message.reply(replyMessage);
         }
       });
     }
   });
 }
-
 
 
 
