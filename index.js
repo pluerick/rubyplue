@@ -373,8 +373,7 @@ if (command === 'map') {
     const canvas = Canvas.createCanvas(gridSize * (roomSize + roomMargin) + roomMargin, gridSize * (roomSize + roomMargin) + roomMargin);
     const ctx = canvas.getContext('2d');
   
-    // Register the font to use for room names
-    registerFont('./font.ttf', { family: 'Arial' });
+
   
     // Loop through the rooms and their exits to determine their relative positions in the grid
     Object.keys(rooms).forEach((roomId, index) => {
