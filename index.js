@@ -349,5 +349,93 @@ if (command === 'look') {
     }
   });
 }
+const axios = require('axios');
+const FormData = require('form-data');
+
+
+if (command === 'map') {
+  const serverName = message.guild.name;
+
+  // Set up a Firebase Realtime Database reference to the rooms table
+  const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+
+  // Get all rooms in the database
+  roomsRef.once('value', async (snapshot) => {
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, there are no rooms in the database.`);
+    } else {
+      // Determine the size of the grid
+      const numRows = 5;
+      const numCols = 3;
+
+      // Create a two-dimensional array to store the rooms
+      const grid = new Array(numRows);
+      for (let i = 0; i < numRows; i++) {
+        grid[i] = new Array(numCols).fill(null);
+      }
+
+      // Populate the grid with the rooms
+      snapshot.forEach((roomSnapshot) => {
+        const room = roomSnapshot.val();
+        const [row, col] = getRoomPosition(room.name);
+        grid[row][col] = room.name;
+      });
+
+      // Create the message with the grid
+      let replyMessage = '';
+      for (let row = 0; row < numRows; row++) {
+        for (let col = 0; col < numCols; col++) {
+          const roomName = grid[row][col];
+          if (roomName) {
+            replyMessage += `|${roomName}|`;
+          } else {
+            replyMessage += '|   |';
+          }
+        }
+        replyMessage += '\n';
+      }
+
+      // Send the message to the player
+      message.reply(replyMessage);
+    }
+  }, error => {
+    console.error(error);
+    message.reply(`Sorry, there was an error accessing the database.`);
+  });
+}
+
+function getRoomPosition(roomName) {
+  const match = roomName.match(/room-(\d+)-(\d+)/);
+  return [parseInt(match[1]), parseInt(match[2])];
+}
+
+    
+// Handle the "generate" command
+if (command === 'generate') {
+  // Get the name of the Discord server where the command was generated
+  const serverName = message.guild.name;
+
+  // Set up a Firebase Realtime Database reference
+  const dbRef = admin.database().ref(`test1/${serverName}`);
+
+  // Check if the server's database table exists, and create it if it doesn't
+  dbRef.once("value", snapshot => {
+    if (!snapshot.exists()) {
+      // Create a new database table with 25 randomly generated rooms
+      const rooms = generateRooms();
+      dbRef.set({ rooms });
+
+      message.reply(`A new database table has been created for ${serverName}.`);
+    } else {
+      message.reply(`The database table for ${serverName} already exists.`);
+    }
+  }, error => {
+    console.error(error);
+    message.reply(`Sorry, there was an error accessing the database.`);
+  });
+}
+
+
+}});
 
 client.login(process.env.TOKEN);
