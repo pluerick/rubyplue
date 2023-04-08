@@ -329,11 +329,11 @@ if (command === 'dragon') {
         // Reply to the user with the imgur link to the dragon image
         const dragonUrl = data.data.link;
         const message = `Here's a dragon for you: ${dragonUrl}`;
-        message.reply(`Sorry, there was an error accessing the database.`);
+        
       })
       .catch(error => {
         console.error(error);
-        message.reply(`Sorry, there was an error accessing the database.`);
+        
       });
   });
 }
