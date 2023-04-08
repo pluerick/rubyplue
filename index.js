@@ -21,7 +21,7 @@ admin.initializeApp({
 });
 
 client.once('ready', () => {
-  console.log('ChatGPT bot is online!');
+  console.log('RubyBot lives!');
 });
 
 client.on('message', async message => {
@@ -329,11 +329,11 @@ if (command === 'dragon') {
         // Reply to the user with the imgur link to the dragon image
         const dragonUrl = data.data.link;
         const message = `Here's a dragon for you: ${dragonUrl}`;
-        chatClient.say(channel, message);
+        message.reply(`Sorry, there was an error accessing the database.`);
       })
       .catch(error => {
         console.error(error);
-        chatClient.say(channel, `Sorry, there was an error uploading the dragon.`);
+        message.reply(`Sorry, there was an error accessing the database.`);
       });
   });
 }
