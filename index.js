@@ -437,6 +437,7 @@ if (command === 'generate') {
 
 if (command === 'haiku') {
   const haiku = await generateHaiku();
+  console.log('haiku ran');
   message.reply(haiku);
 }
 
