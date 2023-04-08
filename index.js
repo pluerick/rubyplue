@@ -290,6 +290,51 @@ if (command === 'east') {
   });
 }
 
+
+// Handle the "dragon" command
+if (command === 'dragon') {
+  // Set the canvas size and context
+  const canvas = document.createElement('canvas');
+  canvas.width = 400;
+  canvas.height = 300;
+  const ctx = canvas.getContext('2d');
+  
+  // Draw the dragon on the canvas
+  ctx.fillStyle = '#FF0000'; // Set the fill color to red
+  ctx.fillRect(50, 50, 300, 200); // Draw a rectangle for the dragon's body
+  ctx.beginPath(); // Start a new path for the dragon's head
+  ctx.moveTo(50, 50); // Move to the top left corner of the body
+  ctx.lineTo(150, 0); // Draw a line to the top of the head
+  ctx.lineTo(250, 50); // Draw a line to the top right corner of the body
+  ctx.closePath(); // Close the path
+  ctx.fill(); // Fill the path with the fill color
+
+  // Upload the canvas to imgur
+  const dataURI = canvas.toDataURL('image/png');
+  const formData = new FormData();
+  formData.append('image', dataURI.split(',')[1]);
+  fetch('https://api.imgur.com/3/image', {
+    method: 'POST',
+    headers: {
+      Authorization: 'Client-ID {{client_id}}',
+    },
+    body: formData,
+  })
+    .then(response => response.json())
+    .then(data => {
+      // Reply to the user with the imgur link to the dragon image
+      const dragonUrl = data.data.link;
+      const message = `Here's a dragon for you: ${dragonUrl}`;
+      chatClient.say(channel, message);
+    })
+    .catch(error => {
+      console.error(error);
+      chatClient.say(channel, `Sorry, there was an error uploading the dragon.`);
+    });
+}
+
+
+
 // Handle the "test" command
 if (command === 'test') {
   // Get the player's Discord name
