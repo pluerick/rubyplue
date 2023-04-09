@@ -471,7 +471,9 @@ if (command === 'grid') {
       body: form,
     });
     const json = await response.json();
+    console.log(json);
     const imageLink = json.data.link;
+    console.log(imageLink);
 
     message.channel.send(`Here's your grid paper! ${imageLink}`);
   } catch (error) {
