@@ -436,7 +436,7 @@ if (command === 'generate') {
 }
 
 
-if (message.content === 'grid') {
+if (command === 'grid') {
   console.log('grid time');
   const canvas = createCanvas(600, 600);
   const context = canvas.getContext('2d');
