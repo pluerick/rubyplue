@@ -372,7 +372,7 @@ if (command === 'generate') {
   const generateDescription = async () => {
     // Use OpenAI API to generate a random description
     const prompt = "Generate a description for a room.";
-    const response = await openaiapi.complete({
+    const response = await openai.complete({
       engine: 'text-davinci-002',
       prompt,
       maxTokens: 64,
