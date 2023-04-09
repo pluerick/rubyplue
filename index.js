@@ -4,7 +4,8 @@ const client = new Discord.Client();
 const admin = require('firebase-admin');
 const FormData = require('form-data');
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID;
-const { createCanvas } = require('canvas');
+const canvas = require('canvas');
+const { createCanvas, loadImage } = require('canvas');
 const fs = require('fs');
 const openaiapi = require('openai-api');
 
@@ -455,7 +456,7 @@ ctx.beginPath();
 ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
 ctx.fillStyle = 'green';
 ctx.fill();
-ctx.lineWidth = 7;
+ctx.lineWidth = 5;
 ctx.strokeStyle = '#003300';
 ctx.stroke();
 
