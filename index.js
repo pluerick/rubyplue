@@ -356,103 +356,71 @@ if (command === 'look') {
 
 
     
+
 // Handle the "generate" command
 if (command === 'generate') {
+  // Get the server name
+  const serverName = message.guild.name;
 
-  // Import the Firebase SDK and initialize Firebase
-const firebase = require("firebase/app");
-require("firebase/database");
+  // Set up a Firebase Realtime Database reference to the rooms table
+  const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
 
-const firebaseConfig = {
-  // Add your Firebase project configuration here
-};
+  // Define the grid size
+  const gridSize = { x: 3, y: 4 };
 
-firebase.initializeApp(firebaseConfig);
+  // Define the room description generator function
+  const generateDescription = async () => {
+    // Use OpenAI API to generate a random description
+    const prompt = "Generate a description for a room.";
+    const response = await openai.complete({
+      engine: 'text-davinci-002',
+      prompt,
+      maxTokens: 64,
+      n: 1,
+      stop: '\n',
+    });
 
-// Create a reference to the Firebase Realtime Database
-const database = admin.database().ref(`test1/${serverName}`);
+    // Return the generated description
+    return response.data.choices[0].text.trim();
+  };
 
-// Define the size of the maze
-const width = 10;
-const height = 10;
+  // Generate and populate the rooms in the database
+  for (let y = 0; y < gridSize.y; y++) {
+    for (let x = 0; x < gridSize.x; x++) {
+      // Generate the room name and description
+      const roomName = `${y * gridSize.x + x + 1}`;
+      const roomDescription = await generateDescription();
 
-// Create a 2D array to store the maze
-const maze = Array.from(Array(height), () => Array(width).fill(0));
+      // Create the room data object
+      const roomData = {
+        name: roomName,
+        description: roomDescription,
+      };
 
-// Define the starting point
-const startX = Math.floor(Math.random() * width);
-const startY = Math.floor(Math.random() * height);
+      // Add the room to the database
+      const newRoomRef = roomsRef.push();
+      await newRoomRef.set(roomData);
 
-// Set the starting cell as visited
-maze[startY][startX] = 1;
+      // Set the room's position in the grid
+      await newRoomRef.update({
+        x: x,
+        y: y,
+      });
 
-// Define the directions of movement
-const directions = [
-  [0, -1], // Up
-  [1, 0],  // Right
-  [0, 1],  // Down
-  [-1, 0]  // Left
-];
-
-// Define a function to check if a cell is valid
-function isValidCell(x, y) {
-  return x >= 0 && x < width && y >= 0 && y < height && maze[y][x] === 0;
-}
-
-// Define a function to get the neighbors of a cell
-function getNeighbors(x, y) {
-  const neighbors = [];
-
-  for (const [dx, dy] of directions) {
-    const nx = x + dx;
-    const ny = y + dy;
-
-    if (isValidCell(nx, ny)) {
-      neighbors.push([nx, ny]);
+      // Set the room's neighboring rooms in the grid
+      const currentRoomID = newRoomRef.key;
+      const neighboringRoomIDs = {};
+      if (x > 0) neighboringRoomIDs.west = `${y * gridSize.x + x - 1 + 1}`;
+      if (x < gridSize.x - 1) neighboringRoomIDs.east = `${y * gridSize.x + x + 1 + 1}`;
+      if (y > 0) neighboringRoomIDs.north = `${(y - 1) * gridSize.x + x + 1}`;
+      if (y < gridSize.y - 1) neighboringRoomIDs.south = `${(y + 1) * gridSize.x + x + 1}`;
+      await newRoomRef.update(neighboringRoomIDs);
     }
   }
 
-  return neighbors;
+  // Send a confirmation message to the player
+  message.reply(`Rooms generated successfully!`);
 }
-
-// Define a function to generate the maze using the depth-first search algorithm
-function generateMaze(x, y) {
-  const neighbors = getNeighbors(x, y);
-
-  while (neighbors.length > 0) {
-    const [nx, ny] = neighbors.splice(Math.floor(Math.random() * neighbors.length), 1)[0];
-
-    if (maze[ny][nx] === 0) {
-      maze[ny][nx] = 1;
-      generateMaze(nx, ny);
-    }
-  }
-}
-
-// Generate the maze
-generateMaze(startX, startY);
-
-// Define a function to record the maze in Firebase
-function recordMaze() {
-  // Get a reference to a new, unique location in the Firebase Realtime Database
-  const newMazeRef = database.ref("rooms").push();
-
-  // Set the maze data in Firebase
-  newMazeRef.set({
-    maze: maze,
-    width: width,
-    height: height
-  }, (error) => {
-    if (error) {
-      console.error("Failed to record maze:", error);
-    } else {
-      console.log("Maze recorded successfully!");
-    }
-  });
-}
-
-// Record the maze in Firebase
-recordMaze();
 
 
 
