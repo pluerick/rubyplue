@@ -372,7 +372,7 @@ if (command === 'generate') {
   const generateDescription = async () => {
     // Use OpenAI API to generate a random description
     const prompt = "Generate a description for a room.";
-    const response = await openai.complete({
+    const response = await openaiapi.complete({
       engine: 'text-davinci-002',
       prompt,
       maxTokens: 64,
@@ -424,20 +424,6 @@ if (command === 'generate') {
 
 
 
-
-
-//
-
-
-
-
-//Handle the "haiku" command
-if (command === 'haiku') {
-  const haiku = await generateHaiku();
-  console.log('haiku ran');
-  message.reply(haiku);
-}
-
 //Handle the "blast" command
 if (command === 'blast') {
   const rootRef = admin.database().ref();
@@ -452,6 +438,13 @@ if (command === 'blast') {
 
 }
 
+
+//Handle the "haiku" command
+if (command === 'haiku') {
+  const haiku = await generateHaiku();
+  console.log('haiku ran');
+  message.reply(haiku);
+}
 
 
 async function generateHaiku() {
