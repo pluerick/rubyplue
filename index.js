@@ -352,65 +352,9 @@ if (command === 'look') {
     }
   });
 }
-const axios = require('axios');
-const FormData = require('form-data');
 
 
-if (command === 'map') {
-  const serverName = message.guild.name;
 
-  // Set up a Firebase Realtime Database reference to the rooms table
-  const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
-
-  // Get all rooms in the database
-  roomsRef.once('value', async (snapshot) => {
-    if (!snapshot.exists()) {
-      message.reply(`Sorry, there are no rooms in the database.`);
-    } else {
-      // Determine the size of the grid
-      const numRows = 5;
-      const numCols = 3;
-
-      // Create a two-dimensional array to store the rooms
-      const grid = new Array(numRows);
-      for (let i = 0; i < numRows; i++) {
-        grid[i] = new Array(numCols).fill(null);
-      }
-
-      // Populate the grid with the rooms
-      snapshot.forEach((roomSnapshot) => {
-        const room = roomSnapshot.val();
-        const [row, col] = getRoomPosition(room.name);
-        grid[row][col] = room.name;
-      });
-
-      // Create the message with the grid
-      let replyMessage = '';
-      for (let row = 0; row < numRows; row++) {
-        for (let col = 0; col < numCols; col++) {
-          const roomName = grid[row][col];
-          if (roomName) {
-            replyMessage += `|${roomName}|`;
-          } else {
-            replyMessage += '|   |';
-          }
-        }
-        replyMessage += '\n';
-      }
-
-      // Send the message to the player
-      message.reply(replyMessage);
-    }
-  }, error => {
-    console.error(error);
-    message.reply(`Sorry, there was an error accessing the database.`);
-  });
-}
-
-function getRoomPosition(roomName) {
-  const match = roomName.match(/room-(\d+)-(\d+)/);
-  return [parseInt(match[1]), parseInt(match[2])];
-}
     
 // Handle the "generate" command
 if (command === 'generate') {
@@ -438,44 +382,7 @@ if (command === 'generate') {
 }
 
 //
-//Handle the "grid" command
-if (command === 'grid') {
-  const canvasWidth = 500; // 50 columns * 10 pixels per square
-  const canvasHeight = 300; // 30 rows * 10 pixels per square
-  
-  // create a canvas
-  const canvas = createCanvas(canvasWidth, canvasHeight);
-  const context = canvas.getContext('2d');
-  
-  // set the square size and color
-  const squareSize = 10;
-  context.fillStyle = '#000';
-  
-  // draw the grid
-  for (let col = 0; col < 50; col++) {
-    for (let row = 0; row < 30; row++) {
-      const x = col * squareSize;
-      const y = row * squareSize;
-      context.fillRect(x, y, squareSize, squareSize);
-    }
-  }
-  
 
-// Upload the canvas to Imgur and send the link as a message in Discord
-const headers = { 'Authorization': 'Bearer ' + access_token, 'Content-Type': 'application/json' };
-axios.post('https://api.imgur.com/3/image', {
-  image: canvas.toBuffer().toString('base64')
-}, { headers })
-.then(function (response) {
-  const attachment = new Discord.MessageAttachment(response.data.data.link, 'grid.png');
-  message.channel.send(attachment);
-})
-.catch(function (error) {
-  console.error(error);
-});
-
-
-  }
 
 
 
@@ -486,7 +393,19 @@ if (command === 'haiku') {
   message.reply(haiku);
 }
 
+//Handle the "blast" command
+if (command === 'blast') {
+  const rootRef = admin.database().ref();
 
+  rootRef.remove()
+  .then(() => {
+    console.log('All data removed successfully.');
+  })
+  .catch((error) => {
+    console.error('Error removing data:', error);
+  });
+
+}
 
 
 
