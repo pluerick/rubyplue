@@ -436,7 +436,7 @@ if (command === 'generate') {
 }
 
 
-if (message.content === '!grid') {
+if (message.content === 'grid') {
   const canvas = createCanvas(600, 600);
   const context = canvas.getContext('2d');
 
