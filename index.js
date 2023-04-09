@@ -361,7 +361,8 @@ if (command === 'look') {
 if (command === 'generate') {
   // Get the server name
   const serverName = message.guild.name;
-
+  const openai = require('openai');
+  
   // Set up a Firebase Realtime Database reference to the rooms table
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
 
