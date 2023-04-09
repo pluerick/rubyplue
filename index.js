@@ -439,7 +439,8 @@ if (command === 'generate') {
 //Handle the "circle" command
 if (command === 'circle') {
   // Set the canvas size
-const canvas = createCanvas(200, 200);
+console("circle command");
+  const canvas = createCanvas(200, 200);
 
 // Get the 2D context
 const ctx = canvas.getContext('2d');
