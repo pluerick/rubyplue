@@ -358,27 +358,104 @@ if (command === 'look') {
     
 // Handle the "generate" command
 if (command === 'generate') {
-  // Get the name of the Discord server where the command was generated
-  const serverName = message.guild.name;
 
-  // Set up a Firebase Realtime Database reference
-  const dbRef = admin.database().ref(`test1/${serverName}`);
+  // Import the Firebase SDK and initialize Firebase
+const firebase = require("firebase/app");
+require("firebase/database");
 
-  // Check if the server's database table exists, and create it if it doesn't
-  dbRef.once("value", snapshot => {
-    if (!snapshot.exists()) {
-      // Create a new database table with 25 randomly generated rooms
-      const rooms = generateRooms();
-      dbRef.set({ rooms });
+const firebaseConfig = {
+  // Add your Firebase project configuration here
+};
 
-      message.reply(`A new database table has been created for ${serverName}.`);
-    } else {
-      message.reply(`The database table for ${serverName} already exists.`);
+firebase.initializeApp(firebaseConfig);
+
+// Create a reference to the Firebase Realtime Database
+const database = admin.database().ref(`test1/${serverName}`);
+
+// Define the size of the maze
+const width = 10;
+const height = 10;
+
+// Create a 2D array to store the maze
+const maze = Array.from(Array(height), () => Array(width).fill(0));
+
+// Define the starting point
+const startX = Math.floor(Math.random() * width);
+const startY = Math.floor(Math.random() * height);
+
+// Set the starting cell as visited
+maze[startY][startX] = 1;
+
+// Define the directions of movement
+const directions = [
+  [0, -1], // Up
+  [1, 0],  // Right
+  [0, 1],  // Down
+  [-1, 0]  // Left
+];
+
+// Define a function to check if a cell is valid
+function isValidCell(x, y) {
+  return x >= 0 && x < width && y >= 0 && y < height && maze[y][x] === 0;
+}
+
+// Define a function to get the neighbors of a cell
+function getNeighbors(x, y) {
+  const neighbors = [];
+
+  for (const [dx, dy] of directions) {
+    const nx = x + dx;
+    const ny = y + dy;
+
+    if (isValidCell(nx, ny)) {
+      neighbors.push([nx, ny]);
     }
-  }, error => {
-    console.error(error);
-    message.reply(`Sorry, there was an error accessing the database.`);
+  }
+
+  return neighbors;
+}
+
+// Define a function to generate the maze using the depth-first search algorithm
+function generateMaze(x, y) {
+  const neighbors = getNeighbors(x, y);
+
+  while (neighbors.length > 0) {
+    const [nx, ny] = neighbors.splice(Math.floor(Math.random() * neighbors.length), 1)[0];
+
+    if (maze[ny][nx] === 0) {
+      maze[ny][nx] = 1;
+      generateMaze(nx, ny);
+    }
+  }
+}
+
+// Generate the maze
+generateMaze(startX, startY);
+
+// Define a function to record the maze in Firebase
+function recordMaze() {
+  // Get a reference to a new, unique location in the Firebase Realtime Database
+  const newMazeRef = database.ref("rooms").push();
+
+  // Set the maze data in Firebase
+  newMazeRef.set({
+    maze: maze,
+    width: width,
+    height: height
+  }, (error) => {
+    if (error) {
+      console.error("Failed to record maze:", error);
+    } else {
+      console.log("Maze recorded successfully!");
+    }
   });
+}
+
+// Record the maze in Firebase
+recordMaze();
+
+
+
 }
 
 //
