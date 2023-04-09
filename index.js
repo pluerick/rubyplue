@@ -436,6 +436,52 @@ if (command === 'generate') {
 }
 
 
+if (message.content === '!grid') {
+  const canvas = createCanvas(600, 600);
+  const context = canvas.getContext('2d');
+
+  const gridSize = 20;
+  const numCols = canvas.width / gridSize;
+  const numRows = canvas.height / gridSize;
+
+  for (let i = 0; i < numCols; i++) {
+    for (let j = 0; j < numRows; j++) {
+      context.strokeStyle = 'black';
+      context.strokeRect(i * gridSize, j * gridSize, gridSize, gridSize);
+    }
+  }
+
+  const imageBuffer = canvas.toBuffer();
+
+  const form = new FormData();
+  form.append('image', imageBuffer, {
+    filename: 'grid.png',
+    contentType: 'image/png',
+    knownLength: imageBuffer.length,
+  });
+
+  try {
+    const response = await fetch('https://api.imgur.com/3/upload', {
+      method: 'POST',
+      headers: {
+        Authorization: 'Client-ID YOUR_CLIENT_ID',
+        ...form.getHeaders(),
+      },
+      body: form,
+    });
+    const json = await response.json();
+    const imageLink = json.data.link;
+
+    message.channel.send(`Here's your grid paper! ${imageLink}`);
+  } catch (error) {
+    console.error(error);
+    message.reply('Sorry, I couldn\'t generate your grid paper :(');
+  }
+
+}
+
+
+
 if (command === 'haiku') {
   const haiku = await generateHaiku();
   console.log('haiku ran');
