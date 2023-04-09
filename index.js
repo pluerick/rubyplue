@@ -439,32 +439,36 @@ if (command === 'generate') {
 }
 
 //
-//Handle the "circle" command
-if (command === 'circle') {
-  // Set the canvas size
-console.log("circle command");
-  const canvas = createCanvas(200, 200);
+//Handle the "grid" command
+if (command === 'grid') {
+  const rows = 10;
+  const columns = 10;
 
-// Get the 2D context
-const ctx = canvas.getContext('2d');
-
-// Draw a circle
-const centerX = canvas.width / 2;
-const centerY = canvas.height / 2;
-const radius = 50;
-ctx.beginPath();
-ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
-ctx.fillStyle = 'green';
-ctx.fill();
-ctx.lineWidth = 5;
-ctx.strokeStyle = '#003300';
-ctx.stroke();
-
-// Convert the canvas to a Buffer and send it as an attachment
-const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'circle.png');
-message.reply({ files: [attachment] });
-}
-
+  // Create the grid
+  let grid = '';
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      if (i === 0 && j === 0) {
+        grid += '┌─';
+      } else if (i === 0 && j === columns - 1) {
+        grid += '┐';
+      } else if (i === rows - 1 && j === 0) {
+        grid += '└─';
+      } else if (i === rows - 1 && j === columns - 1) {
+        grid += '┘';
+      } else if (i === 0 || i === rows - 1) {
+        grid += '──';
+      } else if (j === 0 || j === columns - 1) {
+        grid += '│ ';
+      } else {
+        grid += '  ';
+      }
+    }
+    grid += '\n';
+  }
+    // Send the grid as a message
+    msg.reply(`\`\`\`${grid}\`\`\``);
+  }
 
 
 
