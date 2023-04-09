@@ -467,7 +467,7 @@ if (command === 'grid') {
     grid += '\n';
   }
     // Send the grid as a message
-    msg.reply(`\`\`\`${grid}\`\`\``);
+    message.reply(`\`\`\`${grid}\`\`\``);
   }
 
 
