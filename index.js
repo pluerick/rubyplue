@@ -26,6 +26,9 @@ client.once('ready', () => {
 });
 
 client.on('message', async message => {
+  const activity = 'Hello, world!'; // Initialize activity to a string value
+  client.user.setActivity(activity);
+
   // Only respond to messages sent by humans (not bots)
   if (message.author.bot) return;
 
