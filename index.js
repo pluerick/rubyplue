@@ -460,15 +460,19 @@ if (command === 'grid') {
     }
   }
   
-  // Upload the canvas to Imgur and send the link as a message in Discord
-  Imgur.uploadBase64(canvas.toBuffer().toString('base64'))
-    .then(function (json) {
-      const attachment = new Discord.MessageAttachment(json.data.link, 'grid.png');
-      message.reply(attachment);
-    })
-    .catch(function (error) {
-      console.error(error);
-    });
+
+// Upload the canvas to Imgur and send the link as a message in Discord
+const headers = { 'Authorization': 'Bearer ' + access_token, 'Content-Type': 'application/json' };
+axios.post('https://api.imgur.com/3/image', {
+  image: canvas.toBuffer().toString('base64')
+}, { headers })
+.then(function (response) {
+  const attachment = new Discord.MessageAttachment(response.data.data.link, 'grid.png');
+  message.channel.send(attachment);
+})
+.catch(function (error) {
+  console.error(error);
+});
 
 
   }
