@@ -4,7 +4,6 @@ const client = new Discord.Client();
 const admin = require('firebase-admin');
 const FormData = require('form-data');
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID;
-const canvas = require('canvas');
 const { createCanvas, loadImage } = require('canvas');
 const fs = require('fs');
 const openaiapi = require('openai-api');
@@ -441,34 +440,35 @@ if (command === 'generate') {
 //
 //Handle the "grid" command
 if (command === 'grid') {
+  const canvasWidth = 500; // 50 columns * 10 pixels per square
+  const canvasHeight = 300; // 30 rows * 10 pixels per square
   
-const canvasWidth = 500; // 50 columns * 10 pixels per square
-const canvasHeight = 300; // 30 rows * 10 pixels per square
-
-// create a canvas
-const canvas = Canvas.createCanvas(canvasWidth, canvasHeight);
-const context = canvas.getContext('2d');
-
-// set the square size and color
-const squareSize = 10;
-context.fillStyle = '#000';
-
-// draw the grid
-for (let col = 0; col < 50; col++) {
-  for (let row = 0; row < 30; row++) {
-    const x = col * squareSize;
-    const y = row * squareSize;
-    context.fillRect(x, y, squareSize, squareSize);
+  // create a canvas
+  const canvas = createCanvas(canvasWidth, canvasHeight);
+  const context = canvas.getContext('2d');
+  
+  // set the square size and color
+  const squareSize = 10;
+  context.fillStyle = '#000';
+  
+  // draw the grid
+  for (let col = 0; col < 50; col++) {
+    for (let row = 0; row < 30; row++) {
+      const x = col * squareSize;
+      const y = row * squareSize;
+      context.fillRect(x, y, squareSize, squareSize);
+    }
   }
-}
-
-// save the canvas as a PNG image
-const fs = require('fs');
-const out = fs.createWriteStream(__dirname + '/grid.png');
-const stream = canvas.createPNGStream();
-stream.pipe(out);
-out.on('finish', () => console.log('The PNG file was created.'));
   
+  // Upload the canvas to Imgur and send the link as a message in Discord
+  Imgur.uploadBase64(canvas.toBuffer().toString('base64'))
+    .then(function (json) {
+      const attachment = new Discord.MessageAttachment(json.data.link, 'grid.png');
+      message.channel.send(attachment);
+    })
+    .catch(function (error) {
+      console.error(error);
+    });
 
 
   }
