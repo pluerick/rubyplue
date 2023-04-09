@@ -441,33 +441,36 @@ if (command === 'generate') {
 //
 //Handle the "grid" command
 if (command === 'grid') {
-  const rows = 10;
-  const columns = 10;
+  
+const canvasWidth = 500; // 50 columns * 10 pixels per square
+const canvasHeight = 300; // 30 rows * 10 pixels per square
 
-  // Create the grid
-  let grid = '';
-  for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < columns; j++) {
-      if (i === 0 && j === 0) {
-        grid += '┌─';
-      } else if (i === 0 && j === columns - 1) {
-        grid += '┐';
-      } else if (i === rows - 1 && j === 0) {
-        grid += '└─';
-      } else if (i === rows - 1 && j === columns - 1) {
-        grid += '┘';
-      } else if (i === 0 || i === rows - 1) {
-        grid += '──';
-      } else if (j === 0 || j === columns - 1) {
-        grid += '│ ';
-      } else {
-        grid += '  ';
-      }
-    }
-    grid += '\n';
+// create a canvas
+const canvas = Canvas.createCanvas(canvasWidth, canvasHeight);
+const context = canvas.getContext('2d');
+
+// set the square size and color
+const squareSize = 10;
+context.fillStyle = '#000';
+
+// draw the grid
+for (let col = 0; col < 50; col++) {
+  for (let row = 0; row < 30; row++) {
+    const x = col * squareSize;
+    const y = row * squareSize;
+    context.fillRect(x, y, squareSize, squareSize);
   }
-    // Send the grid as a message
-    message.reply(`\`\`\`${grid}\`\`\``);
+}
+
+// save the canvas as a PNG image
+const fs = require('fs');
+const out = fs.createWriteStream(__dirname + '/grid.png');
+const stream = canvas.createPNGStream();
+stream.pipe(out);
+out.on('finish', () => console.log('The PNG file was created.'));
+  
+
+
   }
 
 
