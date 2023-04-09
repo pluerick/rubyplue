@@ -459,7 +459,7 @@ ctx.stroke();
 
 // Convert the canvas to a Buffer and send it as an attachment
 const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'circle.png');
-message.channel.send(attachment);
+message.reply({ files: [attachment] });
 }
 
 
