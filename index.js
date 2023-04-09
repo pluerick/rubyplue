@@ -464,7 +464,7 @@ if (command === 'grid') {
   Imgur.uploadBase64(canvas.toBuffer().toString('base64'))
     .then(function (json) {
       const attachment = new Discord.MessageAttachment(json.data.link, 'grid.png');
-      message.channel.send(attachment);
+      message.reply(attachment);
     })
     .catch(function (error) {
       console.error(error);
