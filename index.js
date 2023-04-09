@@ -436,9 +436,35 @@ if (command === 'generate') {
 }
 
 
+//Handle the "circle" command
+if (command === 'circle') {
+  // Set the canvas size
+const canvas = createCanvas(200, 200);
+
+// Get the 2D context
+const ctx = canvas.getContext('2d');
+
+// Draw a circle
+const centerX = canvas.width / 2;
+const centerY = canvas.height / 2;
+const radius = 50;
+ctx.beginPath();
+ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+ctx.fillStyle = 'green';
+ctx.fill();
+ctx.lineWidth = 5;
+ctx.strokeStyle = '#003300';
+ctx.stroke();
+
+// Convert the canvas to a Buffer and send it as an attachment
+const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'circle.png');
+message.channel.send(attachment);
+}
 
 
 
+
+//Handle the "haiku" command
 if (command === 'haiku') {
   const haiku = await generateHaiku();
   console.log('haiku ran');
