@@ -455,7 +455,7 @@ ctx.beginPath();
 ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
 ctx.fillStyle = 'green';
 ctx.fill();
-ctx.lineWidth = 5;
+ctx.lineWidth = 7;
 ctx.strokeStyle = '#003300';
 ctx.stroke();
 
