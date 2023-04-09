@@ -437,7 +437,7 @@ if (command === 'generate') {
   });
 }
 
-
+//
 //Handle the "circle" command
 if (command === 'circle') {
   // Set the canvas size
