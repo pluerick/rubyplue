@@ -356,7 +356,6 @@ if (command === 'look') {
 
 
     
-
 if (command === 'generate') {
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
 
@@ -435,8 +434,18 @@ if (command === 'generate') {
     },
   ];
 
-  roomsData.forEach((room) => {
-    roomsRef.push(room);
+  roomsRef.once('value', (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      console.log('Data already exists in the database. Skipping...');
+      message.reply('Rooms data already exists in the database. Skipping...');
+    } else {
+      console.log('Adding rooms data to the database...');
+      roomsData.forEach((room) => {
+        roomsRef.push(room);
+      });
+      message.reply('Rooms data added to the database successfully!');
+    }
   });
 }
 
