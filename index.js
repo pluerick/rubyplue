@@ -357,71 +357,89 @@ if (command === 'look') {
 
     
 
-// Handle the "generate" command
 if (command === 'generate') {
-  // Get the server name
-  const serverName = message.guild.name;
-  const openai = require('openai');
-  
-  // Set up a Firebase Realtime Database reference to the rooms table
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
 
-  // Define the grid size
-  const gridSize = { x: 3, y: 4 };
+  const roomsData = [
+    {
+      name: 'room 1',
+      description: 'A description of the room',
+      north: 4,
+      west: 0,
+      east: 2,
+      south: 0,
+    },
+    {
+      name: 'room 2',
+      description: 'A description of the room',
+      north: 5,
+      west: 1,
+      east: 3,
+      south: 0,
+    },
+    {
+      name: 'room 3',
+      description: 'A description of the room',
+      north: 6,
+      west: 2,
+      east: 0,
+      south: 0,
+    },
+    {
+      name: 'room 4',
+      description: 'A description of the room',
+      north: 0,
+      west: 0,
+      east: 5,
+      south: 1,
+    },
+    {
+      name: 'room 5',
+      description: 'A description of the room',
+      north: 0,
+      west: 4,
+      east: 6,
+      south: 2,
+    },
+    {
+      name: 'room 6',
+      description: 'A description of the room',
+      north: 0,
+      west: 5,
+      east: 0,
+      south: 3,
+    },
+    {
+      name: 'room 7',
+      description: 'A description of the room',
+      north: 1,
+      west: 0,
+      east: 8,
+      south: 4,
+    },
+    {
+      name: 'room 8',
+      description: 'A description of the room',
+      north: 2,
+      west: 7,
+      east: 9,
+      south: 5,
+    },
+    {
+      name: 'room 9',
+      description: 'A description of the room',
+      north: 3,
+      west: 8,
+      east: 0,
+      south: 6,
+    },
+  ];
 
-  // Define the room description generator function
-  const generateDescription = async () => {
-    // Use OpenAI API to generate a random description
-    const prompt = "Generate a description for a room.";
-    const response = await openai.complete({
-      engine: 'text-davinci-002',
-      prompt,
-      maxTokens: 64,
-      n: 1,
-      stop: '\n',
-    });
-
-    // Return the generated description
-    return response.data.choices[0].text.trim();
-  };
-
-  // Generate and populate the rooms in the database
-  for (let y = 0; y < gridSize.y; y++) {
-    for (let x = 0; x < gridSize.x; x++) {
-      // Generate the room name and description
-      const roomName = `${y * gridSize.x + x + 1}`;
-      const roomDescription = await generateDescription();
-
-      // Create the room data object
-      const roomData = {
-        name: roomName,
-        description: roomDescription,
-      };
-
-      // Add the room to the database
-      const newRoomRef = roomsRef.push();
-      await newRoomRef.set(roomData);
-
-      // Set the room's position in the grid
-      await newRoomRef.update({
-        x: x,
-        y: y,
-      });
-
-      // Set the room's neighboring rooms in the grid
-      const currentRoomID = newRoomRef.key;
-      const neighboringRoomIDs = {};
-      if (x > 0) neighboringRoomIDs.west = `${y * gridSize.x + x - 1 + 1}`;
-      if (x < gridSize.x - 1) neighboringRoomIDs.east = `${y * gridSize.x + x + 1 + 1}`;
-      if (y > 0) neighboringRoomIDs.north = `${(y - 1) * gridSize.x + x + 1}`;
-      if (y < gridSize.y - 1) neighboringRoomIDs.south = `${(y + 1) * gridSize.x + x + 1}`;
-      await newRoomRef.update(neighboringRoomIDs);
-    }
-  }
-
-  // Send a confirmation message to the player
-  message.reply(`Rooms generated successfully!`);
+  roomsData.forEach((room) => {
+    roomsRef.push(room);
+  });
 }
+
 
 
 
