@@ -463,7 +463,7 @@ if (command === 'blast') {
   .catch((error) => {
     console.error('Error removing data:', error);
   });
-
+  message.reply('PEW PEW database BALETTEEDD');
 }
 
 
