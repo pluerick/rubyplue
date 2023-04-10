@@ -283,19 +283,21 @@ if (command === 'blast') {
 
 //Handle the "haiku" command
 if (command === 'haiku') {
-  const haiku = await generateHaiku();
+  const args = message.content.slice(prefix.length).trim().split(/ +/);
+  const subject = args.slice(1).join(" ");
+
+  const haiku = await generateHaiku(subject);
   console.log('haiku ran');
   message.reply(haiku);
 }
 
-
-async function generateHaiku() {
+async function generateHaiku(subject = 'nature') {
   const OpenAI = require('openai-api');
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Make sure you have an API key and set it as an environment variable
 
   const openai = new OpenAI(OPENAI_API_KEY);
 
-  const prompt = 'Generate a haiku about nature';
+  const prompt = `Generate a haiku about ${subject}, excluding the word "${subject}"`;
   const model = 'text-davinci-002';
 
   const gptResponse = await openai.complete({
@@ -303,14 +305,17 @@ async function generateHaiku() {
     prompt: prompt,
     maxTokens: 50,
     n: 1,
-    temperature: 0.7
+    temperature: 0.7,
+    presence_penalty: 0.5,
+    frequency_penalty: 0.5,
+    logprobs: 10,
+    stop: ['\n']
   });
 
   const haiku = gptResponse.data.choices[0].text.trim();
 
   return haiku;
 }
-
 
 
 
