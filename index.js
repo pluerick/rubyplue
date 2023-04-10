@@ -288,11 +288,11 @@ if (command === 'haiku') {
   const subject = args.slice(1).join(" ");
 
   const haiku = await generateHaiku(subject);
-  console.log('haiku ran');
+  console.log('haiku ran', haiku);
   message.reply(haiku);
 }
 
-async function generateHaiku(subject = 'nature') {
+async function generateHaiku() {
   const OpenAI = require('openai-api');
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Make sure you have an API key and set it as an environment variable
 
