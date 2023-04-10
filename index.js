@@ -292,7 +292,7 @@ if (command === 'haiku') {
   message.reply(haiku);
 }
 
-async function generateHaiku() {
+async function generateHaiku(subject = 'nature') {
   const OpenAI = require('openai-api');
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Make sure you have an API key and set it as an environment variable
 
@@ -306,14 +306,16 @@ async function generateHaiku() {
     prompt: prompt,
     maxTokens: 50,
     n: 1,
-    temperature: 0.7
+    temperature: 0.7,
+    presence_penalty: 0.5,
+    frequency_penalty: 0.5,
+    logprobs: 10,
+    stop: ['\n']
   });
 
   const haiku = gptResponse.data.choices[0].text.trim();
-
   return haiku;
 }
-
 
 
 
