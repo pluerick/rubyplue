@@ -306,11 +306,7 @@ async function generateHaiku(subject = 'nature') {
     prompt: prompt,
     maxTokens: 50,
     n: 1,
-    temperature: 0.7,
-    presence_penalty: 0.5,
-    frequency_penalty: 0.5,
-    logprobs: 10,
-    stop: ['\n']
+    temperature: 0.7
   });
 
   const haiku = gptResponse.data.choices[0].text.trim();
