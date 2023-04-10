@@ -303,7 +303,8 @@ async function generateHaiku(subject = 'nature') {
 
   const openai = new OpenAI(OPENAI_API_KEY);
 
-  const prompt = `Generate a haiku about ${subject}, excluding the word "${subject}"`;
+  //const prompt = `Generate a haiku about ${subject}, excluding the word "${subject}"`;
+  const prompt = `Generate a haiku`;
   const model = 'text-davinci-002';
 
   try {
