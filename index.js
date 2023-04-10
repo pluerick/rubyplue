@@ -340,7 +340,8 @@ if (command === 'look') {
           for (const direction of directions) {
             if (currentRoom[direction]) {
               const neighborRoomID = currentRoom[direction];
-              const neighborRoomName = (await roomsRef.child(neighborRoomID).child('name').once('value')).val();
+              const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
+              const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
               replyMessage += `To the ${direction}, you can see ${neighborRoomName}.\n`;
             }
           }
