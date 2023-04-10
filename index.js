@@ -287,9 +287,14 @@ if (command === 'haiku') {
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const subject = args.slice(1).join(" ");
 
-  const haiku = await generateHaiku(subject);
-  console.log('haiku ran', haiku);
-  message.reply(haiku);
+  try {
+    const haiku = await generateHaiku(subject);
+    console.log('haiku ran', haiku);
+    message.reply(haiku);
+  } catch (error) {
+    console.error('Error generating haiku:', error);
+    message.reply('Sorry, there was an error generating the haiku. Please try again later.');
+  }
 }
 
 async function generateHaiku(subject = 'nature') {
@@ -301,22 +306,26 @@ async function generateHaiku(subject = 'nature') {
   const prompt = `Generate a haiku about ${subject}, excluding the word "${subject}"`;
   const model = 'text-davinci-002';
 
-  const gptResponse = await openai.complete({
-    engine: model,
-    prompt: prompt,
-    maxTokens: 50,
-    n: 1,
-    temperature: 0.7,
-    presence_penalty: 0.5,
-    frequency_penalty: 0.5,
-    logprobs: 10,
-    stop: ['\n']
-  });
+  try {
+    const gptResponse = await openai.complete({
+      engine: model,
+      prompt: prompt,
+      maxTokens: 50,
+      n: 1,
+      temperature: 0.7,
+      presence_penalty: 0.5,
+      frequency_penalty: 0.5,
+      logprobs: 10,
+      stop: ['\n']
+    });
 
-  const haiku = gptResponse.data.choices[0].text.trim();
-  return haiku;
+    const haiku = gptResponse.data.choices[0].text.trim();
+    return haiku;
+  } catch (error) {
+    console.error('Error generating haiku:', error);
+    throw new Error('Sorry, there was an error generating the haiku. Please try again later.');
+  }
 }
-
 
 
 
