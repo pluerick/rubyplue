@@ -37,17 +37,6 @@ client.on('message', async message => {
     // Parse the command and arguments
     const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
     const serverName = message.guild.name;
-
-    
-  
- 
-
-
-
-
-
-
-
  
     if (command === 'start') {
   // Get the name of the Discord server where the command was generated
@@ -293,10 +282,10 @@ if (command === 'haiku') {
 async function generateHaiku() {
   const OpenAI = require('openai-api');
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Make sure you have an API key and set it as an environment variable
-
   const openai = new OpenAI(OPENAI_API_KEY);
+  const subject  = args[0];
 
-  const prompt = 'Generate a haiku about nature';
+  const prompt = 'Generate a haiku about dogs';
   const model = 'text-davinci-002';
 
   const gptResponse = await openai.complete({
@@ -308,7 +297,10 @@ async function generateHaiku() {
   });
 
   const haiku = gptResponse.data.choices[0].text.trim();
-
+  console.log(haiku);
+  console.log(subject);
+  console.log(args[0]);
+  console.log(args[1]);
   return haiku;
 }
 
