@@ -7,6 +7,7 @@ const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID;
 const { createCanvas, loadImage } = require('canvas');
 const fs = require('fs');
 const openaiapi = require('openai-api');
+const prefix = '?';
 
 // Define the cardinal directions
 const directions = ["north", "south", "east", "west"];
