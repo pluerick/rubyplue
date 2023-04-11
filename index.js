@@ -149,8 +149,8 @@ if (command === 'north') {
                     const replyMessage = await lookAround(snapshot, roomsRef);
                     message.reply(replyMessage);
                     console.log(replyMessage);
-                    console.log(snapshot.val().north);
-                    console.log(snapshot.val());
+                    console.log('snapshot north', snapshot.val().north);
+                    console.log('snapshot val all', snapshot.val());
                   }
                 });
               }
