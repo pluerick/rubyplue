@@ -99,25 +99,35 @@ client.on('message', async message => {
 
 
 if (command === 'north') {
-  const player = database.getPlayer(playerId);
-  if (player) {
-    const currentRoom = player.current_room;
-    const room = database.getRoom(currentRoom);
-    if (room && room.north) {
-      const newRoom = database.getRoom(room.north);
-      if (newRoom) {
-        database.updatePlayer(playerId, { current_room: newRoom.id });
-        return `You have moved north to ${newRoom.name}.`;
-      } else {
-        return "Sorry, there seems to be an error with the room you are trying to move to.";
-      }
+  const playerRef = admin.database().ref(`test1/${serverName}/players/${playerId}`);
+  playerRef.once('value', (snapshot) => {
+    const playerData = snapshot.val();
+    if (playerData) {
+      const currentRoom = playerData.current_room;
+      const currentRoomRef = admin.database().ref(`test1/${serverName}/rooms/${currentRoom}`);
+      currentRoomRef.once('value', (roomSnapshot) => {
+        const roomData = roomSnapshot.val();
+        if (roomData && roomData.north) {
+          const northRoomRef = admin.database().ref(`test1/${serverName}/rooms/${roomData.north}`);
+          northRoomRef.once('value', (northRoomSnapshot) => {
+            const northRoomData = northRoomSnapshot.val();
+            if (northRoomData) {
+              playerRef.update({ current_room: roomData.north });
+              console.log(`You have moved north to ${northRoomData.name}.`);
+            } else {
+              console.log('There is no room to the north.');
+            }
+          });
+        } else {
+          console.log('There is no room to the north.');
+        }
+      });
     } else {
-      return "Sorry, you cannot move north from this room.";
+      console.log('You are not in the database.');
     }
-  } else {
-    return "Sorry, we could not find your player information in the database.";
-  }
+  });
 }
+
 
 
 // Handle the "test" command
