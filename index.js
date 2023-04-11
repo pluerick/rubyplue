@@ -429,10 +429,9 @@ async function generateHaiku() {
 
 //Handle the "screnbox" command
 if (command === 'screenbox') {
-  const screenBox = await sendAsciiBox();
   console.log('screenBox ran');
   const channelId = message.channel.id;
-
+  await sendAsciiBox(channelId);
   
 }
 
