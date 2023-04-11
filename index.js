@@ -97,38 +97,60 @@ client.on('message', async message => {
   });
 }
 
-
 if (command === 'north') {
+  // Get the player's Discord name and server name
   const playerName = message.author.username;
   const serverName = message.guild.name;
-  const playerRef = admin.database().ref(`test1/${serverName}/players/${playerName}`);
-  playerRef.once('value', (snapshot) => {
-    const playerData = snapshot.val();
-    if (playerData) {
-      const currentRoom = playerData.current_room;
-      const currentRoomRef = admin.database().ref(`test1/${serverName}/rooms/${currentRoom}`);
-      currentRoomRef.once('value', (roomSnapshot) => {
-        const roomData = roomSnapshot.val();
-        if (roomData && roomData.north) {
-          const northRoomRef = admin.database().ref(`test1/${serverName}/rooms/${roomData.north}`);
-          northRoomRef.once('value', (northRoomSnapshot) => {
-            const northRoomData = northRoomSnapshot.val();
-            if (northRoomData) {
-              playerRef.update({ current_room: roomData.north });
-              console.log(`You have moved north to ${northRoomData.name}.`);
-            } else {
-              console.log('There is no room to the north.');
-            }
-          });
-        } else {
-          console.log('There is no room to the north.');
-        }
-      });
+
+  // Set up a Firebase Realtime Database reference to the players table
+  const playersRef = admin.database().ref(`test1/${serverName}/players`);
+
+  // Check if the player exists in the database
+  playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
     } else {
-      console.log('You are not in the database.');
+      // Get the player's current room ID
+      const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
+
+      // Set up a Firebase Realtime Database reference to the rooms table
+      const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
+
+      // Check if there is a room to the north
+      if (!snapshot.val()[Object.keys(snapshot.val())[0]].current_room.north) {
+        message.reply(`Sorry, ${playerName}, there is no room to the north.`);
+      } else {
+        // Get the ID of the room to the north
+        const northRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room.north;
+
+        // Update the player's current room in the database
+        playersRef.child(Object.keys(snapshot.val())[0]).child('current_room').set(northRoomID);
+
+        // Get the data for the new current room
+        const northRoomDataSnapshot = await roomsRef.child(northRoomID).once('value');
+        const northRoomData = northRoomDataSnapshot.val();
+
+        // Create a message with the new current room's name and description
+        let replyMessage = `You move north and enter ${northRoomData.name}. ${northRoomData.description}\n`;
+
+        // Check each direction for an adjacent room
+        const directions = ["north", "south", "east", "west"];
+        for (const direction of directions) {
+          if (northRoomData[direction]) {
+            const neighborRoomID = northRoomData[direction];
+            const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
+            const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
+            replyMessage += `To the ${direction}, you can see ${neighborRoomName}.\n`;
+          }
+        }
+
+        // Send the message to the player
+        message.reply(replyMessage);
+      }
     }
   });
 }
+
 
 
 
