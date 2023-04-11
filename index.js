@@ -429,23 +429,22 @@ async function generateHaiku() {
 
 
 //Handle the "screnbox" command
-if (command === 'screenbox') {
-  const channelId = message.channel.id;
+if (command === 'screenbox')  {
+  
+  const horizontalBorder = '═'.repeat(SCREEN_WIDTH);
+  const verticalBorder = '║' + ' '.repeat(SCREEN_WIDTH - 2) + '║\n';
+  const content = ' '.repeat(Math.floor((SCREEN_WIDTH - 11) / 2)) + 'Screen Box' + ' '.repeat(Math.ceil((SCREEN_WIDTH - 11) / 2));
+  const box = '```' + '\n' +
+              '╔' + horizontalBorder + '╗\n' +
+              verticalBorder.repeat(Math.floor((SCREEN_HEIGHT - 2) / 2)) +
+              '║' + content + verticalBorder.slice(1) +
+              verticalBorder.repeat(Math.ceil((SCREEN_HEIGHT - 2) / 2)) +
+              '╚' + horizontalBorder + '╝\n' +
+              '```';
 
-  const screenContent = "no input";
-  const boxWidth = 40;
-  const boxHeight = 10;
-
-  const horizontalLine = "─".repeat(boxWidth - 2);
-  const contentLine = `│ ${screenContent.padEnd(boxWidth - 4)} │\n`.repeat(boxHeight - 4);
-
-  const asciiBox = `┌${horizontalLine}┐\n${contentLine}└${horizontalLine}┘`;
-
-  const channel = client.channels.cache.get(channelId);
-
-  // Send the message
-  channel.send(`\`\`\`${asciiBox}\`\`\``);
+  await msg.channel.send(box);
 }
+
 
 
 }});
