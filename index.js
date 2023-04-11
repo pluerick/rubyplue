@@ -128,7 +128,7 @@ if (command === 'look') {
       const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
 
       // Get the current room's data
-      roomsRef.child(currentRoomID).once('value', async (snapshot) => {
+      roomsRef.child("room " + currentRoomID).once('value', async (snapshot) => {
         if (!snapshot.exists()) {
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
         } else {
