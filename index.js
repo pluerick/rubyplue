@@ -133,6 +133,7 @@ if (command === 'north') {
             const newRoomID = snapshot.val().north;
             playersRef.child(Object.keys(snapshot.val())[0]).update({ current_room: newRoomID });
             console.log(`Player ${playerName} moved to room ${newRoomID}.`);
+            console.log('playerRef: ' + Object.keys(snapshot.val())[0]);
             
 
             // Get the new room's data
