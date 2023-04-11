@@ -16,6 +16,9 @@ const serverName = message.guild.name;
 // Set up a Firebase Realtime Database reference to the players table
 const playersRef = admin.database().ref(`test1/${serverName}/players`);
 
+// Set up a Firebase Realtime Database reference to the rooms table
+const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
+
 // Define the cardinal directions
 const directions = ["north", "south", "east", "west"];
 
@@ -33,7 +36,7 @@ console.log('RubyBot lives!');
 });
 
 client.on('message', async message => {
-const activity = 'Hello, world!'; // Initialize activity to a string value
+const activity = 'Bot stuff I dunno!'; // Initialize activity to a string value
 client.user.setActivity(activity);
 
 // Only respond to messages sent by humans (not bots)
@@ -114,6 +117,13 @@ if (command === 'test') {
   message.reply(`You are ${playerName} on ${serverName}.`);
 }
 
+// Handle the "north" command
+if (command === 'north') {
+  console("north");
+}
+
+
+
 // Handle the "look" command
 if (command === 'look') {
 
@@ -124,9 +134,6 @@ if (command === 'look') {
     } else {
       // Get the player's current room ID
       const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
-
-      // Set up a Firebase Realtime Database reference to the rooms table
-      const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
 
       // Get the current room's data
       roomsRef.child("room " + currentRoomID).once('value', async (snapshot) => {
