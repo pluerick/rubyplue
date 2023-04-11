@@ -113,7 +113,7 @@ if (command === 'test') {
 
 // Handle the "north" command
 if (command === 'north') {
-  console("north");
+  console.log("north");
 }
 
 
