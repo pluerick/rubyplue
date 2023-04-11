@@ -9,6 +9,12 @@ const fs = require('fs');
 const openaiapi = require('openai-api');
 const prefix = '?';
 
+// Initialize the Firebase Admin SDK with the service account key
+admin.initializeApp({
+credential: admin.credential.cert(serviceAccount),
+databaseURL: "https://rubyplue-a4332-default-rtdb.firebaseio.com"
+});
+
 // Set up a Firebase Realtime Database reference to the players table
 const playersRef = admin.database().ref(`test1/${serverName}/players`);
 
@@ -21,11 +27,7 @@ const directions = ["north", "south", "east", "west"];
 // Parse the service account key JSON string from the environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
 
-// Initialize the Firebase Admin SDK with the service account key
-admin.initializeApp({
-credential: admin.credential.cert(serviceAccount),
-databaseURL: "https://rubyplue-a4332-default-rtdb.firebaseio.com"
-});
+
 
 client.once('ready', () => {
 console.log('RubyBot lives!');
