@@ -9,10 +9,6 @@ const fs = require('fs');
 const openaiapi = require('openai-api');
 const prefix = '?';
 
-// Get the player's Discord name
-const playerName = message.author.username;
-const serverName = message.guild.name;
-
 // Set up a Firebase Realtime Database reference to the players table
 const playersRef = admin.database().ref(`test1/${serverName}/players`);
 
@@ -36,8 +32,10 @@ console.log('RubyBot lives!');
 });
 
 client.on('message', async message => {
-const activity = 'Bot stuff I dunno!'; // Initialize activity to a string value
-client.user.setActivity(activity);
+// Get the player's Discord name  
+const playerName = message.author.username;
+// Get the name of the Discord server where the command was generated
+const serverName = message.guild.name;
 
 // Only respond to messages sent by humans (not bots)
 if (message.author.bot) return;
