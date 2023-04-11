@@ -297,10 +297,6 @@ async function generateHaiku() {
   });
 
   const haiku = gptResponse.data.choices[0].text.trim();
-  console.log(haiku);
-  console.log(subject);
-  console.log(args[0]);
-  console.log(args[1]);
   return haiku;
 }
 
