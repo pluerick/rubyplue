@@ -9,6 +9,13 @@ const fs = require('fs');
 const openaiapi = require('openai-api');
 const prefix = '?';
 
+// Get the player's Discord name
+const playerName = message.author.username;
+const serverName = message.guild.name;
+
+// Set up a Firebase Realtime Database reference to the players table
+const playersRef = admin.database().ref(`test1/${serverName}/players`);
+
 // Define the cardinal directions
 const directions = ["north", "south", "east", "west"];
 
@@ -109,12 +116,6 @@ if (command === 'test') {
 
 // Handle the "look" command
 if (command === 'look') {
-  // Get the player's Discord name
-  const playerName = message.author.username;
-  const serverName = message.guild.name;
-
-  // Set up a Firebase Realtime Database reference to the players table
-  const playersRef = admin.database().ref(`test1/${serverName}/players`);
 
   // Check if the player exists in the database
   playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
