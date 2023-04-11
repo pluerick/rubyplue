@@ -110,28 +110,38 @@ if (command === 'test') {
   const serverName = message.guild.name;
   message.reply(`You are ${playerName} on ${serverName}.`);
 }
-// Handle the "north" command
-if (command === 'north') {
+
+
+
+// Handle the movement commands
+if (command === 'north' || command === 'south' || command === 'east' || command === 'west') {
   // Check if the player exists in the database
   playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
     if (!snapshot.exists()) {
       message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
     } else {
-      // Get the player's unique ID
-      const playerID = Object.keys(snapshot.val())[0];
-
       // Get the player's current room ID
-      const currentRoomID = snapshot.val()[playerID].current_room;
+      const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
 
       // Get the current room's data
       roomsRef.child("room " + currentRoomID).once('value', async (snapshot) => {
         if (!snapshot.exists()) {
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
         } else {
-          // Check if there is a room to the north
-          if (snapshot.val().north) {
-            // Update the player's current room to the room to the north
-            const newRoomID = snapshot.val().north;
+          let direction = '';
+          if (command === 'north' && snapshot.val().north) {
+            direction = 'north';
+          } else if (command === 'south' && snapshot.val().south) {
+            direction = 'south';
+          } else if (command === 'east' && snapshot.val().east) {
+            direction = 'east';
+          } else if (command === 'west' && snapshot.val().west) {
+            direction = 'west';
+          }
+          if (direction) {
+            // Update the player's current room to the new room in the appropriate direction
+            const newRoomID = snapshot.val()[direction];
+            const playerID = Object.keys(snapshot.val())[0];
             const playerRef = playersRef.child(playerID);
             playerRef.update({ current_room: newRoomID }, (error) => {
               if (error) {
@@ -149,13 +159,14 @@ if (command === 'north') {
               }
             });
           } else {
-            message.reply(`Sorry, ${playerName}, there is no room to the north.`);
+            message.reply(`Sorry, ${playerName}, there is no room in that direction.`);
           }
         }
       });
     }
   });
 }
+
 
 
 
