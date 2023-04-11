@@ -436,7 +436,7 @@ if (command === 'screenbox') {
 }
 
 
-async function sendAsciiBox() {
+async function sendAsciiBox(channelId) {
   const screenContent = "no input";
   const boxWidth = 40;
   const boxHeight = 10;
