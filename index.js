@@ -133,10 +133,10 @@ if (command === 'north') {
         const northRoomDataSnapshot = await roomsRef.child(northRoomID).once('value');
         const northRoomData = northRoomDataSnapshot.val();
 
-        // Create a message with the new current room's name and description
-        let replyMessage = `You move north and enter ${northRoomData.name}. ${northRoomData.description}\n`;
-        console( northRoomID );
-      console(northRoomDataSnapshot );
+      //   // Create a message with the new current room's name and description
+      //   let replyMessage = `You move north and enter ${northRoomData.name}. ${northRoomData.description}\n`;
+      //   console( northRoomID );
+      // console(northRoomDataSnapshot );
       
 
         // Check each direction for an adjacent room
