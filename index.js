@@ -428,12 +428,11 @@ async function generateHaiku() {
 }
 
 
+const SCREEN_WIDTH = 20;
+const SCREEN_HEIGHT = 10;
+
 //Handle the "screnbox" command
 if (command === 'screenbox')  {
-
-  const SCREEN_WIDTH = 20;
-  const SCREEN_HEIGHT = 10;
-
   const horizontalBorder = '═'.repeat(SCREEN_WIDTH);
   const verticalBorder = '║' + ' '.repeat(SCREEN_WIDTH - 2) + '║\n';
   const content = ' '.repeat(Math.floor((SCREEN_WIDTH - 11) / 2)) + 'Screen Box' + ' '.repeat(Math.ceil((SCREEN_WIDTH - 11) / 2));
