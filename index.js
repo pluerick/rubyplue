@@ -96,7 +96,6 @@ client.on('message', async message => {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
-
 if (command === 'north') {
   // Get the player's Discord name and server name
   const playerName = message.author.username;
@@ -114,14 +113,18 @@ if (command === 'north') {
       const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
 
       // Set up a Firebase Realtime Database reference to the rooms table
-      const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
+      const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+
+      // Get the current room object
+      const currentRoomSnapshot = await roomsRef.child(currentRoomID).once('value');
+      const currentRoom = currentRoomSnapshot.val();
 
       // Check if there is a room to the north
-      if (!snapshot.val()[Object.keys(snapshot.val())[0]].current_room.north) {
+      if (!currentRoom.north) {
         message.reply(`Sorry, ${playerName}, there is no room to the north.`);
       } else {
         // Get the ID of the room to the north
-        const northRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room.north;
+        const northRoomID = currentRoom.north;
 
         // Update the player's current room in the database
         playersRef.child(Object.keys(snapshot.val())[0]).child('current_room').set(northRoomID);
@@ -150,7 +153,6 @@ if (command === 'north') {
     }
   });
 }
-
 
 
 
