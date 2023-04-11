@@ -178,7 +178,7 @@ if (command === 'north' || command === 'south' || command === 'east' || command 
 
 
 // Handle the "look" command
-if (command === 'look') {
+if (command === 'look' || command === 'l') {
 
   // Check if the player exists in the database
   playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
