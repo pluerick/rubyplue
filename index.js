@@ -115,11 +115,7 @@ if (command === 'test') {
 
 // Handle the movement commands
 if (command === 'north' || command === 'south' || command === 'east' || command === 'west' || command === 'n' || command === 's' || command === 'e' || command === 'w') {
-  if (command === 'n' ){command = 'north'};
-  if (command === 's' ){command = 'south'};
-  if (command === 'e' ){command = 'east'};
-  if (command === 'w' ){command = 'west'};
-  
+
   // Check if the player exists in the database
   playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
     if (!snapshot.exists()) {
@@ -137,13 +133,13 @@ if (command === 'north' || command === 'south' || command === 'east' || command 
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
         } else {
           let direction = '';
-          if (command === 'north' && snapshot.val().north) {
+          if (command === 'north' || command === 'n' && snapshot.val().north) {
             direction = 'north';
-          } else if (command === 'south' && snapshot.val().south) {
+          } else if (command === 'south'  || command === 's' && snapshot.val().south) {
             direction = 'south';
-          } else if (command === 'east' && snapshot.val().east) {
+          } else if (command === 'east'  || command === 'e' && snapshot.val().east) {
             direction = 'east';
-          } else if (command === 'west' && snapshot.val().west) {
+          } else if (command === 'west'  || command === 'w' && snapshot.val().west) {
             direction = 'west';
           }
           if (direction) {
