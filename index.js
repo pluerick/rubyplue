@@ -143,7 +143,7 @@ if (command === 'north' || command === 'south' || command === 'east' || command 
             const newRoomID = snapshot.val()[direction];
             const playerID = Object.keys(snapshot.val())[0];
             const playerRef = playersRef.child(playerID);
-            playerRef.update({ current_room: newRoomID }, (error) => {
+            playerRef.child('current_room').set(newRoomID, (error) => {
               if (error) {
                 message.reply(`Sorry, ${playerName}, there was an error updating your current room.`);
               } else {
@@ -158,6 +158,7 @@ if (command === 'north' || command === 'south' || command === 'east' || command 
                 });
               }
             });
+            
           } else {
             message.reply(`Sorry, ${playerName}, there is no room in that direction.`);
           }
