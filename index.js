@@ -285,7 +285,7 @@ async function generateHaiku() {
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
 
-  const prompt = 'Generate a haiku about dogs';
+  const prompt = `Generate a haiku about ${subject}`;
   const model = 'text-davinci-002';
 
   const gptResponse = await openai.complete({
