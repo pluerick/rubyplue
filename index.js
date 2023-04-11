@@ -121,6 +121,7 @@ if (command === 'north') {
     } else {
       // Get the player's current room ID
       const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
+      console.log('debug 1',currentRoomID);
 
       // Get the current room's data
       roomsRef.child("room " + currentRoomID).once('value', async (snapshot) => {
@@ -128,11 +129,10 @@ if (command === 'north') {
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
         } else {
           // Check if there is a room to the north
+          console.log('debug 2', snapshot.val().north);
           if (snapshot.val().north) {
             // Update the player's current room to the room to the north
             const newRoomID = snapshot.val().north;
-
-            // Fix the update statement to use the correct player reference
             const playerRef = playersRef.child(Object.keys(snapshot.val())[0]);
             playerRef.update({ current_room: newRoomID }, (error) => {
               if (error) {
