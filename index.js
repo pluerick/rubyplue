@@ -110,10 +110,8 @@ if (command === 'test') {
   const serverName = message.guild.name;
   message.reply(`You are ${playerName} on ${serverName}.`);
 }
-
 // Handle the "north" command
 if (command === 'north') {
-
   // Check if the player exists in the database
   playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
     if (!snapshot.exists()) {
@@ -121,7 +119,6 @@ if (command === 'north') {
     } else {
       // Get the player's current room ID
       const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
-      console.log('debug 1',currentRoomID);
 
       // Get the current room's data
       roomsRef.child("room " + currentRoomID).once('value', async (snapshot) => {
@@ -129,20 +126,14 @@ if (command === 'north') {
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
         } else {
           // Check if there is a room to the north
-          console.log('debug 2', snapshot.val().north);
           if (snapshot.val().north) {
             // Update the player's current room to the room to the north
             const newRoomID = snapshot.val().north;
-            const playerRef = playersRef.child(Object.keys(snapshot.val())[0]);
-            //console.log('debug 3', playerRef.current_room, playerRef.name, playerRef.currentRoom)
-            console.log('debug 4',playersRef.child(Object.keys(snapshot.val())[0]))
+            const playerRef = snapshot.ref.parent.child('players').child(Object.keys(snapshot.val())[0]);
             playerRef.update({ current_room: newRoomID }, (error) => {
               if (error) {
                 message.reply(`Sorry, ${playerName}, there was an error updating your current room.`);
               } else {
-                console.log(`Player ${playerName} moved to room ${newRoomID}.`);
-                console.log('playerRef: ' + playerRef.key);
-
                 // Get the new room's data
                 roomsRef.child("room " + newRoomID).once('value', async (snapshot) => {
                   if (!snapshot.exists()) {
@@ -150,10 +141,6 @@ if (command === 'north') {
                   } else {
                     const replyMessage = await lookAround(snapshot, roomsRef);
                     message.reply(replyMessage);
-                    console.log(replyMessage);
-                    // console.log('snapshot north', snapshot.val().north);
-                    // console.log('snapshot val all', snapshot.val());
-                    console.log('debug 3', playerRef.current_room, playerRef.name, playerRef.currentRoom);
                   }
                 });
               }
@@ -166,6 +153,7 @@ if (command === 'north') {
     }
   });
 }
+
 
 
 
