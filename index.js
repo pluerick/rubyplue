@@ -322,7 +322,7 @@ if (command === 'blast') {
 //Handle the "haiku" command
 if (command === 'haiku') {
   const haiku = await generateHaiku();
-  console.log('haiku ran 2');
+  console.log('haiku ran 3');
   message.reply(haiku);
 }
 
