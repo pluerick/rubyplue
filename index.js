@@ -101,7 +101,7 @@ client.on('message', async message => {
 if (command === 'north') {
   const playerName = message.author.username;
   const serverName = message.guild.name;
-  const playerRef = admin.database().ref(`test1/${serverName}/players/${name}`);
+  const playerRef = admin.database().ref(`test1/${serverName}/players/${playerName}`);
   playerRef.once('value', (snapshot) => {
     const playerData = snapshot.val();
     if (playerData) {
