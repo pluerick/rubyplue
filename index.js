@@ -428,25 +428,6 @@ async function generateHaiku() {
 }
 
 
-const SCREEN_WIDTH = 20;
-const SCREEN_HEIGHT = 10;
-
-//Handle the "screnbox" command
-if (command === 'screenbox')  {
-  const horizontalBorder = '═'.repeat(SCREEN_WIDTH);
-  const verticalBorder = '║' + ' '.repeat(SCREEN_WIDTH - 2) + '║\n';
-  const content = ' '.repeat(Math.floor((SCREEN_WIDTH - 11) / 2)) + 'Screen Box' + ' '.repeat(Math.ceil((SCREEN_WIDTH - 11) / 2));
-  const box = '```' + '\n' +
-              '╔' + horizontalBorder + '╗\n' +
-              verticalBorder.repeat(Math.floor((SCREEN_HEIGHT - 2) / 2)) +
-              '║' + content + verticalBorder.slice(1) +
-              verticalBorder.repeat(Math.ceil((SCREEN_HEIGHT - 2) / 2)) +
-              '╚' + horizontalBorder + '╝\n' +
-              '```';
-
-  await msg.channel.send(box);
-}
-
 
 
 }});
