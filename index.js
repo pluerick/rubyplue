@@ -132,7 +132,7 @@ if (command === 'look') {
         if (!snapshot.exists()) {
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
         } else {
-          const replyMessage = await lookAround();
+          const replyMessage = await lookAround(snapshot, roomsRef);
           message.reply(replyMessage);
         }
       });
@@ -140,7 +140,7 @@ if (command === 'look') {
   });
 }
 
-async function lookAround(){
+async function lookAround(snapshot, roomsRef){
 
           // Get the current room's data
           const currentRoom = snapshot.val();
