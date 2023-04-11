@@ -67,7 +67,7 @@ if (command === 'start') {
     // Get the ID of the first room
     const roomsRef = serverRef.child("rooms");
     roomsRef.orderByKey().limitToFirst(1).once('value', snapshot => {
-      const roomId = Object.keys(snapshot.val())[0];
+      const roomId = Object.keys(snapshot.val())[0].slice(-1);
 
       // Check if the player is already in the database, if not, add them
       const playersRef = serverRef.child("players");
