@@ -114,7 +114,12 @@ if (command === 'test') {
 
 
 // Handle the movement commands
-if (command === 'north' || command === 'south' || command === 'east' || command === 'west') {
+if (command === 'north' || command === 'south' || command === 'east' || command === 'west' || command === 'n' || command === 's' || command === 'e' || command === 'w') {
+  if (command === 'n' ){command = 'north'};
+  if (command === 's' ){command = 'south'};
+  if (command === 'e' ){command = 'east'};
+  if (command === 'w' ){command = 'west'};
+  
   // Check if the player exists in the database
   playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
     if (!snapshot.exists()) {
