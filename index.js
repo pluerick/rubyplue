@@ -113,8 +113,44 @@ if (command === 'test') {
 
 // Handle the "north" command
 if (command === 'north') {
-  console.log("north");
+
+  // Check if the player exists in the database
+  playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
+    } else {
+      // Get the player's current room ID
+      const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
+
+      // Get the current room's data
+      roomsRef.child("room " + currentRoomID).once('value', async (snapshot) => {
+        if (!snapshot.exists()) {
+          message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
+        } else {
+          // Check if there is a room to the north
+          if (snapshot.val().north) {
+            // Update the player's current room to the room to the north
+            const newRoomID = snapshot.val().north;
+            playersRef.child(Object.keys(snapshot.val())[0]).update({ current_room: newRoomID });
+
+            // Get the new room's data
+            roomsRef.child("room " + newRoomID).once('value', async (snapshot) => {
+              if (!snapshot.exists()) {
+                message.reply(`Sorry, ${playerName}, the new room does not exist in the database.`);
+              } else {
+                const replyMessage = await lookAround(snapshot, roomsRef);
+                message.reply(replyMessage);
+              }
+            });
+          } else {
+            message.reply(`Sorry, ${playerName}, there is no room to the north.`);
+          }
+        }
+      });
+    }
+  });
 }
+
 
 
 
