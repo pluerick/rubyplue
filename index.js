@@ -129,7 +129,7 @@ if (command === 'north') {
           if (snapshot.val().north) {
             // Update the player's current room to the room to the north
             const newRoomID = snapshot.val().north;
-            const playerRef = snapshot.ref.parent.child('players').child(Object.keys(snapshot.val())[0]);
+            const playerRef = playersRef.child(Object.keys(snapshot.val())[0]).child('current_room');
             console.log(Object.keys(snapshot.val())[0]);
             playerRef.update({ current_room: newRoomID }, (error) => {
               if (error) {
