@@ -120,8 +120,11 @@ if (command === 'north' || command === 'south' || command === 'east' || command 
     if (!snapshot.exists()) {
       message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
     } else {
+      // Get the player's unique ID
+      const playerID = Object.keys(snapshot.val())[0];
+
       // Get the player's current room ID
-      const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
+      const currentRoomID = snapshot.val()[playerID].current_room;
 
       // Get the current room's data
       roomsRef.child("room " + currentRoomID).once('value', async (snapshot) => {
@@ -141,8 +144,7 @@ if (command === 'north' || command === 'south' || command === 'east' || command 
           if (direction) {
             // Update the player's current room to the new room in the appropriate direction
             const newRoomID = snapshot.val()[direction];
-            const playerID = Object.keys(snapshot.val())[0];
-            const playerRef = playersRef.child(Object.keys(snapshot.val())[0]);
+            const playerRef = playersRef.child(playerID);
             playerRef.child('current_room').set(newRoomID, (error) => {
               if (error) {
                 message.reply(`Sorry, ${playerName}, there was an error updating your current room.`);
