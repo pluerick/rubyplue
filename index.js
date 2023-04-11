@@ -98,6 +98,27 @@ client.on('message', async message => {
 }
 
 
+if (command === 'north') {
+  const player = database.getPlayer(playerId);
+  if (player) {
+    const currentRoom = player.current_room;
+    const room = database.getRoom(currentRoom);
+    if (room && room.north) {
+      const newRoom = database.getRoom(room.north);
+      if (newRoom) {
+        database.updatePlayer(playerId, { current_room: newRoom.id });
+        return `You have moved north to ${newRoom.name}.`;
+      } else {
+        return "Sorry, there seems to be an error with the room you are trying to move to.";
+      }
+    } else {
+      return "Sorry, you cannot move north from this room.";
+    }
+  } else {
+    return "Sorry, we could not find your player information in the database.";
+  }
+}
+
 
 // Handle the "test" command
 if (command === 'test') {
