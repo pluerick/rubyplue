@@ -26,8 +26,6 @@ const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
 // Define the cardinal directions
 const directions = ["north", "south", "east", "west"];
 
-
-
 client.once('ready', () => {
 console.log('RubyBot lives!');
 });
@@ -50,62 +48,58 @@ const serverName = message.guild.name;
 
 // Handle the 'start') command
 if (command === 'start') {
-// Get the name of the Discord server where the command was generated
-const serverName = message.guild.name;
-
-// Set up a Firebase Realtime Database reference to the server's data
-const serverRef = admin.database().ref(`test1/${serverName}`);
-
-// Check if the server's data exists in the database
-serverRef.once("value", serverSnapshot => {
-if (!serverSnapshot.exists()) {
+  // Set up a Firebase Realtime Database reference to the server's data
+  const serverRef = admin.database().ref(`test1/${serverName}`);
+  // Check if the server's data exists in the database
+  serverRef.once("value", serverSnapshot => {
+  if (!serverSnapshot.exists()) {
   // The server's data doesn't exist in the database, inform the user and take no further action
   message.reply(`Sorry, ${serverName} is not registered in the game. Use the 'generate' command to create a new game database.`);
-} else {
+  } else {
   // The server's data exists in the database, check if the player already exists
   const playerName = message.author.username;
   const playersRef = admin.database().ref(`test1/${serverName}/players`);
   playersRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
-    if (snapshot.exists()) {
-      message.reply(`You have already started the game!`);
-    } else {
-      // Get the ID of the first room
-      const roomsRef = serverRef.child("rooms");
-      roomsRef.orderByKey().limitToFirst(1).once('value', snapshot => {
-        const roomId = Object.keys(snapshot.val())[0];
+  if (snapshot.exists()) {
+    message.reply(`You have already started the game!`);
+  } else {
+    // Get the ID of the first room
+    const roomsRef = serverRef.child("rooms");
+    roomsRef.orderByKey().limitToFirst(1).once('value', snapshot => {
+      const roomId = Object.keys(snapshot.val())[0];
 
-        // Check if the player is already in the database, if not, add them
-        const playersRef = serverRef.child("players");
-        playersRef.orderByChild("name").equalTo(playerName).once("value", (playerSnapshot) => {
-          if (playerSnapshot.exists()) {
-            message.reply(`You have already started the game!`);
-          } else {
-            // Add the player's name and current room to the database
-            const playerData = {
-              name: playerName,
-              current_room: roomId,
-            };
-            playersRef.push(playerData)
-              .then(() => {
-                message.reply(`Welcome to the game, ${playerName}! Your name and current room have been added to the database.`);
-              })
-              .catch((error) => {
-                console.error(error);
-                message.reply(`Sorry, there was an error adding your name and current room to the database.`);
-              });
-          }
-        });
-      }, error => {
-        console.error(error);
-        message.reply(`Sorry, there was an error accessing the database.`);
+      // Check if the player is already in the database, if not, add them
+      const playersRef = serverRef.child("players");
+      playersRef.orderByChild("name").equalTo(playerName).once("value", (playerSnapshot) => {
+        if (playerSnapshot.exists()) {
+          message.reply(`You have already started the game!`);
+        } else {
+          // Add the player's name and current room to the database
+          const playerData = {
+            name: playerName,
+            current_room: roomId,
+          };
+          playersRef.push(playerData)
+            .then(() => {
+              message.reply(`Welcome to the game, ${playerName}! Your name and current room have been added to the database.`);
+            })
+            .catch((error) => {
+              console.error(error);
+              message.reply(`Sorry, there was an error adding your name and current room to the database.`);
+            });
+        }
       });
-    }
+    }, error => {
+      console.error(error);
+      message.reply(`Sorry, there was an error accessing the database.`);
+    });
+  }
   });
-}
-}, error => {
-console.error(error);
-message.reply(`Sorry, there was an error accessing the database.`);
-});
+  }
+  }, error => {
+  console.error(error);
+  message.reply(`Sorry, there was an error accessing the database.`);
+  });
 }
 
 // Handle the "test" command
@@ -313,8 +307,8 @@ async function generateHaiku() {
 }
 
 
-
-
 }});
+
+
 
 client.login(process.env.TOKEN);
