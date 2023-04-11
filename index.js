@@ -17,147 +17,87 @@ const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
 
 // Initialize the Firebase Admin SDK with the service account key
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://rubyplue-a4332-default-rtdb.firebaseio.com"
+credential: admin.credential.cert(serviceAccount),
+databaseURL: "https://rubyplue-a4332-default-rtdb.firebaseio.com"
 });
 
 client.once('ready', () => {
-  console.log('RubyBot lives!');
+console.log('RubyBot lives!');
 });
 
 client.on('message', async message => {
-  const activity = 'Hello, world!'; // Initialize activity to a string value
-  client.user.setActivity(activity);
+const activity = 'Hello, world!'; // Initialize activity to a string value
+client.user.setActivity(activity);
 
-  // Only respond to messages sent by humans (not bots)
-  if (message.author.bot) return;
+// Only respond to messages sent by humans (not bots)
+if (message.author.bot) return;
 
-  // Check if the message starts with a question mark
-  if (message.content.startsWith('?')) {
-    // Parse the command and arguments
-    const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
-    const serverName = message.guild.name;
- 
-    if (command === 'start') {
-  // Get the name of the Discord server where the command was generated
-  const serverName = message.guild.name;
+// Check if the message starts with a question mark
+if (message.content.startsWith('?')) {
 
-  // Set up a Firebase Realtime Database reference to the server's data
-  const serverRef = admin.database().ref(`test1/${serverName}`);
+// Parse the command and arguments
+const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
+const serverName = message.guild.name;
 
-  // Check if the server's data exists in the database
-  serverRef.once("value", serverSnapshot => {
-    if (!serverSnapshot.exists()) {
-      // The server's data doesn't exist in the database, inform the user and take no further action
-      message.reply(`Sorry, ${serverName} is not registered in the game. Use the 'generate' command to create a new game database.`);
+// Handle the 'start') command
+if (command === 'start') {
+// Get the name of the Discord server where the command was generated
+const serverName = message.guild.name;
+
+// Set up a Firebase Realtime Database reference to the server's data
+const serverRef = admin.database().ref(`test1/${serverName}`);
+
+// Check if the server's data exists in the database
+serverRef.once("value", serverSnapshot => {
+if (!serverSnapshot.exists()) {
+  // The server's data doesn't exist in the database, inform the user and take no further action
+  message.reply(`Sorry, ${serverName} is not registered in the game. Use the 'generate' command to create a new game database.`);
+} else {
+  // The server's data exists in the database, check if the player already exists
+  const playerName = message.author.username;
+  const playersRef = admin.database().ref(`test1/${serverName}/players`);
+  playersRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
+    if (snapshot.exists()) {
+      message.reply(`You have already started the game!`);
     } else {
-      // The server's data exists in the database, check if the player already exists
-      const playerName = message.author.username;
-      const playersRef = admin.database().ref(`test1/${serverName}/players`);
-      playersRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
-        if (snapshot.exists()) {
-          message.reply(`You have already started the game!`);
-        } else {
-          // Get the ID of the first room
-          const roomsRef = serverRef.child("rooms");
-          roomsRef.orderByKey().limitToFirst(1).once('value', snapshot => {
-            const roomId = Object.keys(snapshot.val())[0];
+      // Get the ID of the first room
+      const roomsRef = serverRef.child("rooms");
+      roomsRef.orderByKey().limitToFirst(1).once('value', snapshot => {
+        const roomId = Object.keys(snapshot.val())[0];
 
-            // Check if the player is already in the database, if not, add them
-            const playersRef = serverRef.child("players");
-            playersRef.orderByChild("name").equalTo(playerName).once("value", (playerSnapshot) => {
-              if (playerSnapshot.exists()) {
-                message.reply(`You have already started the game!`);
-              } else {
-                // Add the player's name and current room to the database
-                const playerData = {
-                  name: playerName,
-                  current_room: roomId,
-                };
-                playersRef.push(playerData)
-                  .then(() => {
-                    message.reply(`Welcome to the game, ${playerName}! Your name and current room have been added to the database.`);
-                  })
-                  .catch((error) => {
-                    console.error(error);
-                    message.reply(`Sorry, there was an error adding your name and current room to the database.`);
-                  });
-              }
-            });
-          }, error => {
-            console.error(error);
-            message.reply(`Sorry, there was an error accessing the database.`);
-          });
-        }
+        // Check if the player is already in the database, if not, add them
+        const playersRef = serverRef.child("players");
+        playersRef.orderByChild("name").equalTo(playerName).once("value", (playerSnapshot) => {
+          if (playerSnapshot.exists()) {
+            message.reply(`You have already started the game!`);
+          } else {
+            // Add the player's name and current room to the database
+            const playerData = {
+              name: playerName,
+              current_room: roomId,
+            };
+            playersRef.push(playerData)
+              .then(() => {
+                message.reply(`Welcome to the game, ${playerName}! Your name and current room have been added to the database.`);
+              })
+              .catch((error) => {
+                console.error(error);
+                message.reply(`Sorry, there was an error adding your name and current room to the database.`);
+              });
+          }
+        });
+      }, error => {
+        console.error(error);
+        message.reply(`Sorry, there was an error accessing the database.`);
       });
     }
-  }, error => {
-    console.error(error);
-    message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
-if (command === 'north') {
-  // Get the player's Discord name and server name
-  const playerName = message.author.username;
-  const serverName = message.guild.name;
-
-  // Set up a Firebase Realtime Database reference to the players table
-  const playersRef = admin.database().ref(`test1/${serverName}/players`);
-
-  // Check if the player exists in the database
-  playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
-    if (!snapshot.exists()) {
-      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
-    } else {
-      // Get the player's current room ID
-      const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
-
-      // Set up a Firebase Realtime Database reference to the rooms table
-      const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
-
-      // Get the current room object
-      const currentRoomSnapshot = await roomsRef.child(currentRoomID).once('value');
-      const currentRoom = currentRoomSnapshot.val();
-
-      // Check if there is a room to the north
-      if (!currentRoom.north) {
-        message.reply(`Sorry, ${playerName}, there is no room to the north.`);
-      } else {
-        // Get the ID of the room to the north
-        const northRoomID = currentRoom.north;
-
-        // Update the player's current room in the database
-        playersRef.child(Object.keys(snapshot.val())[0]).child('current_room').set(northRoomID);
-
-        // Get the data for the new current room
-        const northRoomDataSnapshot = await roomsRef.child(northRoomID).once('value');
-        const northRoomData = northRoomDataSnapshot.val();
-
-        // Create a message with the new current room's name and description
-        let replyMessage = `You move north and enter ${northRoomData.name}. ${northRoomData.description}\n`;
-        console( northRoomID );
-      console(northRoomDataSnapshot );
-      
-
-        // Check each direction for an adjacent room
-        const directions = ["north", "south", "east", "west"];
-        for (const direction of directions) {
-          if (northRoomData[direction]) {
-            const neighborRoomID = northRoomData[direction];
-            const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
-            const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
-            replyMessage += `To the ${direction}, you can see ${neighborRoomName}.\n`;
-          }
-        }
-
-        // Send the message to the player
-        message.reply(replyMessage);
-      }
-    }
-  });
+}, error => {
+console.error(error);
+message.reply(`Sorry, there was an error accessing the database.`);
+});
 }
-
-
 
 // Handle the "test" command
 if (command === 'test') {
@@ -192,6 +132,16 @@ if (command === 'look') {
         if (!snapshot.exists()) {
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
         } else {
+          const replyMessage = await lookAround();
+          message.reply(replyMessage);
+        }
+      });
+    }
+  });
+}
+
+async function lookAround(){
+
           // Get the current room's data
           const currentRoom = snapshot.val();
 
@@ -209,14 +159,9 @@ if (command === 'look') {
             }
           }
 
-          // Send the message to the player
-          message.reply(replyMessage);
+          // Return the message
+          return replyMessage;
         }
-      });
-    }
-  });
-}
-
 
 
     
