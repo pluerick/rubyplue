@@ -4,10 +4,12 @@ const client = new Discord.Client();
 const admin = require('firebase-admin');
 const FormData = require('form-data');
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID;
-const { createCanvas, loadImage } = require('canvas');
 const fs = require('fs');
 const openaiapi = require('openai-api');
 const prefix = '?';
+
+// Parse the service account key JSON string from the environment variable
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
 
 // Initialize the Firebase Admin SDK with the service account key
 admin.initializeApp({
@@ -23,9 +25,6 @@ const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
 
 // Define the cardinal directions
 const directions = ["north", "south", "east", "west"];
-
-// Parse the service account key JSON string from the environment variable
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
 
 
 
