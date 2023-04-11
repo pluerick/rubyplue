@@ -131,18 +131,25 @@ if (command === 'north') {
           if (snapshot.val().north) {
             // Update the player's current room to the room to the north
             const newRoomID = snapshot.val().north;
-            playersRef.child(Object.keys(snapshot.val())[0]).update({ current_room: newRoomID });
-            console.log(`Player ${playerName} moved to room ${newRoomID}.`);
-            console.log('playerRef: ' + Object.keys(snapshot.val())[0]);
-            
 
-            // Get the new room's data
-            roomsRef.child("room " + newRoomID).once('value', async (snapshot) => {
-              if (!snapshot.exists()) {
-                message.reply(`Sorry, ${playerName}, the new room does not exist in the database.`);
+            // Fix the update statement to use the correct player reference
+            const playerRef = playersRef.child(Object.keys(snapshot.val())[0]);
+            playerRef.update({ current_room: newRoomID }, (error) => {
+              if (error) {
+                message.reply(`Sorry, ${playerName}, there was an error updating your current room.`);
               } else {
-                const replyMessage = await lookAround(snapshot, roomsRef);
-                message.reply(replyMessage);
+                console.log(`Player ${playerName} moved to room ${newRoomID}.`);
+                console.log('playerRef: ' + playerRef.key);
+
+                // Get the new room's data
+                roomsRef.child("room " + newRoomID).once('value', async (snapshot) => {
+                  if (!snapshot.exists()) {
+                    message.reply(`Sorry, ${playerName}, the new room does not exist in the database.`);
+                  } else {
+                    const replyMessage = await lookAround(snapshot, roomsRef);
+                    message.reply(replyMessage);
+                  }
+                });
               }
             });
           } else {
