@@ -17,11 +17,6 @@ credential: admin.credential.cert(serviceAccount),
 databaseURL: "https://rubyplue-a4332-default-rtdb.firebaseio.com"
 });
 
-// Set up a Firebase Realtime Database reference to the players table
-const playersRef = admin.database().ref(`test1/${serverName}/players`);
-
-// Set up a Firebase Realtime Database reference to the rooms table
-const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
 
 // Define the cardinal directions
 const directions = ["north", "south", "east", "west"];
@@ -35,6 +30,12 @@ client.on('message', async message => {
 const playerName = message.author.username;
 // Get the name of the Discord server where the command was generated
 const serverName = message.guild.name;
+
+// Set up a Firebase Realtime Database reference to the players table
+const playersRef = admin.database().ref(`test1/${serverName}/players`);
+
+// Set up a Firebase Realtime Database reference to the rooms table
+const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
 
 // Only respond to messages sent by humans (not bots)
 if (message.author.bot) return;
