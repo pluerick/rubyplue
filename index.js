@@ -431,12 +431,10 @@ async function generateHaiku() {
 if (command === 'screenbox') {
   const channelId = message.channel.id;
   console.log(channelId);
-  await sendAsciiBox(channelId);
-  
+  await sendAsciiBox(client, channelId);
 }
 
-
-async function sendAsciiBox(channelId) {
+async function sendAsciiBox(client, channelId) {
   const screenContent = "no input";
   const boxWidth = 40;
   const boxHeight = 10;
@@ -451,8 +449,6 @@ async function sendAsciiBox(channelId) {
   // Send the message
   channel.send(`\`\`\`${asciiBox}\`\`\``);
 }
-
-
 
 }});
 
