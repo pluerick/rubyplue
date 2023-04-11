@@ -18,10 +18,11 @@ databaseURL: "https://rubyplue-a4332-default-rtdb.firebaseio.com"
 });
 
 
+
 // Define the cardinal directions
 const directions = ["north", "south", "east", "west"];
 
-client.once('ready', () => {
+client.on('ready', () => {
 console.log('RubyBot lives!');
 });
 
