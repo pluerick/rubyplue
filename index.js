@@ -219,7 +219,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 2',
-      description: 'some dumb fucking description',
+      description: await generateDescription(args),
       north: 5,
       west: 1,
       east: 3,
@@ -227,7 +227,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 3',
-      description: 'some dumb fucking description',
+      description: await generateDescription(args),
       north: 6,
       west: 2,
       east: 0,
@@ -235,7 +235,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 4',
-      description: 'some dumb fucking description',
+      description: await generateDescription(args),
       north: 0,
       west: 0,
       east: 5,
@@ -243,7 +243,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 5',
-      description: 'some dumb fucking description',
+      description: await generateDescription(args),
       north: 0,
       west: 4,
       east: 6,
@@ -251,7 +251,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 6',
-      description: 'some dumb fucking description',
+      description: await generateDescription(args),
       north: 0,
       west: 5,
       east: 0,
@@ -259,7 +259,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 7',
-      description: 'some dumb fucking description',
+      description: await generateDescription(args),
       north: 1,
       west: 0,
       east: 8,
@@ -267,7 +267,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 8',
-      description: 'some dumb fucking description',
+      description: await generateDescription(args),
       north: 2,
       west: 7,
       east: 9,
@@ -275,7 +275,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 9',
-      description: 'some dumb fucking description',
+      description: await generateDescription(args),
       north: 3,
       west: 8,
       east: 0,
