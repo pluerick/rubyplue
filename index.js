@@ -399,7 +399,7 @@ client.on('ready', () => {
 
 //Handle the "haiku" command
 if (command === 'haiku') {
-  playerNameuser.send('look, a dm!');
+  playerName.send('look, a dm!');
 
 
   // const haiku = await generateHaiku();
