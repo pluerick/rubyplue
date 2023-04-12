@@ -413,28 +413,28 @@ async function lookAround(snapshot, roomsRef){
   return replyMessage;
 }
 
-// async function generateDungeonRoomDescription(apiKey) {
-//   const roomCount = Math.floor(Math.random() * (100 - 50 + 1) + 50); // Generate a random number between 50 and 100
-//   const prompt = `You enter a dungeon room. It is one of ${roomCount} in this level. The room is...`;
+async function generateDungeonRoomDescription(apiKey) {
+  const roomCount = Math.floor(Math.random() * (100 - 50 + 1) + 50); // Generate a random number between 50 and 100
+  const prompt = `You enter a dungeon room. It is one of ${roomCount} in this level. The room is...`;
   
-//   const response = await axios({
-//     method: 'POST',
-//     url: 'https://api.openai.com/v1/engines/davinci/completions',
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Authorization': `Bearer ${apiKey}`,
-//     },
-//     data: {
-//       prompt,
-//       max_tokens: 1000,
-//       n: 1,
-//       stop: '\n',
-//     },
-//   });
+  const response = await axios({
+    method: 'POST',
+    url: 'https://api.openai.com/v1/engines/davinci/completions',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    data: {
+      prompt,
+      max_tokens: 1000,
+      n: 1,
+      stop: '\n',
+    },
+  });
   
-//   const description = response.data.choices[0].text.trim();
-//   return description;
-// }
+  const description = response.data.choices[0].text.trim();
+  return description;
+}
 
 
 async function generateHaiku() {
