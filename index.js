@@ -211,7 +211,7 @@ if (command === 'generate') {
   const roomsData = [
     {
       name: 'room 1',
-      description: generateDescription(),
+      description: await generateDescription(args),
       north: 4,
       west: 0,
       east: 2,
@@ -353,7 +353,7 @@ async function lookAround(snapshot, roomsRef){
 }
 
 
-async function generateDescription() {
+async function generateDescription(args) {
   const OpenAI = require('openai-api');
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
