@@ -105,8 +105,8 @@ if (command === 'start') {
   });
 }
 
-// Handle the "test" command
-if (command === 'test') {
+// Handle the "setmaproom" command
+if (command === 'setmaproom') {
   // Get the player's Discord name
   const playerName = message.author.username;
   const serverName = message.guild.name;
