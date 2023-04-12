@@ -210,7 +210,7 @@ if (command === 'generate') {
   const roomsData = [
     {
       name: 'room 1',
-      description: 'A description of the room',
+      description: await generateDungeonRoomDescription(),
       north: 4,
       west: 0,
       east: 2,
@@ -218,7 +218,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 2',
-      description: 'A description of the room',
+      description: await generateDungeonRoomDescription(),
       north: 5,
       west: 1,
       east: 3,
@@ -226,7 +226,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 3',
-      description: 'A description of the room',
+      description: await generateDungeonRoomDescription(),
       north: 6,
       west: 2,
       east: 0,
@@ -234,7 +234,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 4',
-      description: 'A description of the room',
+      description: await generateDungeonRoomDescription(),
       north: 0,
       west: 0,
       east: 5,
@@ -242,7 +242,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 5',
-      description: 'A description of the room',
+      description: await generateDungeonRoomDescription(),
       north: 0,
       west: 4,
       east: 6,
@@ -250,7 +250,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 6',
-      description: 'A description of the room',
+      description: await generateDungeonRoomDescription(),
       north: 0,
       west: 5,
       east: 0,
@@ -258,7 +258,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 7',
-      description: 'A description of the room',
+      description: await generateDungeonRoomDescription(),
       north: 1,
       west: 0,
       east: 8,
@@ -266,7 +266,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 8',
-      description: 'A description of the room',
+      description: await generateDungeonRoomDescription(),
       north: 2,
       west: 7,
       east: 9,
@@ -274,13 +274,15 @@ if (command === 'generate') {
     },
     {
       name: 'room 9',
-      description: 'A description of the room',
+      description: await generateDungeonRoomDescription(),
       north: 3,
       west: 8,
       east: 0,
       south: 6,
     },
   ];
+}
+
 
   roomsRef.once('value', (snapshot) => {
     const data = snapshot.val();
@@ -411,7 +413,8 @@ async function lookAround(snapshot, roomsRef){
   return replyMessage;
 }
 
-
+console('debug 1');
+console('')
 async function generateDungeonRoomDescription() {
   const roomCount = Math.floor(Math.random() * (100 - 50 + 1) + 50); // Generate a random number between 50 and 100
   const prompt = `You enter a dungeon room. It is one of ${roomCount} in this level. The room is...`;
