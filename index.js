@@ -107,11 +107,24 @@ if (command === 'start') {
 
 // Handle the "setmaproom" command
 if (command === 'setmaproom') {
-  // Get the player's Discord name
-  const playerName = message.author.username;
   const serverName = message.guild.name;
-  console.log('updated');
-  message.reply(`You are ${playerName} on ${serverName}.`);
+  const channelId = message.channel.id;
+
+ // Reference to the servername node of the database .test1.[servernames]
+ const roomsRef = admin.database().ref(`test1/${serverName}`);
+
+ // Set the channel ID as a new node under the current server
+ roomsRef.child('mapRoom').set(channelId)
+   .then(() => {
+     // Send a confirmation message to the same channel
+     message.channel.send(`Map room has been set to this channel (ID: ${channelId})`);
+   })
+   .catch((error) => {
+     console.error(error);
+     // Send an error message to the same channel
+     message.channel.send('An error occurred while setting the map room. Please try again later.');
+   });
+
 }
 
 
