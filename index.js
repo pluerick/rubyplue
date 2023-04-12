@@ -281,7 +281,7 @@ if (command === 'generate') {
       south: 6,
     },
   ];
-}
+
 
 
   roomsRef.once('value', (snapshot) => {
