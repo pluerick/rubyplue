@@ -210,7 +210,7 @@ if (command === 'generate') {
   const roomsData = [
     {
       name: 'room 1',
-      description: await generateDungeonRoomDescription(),
+      description: 'some dumb fucking description',
       north: 4,
       west: 0,
       east: 2,
@@ -218,7 +218,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 2',
-      description: await generateDungeonRoomDescription(),
+      description: 'some dumb fucking description',
       north: 5,
       west: 1,
       east: 3,
@@ -226,7 +226,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 3',
-      description: await generateDungeonRoomDescription(),
+      description: 'some dumb fucking description',
       north: 6,
       west: 2,
       east: 0,
@@ -234,7 +234,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 4',
-      description: await generateDungeonRoomDescription(),
+      description: 'some dumb fucking description',
       north: 0,
       west: 0,
       east: 5,
@@ -242,7 +242,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 5',
-      description: await generateDungeonRoomDescription(),
+      description: 'some dumb fucking description',
       north: 0,
       west: 4,
       east: 6,
@@ -250,7 +250,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 6',
-      description: await generateDungeonRoomDescription(),
+      description: 'some dumb fucking description',
       north: 0,
       west: 5,
       east: 0,
@@ -258,7 +258,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 7',
-      description: await generateDungeonRoomDescription(),
+      description: 'some dumb fucking description',
       north: 1,
       west: 0,
       east: 8,
@@ -266,7 +266,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 8',
-      description: await generateDungeonRoomDescription(),
+      description: 'some dumb fucking description',
       north: 2,
       west: 7,
       east: 9,
@@ -274,7 +274,7 @@ if (command === 'generate') {
     },
     {
       name: 'room 9',
-      description: await generateDungeonRoomDescription(),
+      description: 'some dumb fucking description',
       north: 3,
       west: 8,
       east: 0,
@@ -413,28 +413,6 @@ async function lookAround(snapshot, roomsRef){
   return replyMessage;
 }
 
-async function generateDungeonRoomDescription(apiKey) {
-  const roomCount = Math.floor(Math.random() * (100 - 50 + 1) + 50); // Generate a random number between 50 and 100
-  const prompt = `You enter a dungeon room. It is one of ${roomCount} in this level. The room is...`;
-  
-  const response = await axios({
-    method: 'POST',
-    url: 'https://api.openai.com/v1/engines/davinci/completions',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    data: {
-      prompt,
-      max_tokens: 1000,
-      n: 1,
-      stop: '\n',
-    },
-  });
-  
-  const description = response.data.choices[0].text.trim();
-  return description;
-}
 
 
 async function generateHaiku() {
