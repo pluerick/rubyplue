@@ -369,8 +369,8 @@ async function generateDescription() {
     temperature: 0.7
   });
 
-  const haiku = gptResponse.data.choices[0].text.trim();
-  return haiku;
+  const GeneratedDesc = gptResponse.data.choices[0].text.trim();
+  return GeneratedDesc;
 }
 
 
