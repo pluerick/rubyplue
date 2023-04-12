@@ -370,6 +370,7 @@ async function generateDescription() {
   });
 
   const GeneratedDesc = gptResponse.data.choices[0].text.trim();
+  console.log(GeneratedDesc);
   return GeneratedDesc;
 }
 
