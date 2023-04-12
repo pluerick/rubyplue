@@ -416,6 +416,7 @@ async function lookAround(snapshot, roomsRef){
 
 async function generateDungeonRoomDescription() {
   const roomCount = Math.floor(Math.random() * (100 - 50 + 1) + 50); // Generate a random number between 50 and 100
+  const openai = new OpenAI(OPENAI_API_KEY);
   const prompt = `You enter a dungeon room. It is one of ${roomCount} in this level. The room is...`;
   const response = await openai.complete({
     engine: 'davinci',
@@ -430,7 +431,6 @@ async function generateDungeonRoomDescription() {
 
 async function generateHaiku() {
   const OpenAI = require('openai-api');
- 
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
 
