@@ -110,6 +110,7 @@ if (command === 'test') {
   // Get the player's Discord name
   const playerName = message.author.username;
   const serverName = message.guild.name;
+  console.log('updated');
   message.reply(`You are ${playerName} on ${serverName}.`);
 }
 
