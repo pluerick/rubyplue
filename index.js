@@ -204,9 +204,12 @@ if (command === 'look' || command === 'l') {
   });
 }
 
-    
+
+//Handle the "generate" command
 if (command === 'generate') {
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+
+  message.reply('Generating room descriptions with Open AI! This may take a few seconds...');
 
   const roomsData = [
     {
