@@ -6,6 +6,7 @@ const FormData = require('form-data');
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID;
 const fs = require('fs');
 const openaiapi = require('openai-api');
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const prefix = '?';
 
 // Parse the service account key JSON string from the environment variable
@@ -411,7 +412,7 @@ if (command === 'haiku') {
 
 async function generateHaiku() {
   const OpenAI = require('openai-api');
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+ 
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
 
