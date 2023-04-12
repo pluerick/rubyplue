@@ -203,30 +203,6 @@ if (command === 'look' || command === 'l') {
   });
 }
 
-async function lookAround(snapshot, roomsRef){
-
-          // Get the current room's data
-          const currentRoom = snapshot.val();
-
-          // Create a message with the current room's name and description
-          let replyMessage = `You are currently in ${currentRoom.name}. ${currentRoom.description}\n`;
-
-          // Check each direction for an adjacent room
-          const directions = ["north", "south", "east", "west"];
-          for (const direction of directions) {
-            if (currentRoom[direction]) {
-              const neighborRoomID = currentRoom[direction];
-              const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
-              const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
-              replyMessage += `To the ${direction}, you can see ${neighborRoomName}.\n`;
-            }
-          }
-
-          // Return the message
-          return replyMessage;
-        }
-
-
     
 if (command === 'generate') {
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
@@ -400,7 +376,11 @@ client.on('ready', () => {
 
 //Handle the "haiku" command
 if (command === 'haiku') {
-  message.author.send("TEST");
+  
+
+  
+  
+  //message.author.send("TEST");
 
 
   // const haiku = await generateHaiku();
@@ -408,7 +388,43 @@ if (command === 'haiku') {
   // message.reply(haiku);
 }
 
+async function lookAround(snapshot, roomsRef){
 
+  // Get the current room's data
+  const currentRoom = snapshot.val();
+
+  // Create a message with the current room's name and description
+  let replyMessage = `You are currently in ${currentRoom.name}. ${currentRoom.description}\n`;
+
+  // Check each direction for an adjacent room
+  const directions = ["north", "south", "east", "west"];
+  for (const direction of directions) {
+    if (currentRoom[direction]) {
+      const neighborRoomID = currentRoom[direction];
+      const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
+      const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
+      replyMessage += `To the ${direction}, you can see ${neighborRoomName}.\n`;
+    }
+  }
+
+  // Return the message
+  return replyMessage;
+}
+
+
+async function generateDungeonRoomDescription() {
+  const roomCount = Math.floor(Math.random() * (100 - 50 + 1) + 50); // Generate a random number between 50 and 100
+  const prompt = `You enter a dungeon room. It is one of ${roomCount} in this level. The room is...`;
+  const response = await openai.complete({
+    engine: 'davinci',
+    prompt,
+    maxTokens: 1000,
+    n: 1,
+    stop: '\n',
+  });
+  const description = response.choices[0].text.trim();
+  return description;
+}
 
 async function generateHaiku() {
   const OpenAI = require('openai-api');
