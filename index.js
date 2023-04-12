@@ -211,7 +211,7 @@ if (command === 'generate') {
   const roomsData = [
     {
       name: 'room 1',
-      description: 'some dumb fucking description',
+      description: generateDescription(),
       north: 4,
       west: 0,
       east: 2,
@@ -318,73 +318,11 @@ if (command === 'blast') {
 }
 
 
-//handle the "fractal" command
-
-if (command === 'fractal') { 
-  const { createCanvas, loadImage } = require('canvas');
-const Discord = require('discord.js');
-const fs = require('fs');
-
-// Set up the canvas
-const width = 600;
-const height = 600;
-const canvas = createCanvas(width, height);
-const ctx = canvas.getContext('2d');
-
-// Draw the fractal
-ctx.fillStyle = '#000';
-ctx.fillRect(0, 0, width, height);
-
-function drawFractal(x1, y1, x2, y2, depth) {
-  if (depth === 0) {
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(x1, y1, 1, 1);
-  } else {
-    const xm = (x1 + x2) / 2;
-    const ym = (y1 + y2) / 2;
-    drawFractal(x1, y1, xm, ym, depth - 1);
-    drawFractal(xm, y1, x2, ym, depth - 1);
-    drawFractal(x1, ym, xm, y2, depth - 1);
-    drawFractal(xm, ym, x2, y2, depth - 1);
-  }
-}
-
-drawFractal(0, 0, width, height, 6);
-
-// Save the canvas as a PNG file
-const buffer = canvas.toBuffer('image/png');
-fs.writeFileSync('fractal.png', buffer);
-
-// Create a Discord message with the PNG file as an attachment
-const attachment = new Discord.MessageAttachment(buffer, 'fractal.png');
-const message = new Discord.MessageEmbed()
-  .setTitle('Here is a fractal image!')
-  .setColor('#00ff00')
-  .attachFiles(attachment)
-  .setImage('attachment://fractal.png');
-
-// Send the message to a Discord user
-const client = new Discord.Client();
-client.login('YOUR_DISCORD_BOT_TOKEN');
-
-client.on('ready', () => {
-  const user = client.users.cache.get('USER_ID');
-  user.send(message);
-});
-
-}
-
-
-
 
 //Handle the "haiku" command
 if (command === 'haiku') {
   
-
-  
-  
   //message.author.send("TEST");
-
 
   const haiku = await generateHaiku();
   console.log('haiku ran 4');
@@ -414,6 +352,26 @@ async function lookAround(snapshot, roomsRef){
   return replyMessage;
 }
 
+
+async function generateDescription() {
+  const OpenAI = require('openai-api');
+  const openai = new OpenAI(OPENAI_API_KEY);
+  const subject  = args[0];
+
+  const prompt = 'As you walk into a dungeon room, you see a room. write a description of this room in about 50-75 words.';
+  const model = 'text-davinci-002';
+
+  const gptResponse = await openai.complete({
+    engine: model,
+    prompt: prompt,
+    maxTokens: 50,
+    n: 1,
+    temperature: 0.7
+  });
+
+  const haiku = gptResponse.data.choices[0].text.trim();
+  return haiku;
+}
 
 
 async function generateHaiku() {
