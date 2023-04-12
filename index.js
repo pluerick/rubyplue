@@ -386,9 +386,9 @@ if (command === 'haiku') {
   //message.author.send("TEST");
 
 
-  // const haiku = await generateHaiku();
-  // console.log('haiku ran 3');
-  // message.reply(haiku);
+  const haiku = await generateHaiku();
+  console.log('haiku ran 4');
+  message.reply(haiku);
 }
 
 async function lookAround(snapshot, roomsRef){
