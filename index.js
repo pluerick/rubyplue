@@ -358,7 +358,7 @@ async function generateDescription(args) {
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
 
-  const prompt = 'As you walk into a dungeon room, you see a room. write a description of this room in about 50-75 words.';
+  const prompt = 'Write in the second person perspective describing entering a room in a dungeon in 10-30 words.';
   const model = 'text-davinci-002';
 
   const gptResponse = await openai.complete({
