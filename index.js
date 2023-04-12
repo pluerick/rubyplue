@@ -399,8 +399,7 @@ client.on('ready', () => {
 
 //Handle the "haiku" command
 if (command === 'haiku') {
-  const user = await client.users.fetch(playerName);
-  user.send('look, a dm!');
+  message.author.send("TEST");
 
 
   // const haiku = await generateHaiku();
@@ -412,7 +411,7 @@ if (command === 'haiku') {
 
 async function generateHaiku() {
   const OpenAI = require('openai-api');
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // Make sure you have an API key and set it as an environment variable
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
 
