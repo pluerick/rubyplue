@@ -40,6 +40,9 @@ const playersRef = admin.database().ref(`test1/${serverName}/players`);
 // Set up a Firebase Realtime Database reference to the rooms table
 const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
 
+ // Set up a Firebase Realtime Database reference to the server's data
+ const serverRef = admin.database().ref(`test1/${serverName}`);
+
 // Only respond to messages sent by humans (not bots)
 if (message.author.bot) return;
 
