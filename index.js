@@ -431,14 +431,10 @@ async function generateDescription(args) {
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
   let prompt = 'From the second person perspective of a person as they enter a room, describe a dungeon room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room.';
-  serverRef.child('worldDesc').once('value', (snapshot) => {
-    let worldPrompt = snapshot.exists() ? snapshot.val() : 0;
-    });
-    console.log('debug 1');
-    console.log(worldPrompt);
   if (worldPrompt !== 0) {
     prompt += ` Here's a description of the world this dungeon exists in: ${worldPrompt}.`;
   }
+  console.log(prompt);
   const model = 'text-davinci-002';
 
   const gptResponse = await openai.complete({
