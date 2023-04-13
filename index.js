@@ -461,7 +461,7 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
   if (global.worldPrompt !== 0) {
     prompt += ` Here's a description of the world this dungeon exists in: ${global.worldPrompt}.`;
   }
-  //console.log(prompt);
+  console.log(prompt);
   const model = 'text-davinci-002';
 
   const gptResponse = await openai.complete({
