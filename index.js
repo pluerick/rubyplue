@@ -8,7 +8,7 @@ const fs = require('fs');
 const openaiapi = require('openai-api');
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const prefix = '?';
-const worldPrompt = 'a basic dungeon medievl world';
+let worldPrompt = 'a basic dungeon medievl world';
 
 // Parse the service account key JSON string from the environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
@@ -430,7 +430,7 @@ async function generateDescription(args) {
   const OpenAI = require('openai-api');
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
-  const prompt = 'From the second person perspective of a person as they enter a room, describe a dungeon room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room.';
+  let prompt = 'From the second person perspective of a person as they enter a room, describe a dungeon room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room.';
   serverRef.child('worldDesc').once('value', (snapshot) => {
     const worldPrompt = snapshot.exists() ? snapshot.val() : 0;
     });
