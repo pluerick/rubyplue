@@ -9,6 +9,7 @@ const openaiapi = require('openai-api');
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const prefix = '?';
 let worldPrompt = '';
+const clearchannelId = message.channel.id;
 
 // Parse the service account key JSON string from the environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
@@ -478,7 +479,6 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
 }
 
 if (command === 'clearchat') {
-  const clearchannelId = message.channel.id;
   clearchannelId.messages.fetch().then((messages) => {
     // Delete all messages in the channel
     clearchannelId.bulkDelete(messages)
