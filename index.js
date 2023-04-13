@@ -110,22 +110,38 @@ if (command === 'setmaproom') {
   const serverName = message.guild.name;
   const channelId = message.channel.id;
 
- // Reference to the servername node of the database .test1.[servernames]
- const roomsRef = admin.database().ref(`test1/${serverName}`);
+  // Reference to the servername node of the database .test1.[servernames]
+  const roomsRef = admin.database().ref(`test1/${serverName}`);
 
- // Set the channel ID as a new node under the current server
- roomsRef.child('mapRoom').set(channelId)
-   .then(() => {
-     // Send a confirmation message to the same channel
-     message.channel.send(`Map room has been set to this channel (ID: ${channelId})`);
-   })
-   .catch((error) => {
-     console.error(error);
-     // Send an error message to the same channel
-     message.channel.send('An error occurred while setting the map room. Please try again later.');
-   });
-
+  // Check if the server already has a maproom and overwrite it if it exists
+  roomsRef.child('mapRoom').once('value', (snapshot) => {
+    if (snapshot.exists()) {
+      roomsRef.child('mapRoom').set(channelId)
+        .then(() => {
+          // Send a confirmation message to the same channel
+          message.channel.send(`Map room has been updated to this channel (ID: ${channelId})`);
+        })
+        .catch((error) => {
+          console.error(error);
+          // Send an error message to the same channel
+          message.channel.send('An error occurred while updating the map room. Please try again later.');
+        });
+    } else {
+      // Create a new mapRoom node with the channelId if it does not exist
+      roomsRef.child('mapRoom').set(channelId)
+        .then(() => {
+          // Send a confirmation message to the same channel
+          message.channel.send(`Map room has been set to this channel (ID: ${channelId})`);
+        })
+        .catch((error) => {
+          console.error(error);
+          // Send an error message to the same channel
+          message.channel.send('An error occurred while setting the map room. Please try again later.');
+        });
+    }
+  });
 }
+
 
 
 
