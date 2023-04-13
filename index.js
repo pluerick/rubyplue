@@ -45,22 +45,6 @@ const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
  // Set up a Firebase Realtime Database reference to the server's data
  const serverRef = admin.database().ref(`test1/${serverName}`);
 
-// Set up a Firebase Realtime Database reference to the worldDesc property
-const worldDescRef = admin.database().ref(`test1/${message.guild.name}/worldDesc`);
-
-// If test1.[servernames].worldDesc exists, set worldDesc to that value
-
-  // Check if the server already has a worldDesc in the database
-  worldDescRef.child('worldDesc').once('value', (snapshot) => {
-    if (snapshot.exists()) {
-      // If it exists, set a variable worldPrompt to the worldDesc value
-      const worldDesc = snapshot.val();
-      const worldPrompt = `The world description: ${worldDesc}`;
-      
-    } else {
-  const worldPrompt = 'a basic medevil world';
-    }
-  });
 
 
 // Only respond to messages sent by humans (not bots)
@@ -451,6 +435,27 @@ async function generateDescription(args) {
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
   let prompt = 'From the second person perspective of a person as they enter a room, describe a dungeon room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room.';
+  
+
+// Set up a Firebase Realtime Database reference to the worldDesc property
+const worldDescRef = admin.database().ref(`test1/${message.guild.name}/worldDesc`);
+
+// If test1.[servernames].worldDesc exists, set worldDesc to that value
+
+  // Check if the server already has a worldDesc in the database
+  worldDescRef.child('worldDesc').once('value', (snapshot) => {
+    if (snapshot.exists()) {
+      // If it exists, set a variable worldPrompt to the worldDesc value
+      const worldDesc = snapshot.val();
+      const worldPrompt = `The world description: ${worldDesc}`;
+      // // Send a message to the same channel with the worldDesc
+      // message.channel.send(worldPrompt);
+    } else {
+  const worldPrompt = 'a basic medevil world';
+    }
+  });
+
+  
   console.log(worldPrompt);
   if (worldPrompt !== 0) {
     prompt += ` Here's a description of the world this dungeon exists in: ${worldPrompt}.`;
