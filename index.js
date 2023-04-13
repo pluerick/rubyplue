@@ -9,6 +9,7 @@ const openaiapi = require('openai-api');
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const prefix = '?';
 
+
 // Parse the service account key JSON string from the environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
 
@@ -149,8 +150,8 @@ if (command === 'setworlddesc') {
    // Join all arguments into a single string
   const worldDesc = args.join(' ');
 
-  // Reference to the servername node of the database .test1.[servernames]
-  const roomsRef = admin.database().ref(`test1/${serverName}`);
+  // Set up a Firebase Realtime Database reference to the worldDesc property
+  const worldDescRef = admin.database().ref(`test1/${message.guild.name}/worldDesc`);
 
   // Check if the server already has a worldDesc and overwrite it if it exists
   roomsRef.child('worldDesc').once('value', (snapshot) => {
@@ -421,13 +422,19 @@ async function lookAround(snapshot, roomsRef){
   return replyMessage;
 }
 
-
+//This function writes descriptions of the rooms and assigns to the data
 async function generateDescription(args) {
   const OpenAI = require('openai-api');
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
-
   const prompt = 'From the second person perspective of a person as they enter a room, describe a dungeon room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room.';
+  serverRef.child('worldDesc').once('value', (snapshot) => {
+    const worldPrompt = snapshot.exists() ? snapshot.val() : 0;
+    });
+    console.log(worldPrompt);
+  if (worldPrompt !== 0) {
+    prompt += ` The world this dungeon exists in is: ${worldPrompt}.`;
+  }
   const model = 'text-davinci-002';
 
   const gptResponse = await openai.complete({
@@ -443,7 +450,7 @@ async function generateDescription(args) {
   return GeneratedDesc;
 }
 
-
+//This function writes haikus!
 async function generateHaiku() {
   const OpenAI = require('openai-api');
   const openai = new OpenAI(OPENAI_API_KEY);
@@ -463,6 +470,8 @@ async function generateHaiku() {
   const haiku = gptResponse.data.choices[0].text.trim();
   return haiku;
 }
+
+
 
 async function drawMap() {
 // Create a new message embed
