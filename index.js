@@ -448,11 +448,11 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
       // If it exists, set a variable worldPrompt to the worldDesc value
       const worldDesc = snapshot.val();
       console.log('debug 1', worldDesc);
-      let worldPrompt = `The world description: ${worldDesc}`;
+      global.worldPrompt = `The world description: ${worldDesc}`;
       // // Send a message to the same channel with the worldDesc
       // message.channel.send(worldPrompt);
     } else {
-  let worldPrompt = 'a basic medevil world';
+  global.worldPrompt = 'a basic medevil world';
     }
   });
   console.log('debug 2', worldPrompt);
