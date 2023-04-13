@@ -438,7 +438,7 @@ async function generateDescription(args) {
   
 
 // Set up a Firebase Realtime Database reference to the worldDesc property
-const worldDescRef = admin.database().ref(`test1/${message.guild.name}/worldDesc`);
+const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
 
 // If test1.[servernames].worldDesc exists, set worldDesc to that value
 
