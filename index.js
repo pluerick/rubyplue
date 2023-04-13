@@ -9,6 +9,7 @@ const openaiapi = require('openai-api');
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const prefix = '?';
 let worldPrompt = '';
+clearchannelID = '';
 
 
 // Parse the service account key JSON string from the environment variable
@@ -32,7 +33,7 @@ console.log('RubyBot lives!');
 client.on('message', async message => {
 
 //get the channel id
-  const clearchannelId = message.channel.id;
+const clearchannelId = message.channel.id;
 
 // Get the player's Discord name  
 const playerName = message.author.username;
@@ -482,9 +483,9 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
 }
 
 if (command === 'clearchat') {
-  clearchannelId.messages.fetch().then((messages) => {
+  global.clearchannelId.messages.fetch().then((messages) => {
     // Delete all messages in the channel
-    clearchannelId.bulkDelete(messages)
+    global.clearchannelId.bulkDelete(messages)
       .then(() => {
         // Send a confirmation message to the same channel
         //clearchannelId.send('All messages deleted.');
@@ -492,7 +493,7 @@ if (command === 'clearchat') {
       .catch((error) => {
         console.error(error);
         // Send an error message to the same channel
-        clearchannelId.send('An error occurred while deleting messages. Please try again later.');
+        global.clearchannelId.send('An error occurred while deleting messages. Please try again later.');
       });
   });
 }
