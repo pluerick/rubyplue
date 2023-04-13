@@ -456,9 +456,10 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
     }
   });
   console.log('debug 2', worldPrompt);
+  console.log('debug 3', global.worldPrompt);
   //console.log(worldPrompt);
-  if (worldPrompt !== 0) {
-    prompt += ` Here's a description of the world this dungeon exists in: ${worldPrompt}.`;
+  if (global.worldPrompt !== 0) {
+    prompt += ` Here's a description of the world this dungeon exists in: ${global.worldPrompt}.`;
   }
   //console.log(prompt);
   const model = 'text-davinci-002';
