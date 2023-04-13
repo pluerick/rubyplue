@@ -142,7 +142,44 @@ if (command === 'setmaproom') {
   });
 }
 
+// Handle the "setworlddesc" command
+if (command === 'setworlddesc') {
+  const serverName = message.guild.name;
+  const channelId = message.channel.id;
+   // Join all arguments into a single string
+  const worldDesc = args.join(' ');
 
+  // Reference to the servername node of the database .test1.[servernames]
+  const roomsRef = admin.database().ref(`test1/${serverName}`);
+
+  // Check if the server already has a worldDesc and overwrite it if it exists
+  roomsRef.child('worldDesc').once('value', (snapshot) => {
+    if (snapshot.exists()) {
+      roomsRef.child('worldDesc').set(worldDesc)
+        .then(() => {
+          // Send a confirmation message to the same channel
+          message.channel.send(`Overwrote world description to: ${worldDesc}. \n This will be used when the map is generated again.`);
+        })
+        .catch((error) => {
+          console.error(error);
+          // Send an error message to the same channel
+          message.channel.send('An error occurred while updating the map room. Please try again later.');
+        });
+    } else {
+      // Create a new worldDesc node with the channelId if it does not exist
+      roomsRef.child('worldDesc').set(channelId)
+        .then(() => {
+          // Send a confirmation message to the same channel
+          message.channel.send(`New world description set to: ${worldDesc}. \n This will be used when the map is generated.`);
+        })
+        .catch((error) => {
+          console.error(error);
+          // Send an error message to the same channel
+          message.channel.send('An error occurred while setting the map room. Please try again later.');
+        });
+    }
+  });
+}
 
 
 // Handle the movement commands
