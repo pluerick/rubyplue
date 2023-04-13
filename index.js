@@ -374,7 +374,7 @@ async function generateDescription(args) {
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
 
-  const prompt = 'From the second person perspective of a person as they enter a room, describe a dungeon room. Include a 30% chance that theres a small not dangerous creature such as a spider or a rat doing something. Describe hints and clused to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room.';
+  const prompt = 'From the second person perspective of a person as they enter a room, describe a dungeon room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room.';
   const model = 'text-davinci-002';
 
   const gptResponse = await openai.complete({
