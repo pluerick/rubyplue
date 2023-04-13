@@ -157,9 +157,9 @@ if (command === 'setworlddesc') {
   const worldDescRef = admin.database().ref(`test1/${message.guild.name}/worldDesc`);
 
   // Check if the server already has a worldDesc and overwrite it if it exists
-  roomsRef.child('worldDesc').once('value', (snapshot) => {
+  worldDescRef.child('worldDesc').once('value', (snapshot) => {
     if (snapshot.exists()) {
-      roomsRef.child('worldDesc').set(worldDesc)
+      worldDescRef.child('worldDesc').set(worldDesc)
         .then(() => {
           // Send a confirmation message to the same channel
           message.channel.send(`Overwrote world description to: ${worldDesc}. \n This will be used when the map is generated again.`);
@@ -171,7 +171,7 @@ if (command === 'setworlddesc') {
         });
     } else {
       // Create a new worldDesc node with the channelId if it does not exist
-      roomsRef.child('worldDesc').set(worldDesc)
+      worldDescRef.child('worldDesc').set(worldDesc)
         .then(() => {
           // Send a confirmation message to the same channel
           message.channel.send(`New world description set to: ${worldDesc}. \n This will be used when the map is generated.`);
