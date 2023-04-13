@@ -447,15 +447,15 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
     if (snapshot.exists()) {
       // If it exists, set a variable worldPrompt to the worldDesc value
       const worldDesc = snapshot.val();
-      console.log('debut 1', worldDesc);
-      const worldPrompt = `The world description: ${worldDesc}`;
+      console.log('debug 1', worldDesc);
+      let worldPrompt = `The world description: ${worldDesc}`;
       // // Send a message to the same channel with the worldDesc
       // message.channel.send(worldPrompt);
     } else {
   let worldPrompt = 'a basic medevil world';
     }
   });
-
+  console.log('debug 2', worldPrompt);
   //console.log(worldPrompt);
   if (worldPrompt !== 0) {
     prompt += ` Here's a description of the world this dungeon exists in: ${worldPrompt}.`;
