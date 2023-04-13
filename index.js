@@ -455,8 +455,8 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
   global.worldPrompt = 'a basic medevil world';
     }
   });
-  console.log('debug 2', worldPrompt);
-  console.log('debug 3', global.worldPrompt);
+  //console.log('debug 2', worldPrompt);
+  //console.log('debug 3', global.worldPrompt);
   //console.log(worldPrompt);
   if (global.worldPrompt !== 0) {
     prompt += ` Here's a description of the world this dungeon exists in: ${global.worldPrompt}.`;
@@ -473,7 +473,7 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
   });
 
   const GeneratedDesc = gptResponse.data.choices[0].text.trim();
-  console.log(GeneratedDesc);
+  //console.log(GeneratedDesc);
   return GeneratedDesc;
 }
 
