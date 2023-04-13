@@ -480,21 +480,6 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
   return GeneratedDesc;
 }
 
-if (command === 'clearchat') {
-  global.clearchannelId.messages.fetch().then((messages) => {
-    // Delete all messages in the channel
-    global.clearchannelId.bulkDelete(messages)
-      .then(() => {
-        // Send a confirmation message to the same channel
-        //clearchannelId.send('All messages deleted.');
-      })
-      .catch((error) => {
-        console.error(error);
-        // Send an error message to the same channel
-        global.clearchannelId.send('An error occurred while deleting messages. Please try again later.');
-      });
-  });
-}
 
 // Handle the 'clear' command
 if (command === 'clear') {
@@ -508,7 +493,7 @@ if (command === 'clear') {
   await channel.bulkDelete(messages);
 
   // Send a confirmation message
-  await channel.send(`${playerName}, all messages have been deleted!`);
+  //await channel.send(`${playerName}, all messages have been deleted!`);
 }
 
 //This function writes haikus!
