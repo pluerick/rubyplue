@@ -158,7 +158,7 @@ if (command === 'setworlddesc') {
   const worldDesc = args.join(' ');
 
   // Set up a Firebase Realtime Database reference to the worldDesc property
-  const worldDescRef = admin.database().ref(`test1/${message.guild.name}/worldDesc`);
+  const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
 
   // Check if the server already has a worldDesc and overwrite it if it exists
   worldDescRef.child('worldDesc').once('value', (snapshot) => {
