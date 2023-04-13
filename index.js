@@ -48,9 +48,9 @@ const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
 // If test1.[servernames].worldDesc exists, set worldDesc to that value
 serverRef.child('worldDesc').once('value', (snapshot) => {
   if (snapshot.exists()) {
-    var worldDesc = snapshot.val();
+    var worldPrompt = snapshot.val();
   } else {
-    var worldDesc = "A basic medevil world"; 
+    var worldPrompt = "A basic medevil world"; 
   }
 });
 
