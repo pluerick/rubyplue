@@ -32,8 +32,6 @@ console.log('RubyBot lives!');
 
 client.on('message', async message => {
 
-//get the channel id
-const clearchannelId = message.channel.id;
 
 // Get the player's Discord name  
 const playerName = message.author.username;
@@ -496,6 +494,21 @@ if (command === 'clearchat') {
         global.clearchannelId.send('An error occurred while deleting messages. Please try again later.');
       });
   });
+}
+
+// Handle the 'clear' command
+if (command === 'clear') {
+  // Get the channel where the command was sent
+  const channel = message.channel;
+
+  // Fetch the last 100 messages in the channel
+  const messages = await channel.messages.fetch({ limit: 100 });
+
+  // Delete all messages in the channel
+  await channel.bulkDelete(messages);
+
+  // Send a confirmation message
+  await channel.send(`${playerName}, all messages have been deleted!`);
 }
 
 //This function writes haikus!
