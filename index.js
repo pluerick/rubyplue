@@ -45,14 +45,24 @@ const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
  // Set up a Firebase Realtime Database reference to the server's data
  const serverRef = admin.database().ref(`test1/${serverName}`);
 
+// Set up a Firebase Realtime Database reference to the worldDesc property
+const worldDescRef = admin.database().ref(`test1/${message.guild.name}/worldDesc`);
+
 // If test1.[servernames].worldDesc exists, set worldDesc to that value
-serverRef.child('worldDesc').once('value', (snapshot) => {
-  if (snapshot.exists()) {
-    var worldPrompt = snapshot.val();
-  } else {
-    var worldPrompt = "A basic medevil world"; 
-  }
-});
+
+  // Check if the server already has a worldDesc in the database
+  worldDescRef.child('worldDesc').once('value', (snapshot) => {
+    if (snapshot.exists()) {
+      // If it exists, set a variable worldPrompt to the worldDesc value
+      const worldDesc = snapshot.val();
+      const worldPrompt = `The world description: ${worldDesc}`;
+      // Send a message to the same channel with the worldDesc
+      message.channel.send(worldPrompt);
+    } else {
+  const worldPrompt = 'a basic medevil world';
+    }
+  });
+
 
 // Only respond to messages sent by humans (not bots)
 if (message.author.bot) return;
