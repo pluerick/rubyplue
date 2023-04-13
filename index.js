@@ -529,7 +529,7 @@ const mapPadding = ' ';
 
 // Define the map spacing
 const mapSpacing = ' ';
-
+// cool
  // Set the embed title and description
  embed.setTitle('Dungeon Map');
  embed.setDescription('```' + getMap() + '```');
