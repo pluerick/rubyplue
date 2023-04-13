@@ -9,7 +9,7 @@ const openaiapi = require('openai-api');
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const prefix = '?';
 let worldPrompt = '';
-const clearchannelId = message.channel.id;
+
 
 // Parse the service account key JSON string from the environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
@@ -30,6 +30,9 @@ console.log('RubyBot lives!');
 });
 
 client.on('message', async message => {
+
+//get the channel id
+  const clearchannelId = message.channel.id;
 
 // Get the player's Discord name  
 const playerName = message.author.username;
