@@ -8,7 +8,7 @@ const fs = require('fs');
 const openaiapi = require('openai-api');
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const prefix = '?';
-let worldPrompt = 'a basic dungeon medievl world';
+
 
 // Parse the service account key JSON string from the environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
@@ -29,8 +29,10 @@ console.log('RubyBot lives!');
 });
 
 client.on('message', async message => {
+
 // Get the player's Discord name  
 const playerName = message.author.username;
+
 // Get the name of the Discord server where the command was generated
 const serverName = message.guild.name;
 
@@ -42,6 +44,15 @@ const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
 
  // Set up a Firebase Realtime Database reference to the server's data
  const serverRef = admin.database().ref(`test1/${serverName}`);
+
+// If test1.[servernames].worldDesc exists, set worldDesc to that value
+serverRef.child('worldDesc').once('value', (snapshot) => {
+  if (snapshot.exists()) {
+    var worldDesc = snapshot.val();
+  } else {
+    var worldDesc = "A basic medevil world"; 
+  }
+});
 
 // Only respond to messages sent by humans (not bots)
 if (message.author.bot) return;
