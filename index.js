@@ -374,13 +374,13 @@ async function generateDescription(args) {
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
 
-  const prompt = 'Write a 2nd person perspective description of looking around a dungeon room in medevil europe. Only describe the room, not the player or his actions. Avoid mentioning items like weapons or monsters except small rats etc. It should be reusable for any player to read to describe the room.';
+  const prompt = 'From the second person perspective of a person as they enter a room, describe a dungeon room. Since other systems will come up with the monsters, traps, and weapons dont mention those. Include a 30% chance that theres a small not dangerous creature such as a spider or a rat doing something. Describe hints and clused to things or creatures that may have been there previously.';
   const model = 'text-davinci-002';
 
   const gptResponse = await openai.complete({
     engine: model,
     prompt: prompt,
-    maxTokens: 50,
+    maxTokens: 150,
     n: 1,
     temperature: 0.7
   });
@@ -411,7 +411,100 @@ async function generateHaiku() {
   return haiku;
 }
 
+async function drawMap() {
+// Create a new message embed
+const embed = new MessageEmbed();
 
+// Define the map characters
+const mapChars = {
+  north: '^',
+  east: '>',
+  south: 'v',
+  west: '<',
+  corner: '+',
+  empty: '-',
+  room: '#',
+};
+
+// Define the map size
+const mapSize = 3;
+
+// Define the map offset
+const mapOffset = 1;
+
+// Define the map border
+const mapBorder = '|';
+
+// Define the map padding
+const mapPadding = ' ';
+
+// Define the map spacing
+const mapSpacing = ' ';
+
+ // Set the embed title and description
+ embed.setTitle('Dungeon Map');
+ embed.setDescription('```' + getMap() + '```');
+}
+
+async function getMap() {
+  // Create an empty map array
+  const map = [];
+
+  // Loop through the rows of the map
+  for (let y = 0; y < mapSize; y++) {
+    // Create an empty row array
+    const row = [];
+
+    // Loop through the columns of the map
+    for (let x = 0; x < mapSize; x++) {
+      // Get the room at the current position
+      const room = getRoom(x, y);
+
+      // Check if the current position is the center of the map
+      if (x === mapOffset && y === mapOffset) {
+        // Add the corner character to the row
+        row.push(mapChars.corner);
+      } else {
+        // Check if the current position is on the top or bottom edge of the map
+        if (y === 0 || y === mapSize - 1) {
+          // Add the border character to the row
+          row.push(mapBorder.repeat(mapSize + mapPadding.length * 2));
+        } else {
+          // Check if the current position is on the left or right edge of the map
+          if (x === 0 || x === mapSize - 1) {
+            // Add the border character to the row
+            row.push(mapBorder);
+          } else {
+            // Check if there is a room at the current position
+            if (room !== null) {
+              // Add the room character to the row
+              row.push(mapChars.room);
+            } else {
+              // Add the empty character to the row
+              row.push(mapChars.empty);
+            }
+
+            // Check if there is a room to the east of the current position
+            if (getRoom(x + 1, y) !== null) {
+              // Add the east character to the row
+              row.push(mapChars.east);
+            } else {
+              // Add the empty character to the row
+              row.push(mapChars.empty);
+            }
+          }
+        }
+      }
+    }
+
+    // Add the row to the map
+    map.push(row.join(mapSpacing));
+  }
+
+  // Join the map rows into a single string with padding
+  return
+
+}
 
 
 }});
