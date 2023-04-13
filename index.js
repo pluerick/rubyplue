@@ -478,18 +478,18 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
 }
 
 if (command === 'clearchat') {
-  const channel = message.channel;
-  channel.messages.fetch().then((messages) => {
+  const clearchannelId = message.channel.id;
+  clearchannelId.messages.fetch().then((messages) => {
     // Delete all messages in the channel
-    channel.bulkDelete(messages)
+    clearchannelId.bulkDelete(messages)
       .then(() => {
         // Send a confirmation message to the same channel
-        channel.send('All messages deleted.');
+        //clearchannelId.send('All messages deleted.');
       })
       .catch((error) => {
         console.error(error);
         // Send an error message to the same channel
-        channel.send('An error occurred while deleting messages. Please try again later.');
+        clearchannelId.send('An error occurred while deleting messages. Please try again later.');
       });
   });
 }
