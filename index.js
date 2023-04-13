@@ -167,7 +167,7 @@ if (command === 'setworlddesc') {
         });
     } else {
       // Create a new worldDesc node with the channelId if it does not exist
-      roomsRef.child('worldDesc').set(channelId)
+      roomsRef.child('worldDesc').set(worldDesc)
         .then(() => {
           // Send a confirmation message to the same channel
           message.channel.send(`New world description set to: ${worldDesc}. \n This will be used when the map is generated.`);
