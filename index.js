@@ -526,6 +526,8 @@ async function generateHaiku() {
 
 // this function generates an image with opanai then returns the URL to the image
 async function generateImage() {
+  const OpenAI = require('openai-api');
+  const openai = new OpenAI(OPENAI_API_KEY);
   const response = await openai.createImage({
     prompt: 'dragon',
     n: 1,
