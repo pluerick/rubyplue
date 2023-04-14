@@ -510,7 +510,7 @@ async function generateHaiku() {
   const subject  = args[0];
 
   const prompt = `Generate a haiku about ${subject}`;
-  const model = 'text-davinci-002';
+  const model = 'gpt-3.5-turbo';
 
   const gptResponse = await openai.complete({
     engine: model,
@@ -536,8 +536,6 @@ async function generateImage() {
   
   const imageURL = response.data.data[0].url;
   return imageURL;
-
-  
   
 }
 
