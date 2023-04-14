@@ -529,7 +529,7 @@ async function generateHaiku() {
 async function generateImage() {
   const openai = require('openai');
   const response = await openai.createImage({
-    prompt: 'dragon',
+    prompt: 'dragon breathing fire',
     n: 1,
     size: "1024x1024",
   });
