@@ -154,7 +154,7 @@ if (command === 'setmaproom') {
 }
 
 // Handle the "setworlddesc" command
-if (command === 'setworlddesc') {
+if (command === 'setworlddesc' || command === 'swd') {
   const serverName = message.guild.name;
   const channelId = message.channel.id;
    // Join all arguments into a single string
