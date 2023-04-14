@@ -397,6 +397,17 @@ if (command === 'blast') {
   message.reply('PEW PEW database BALETTEEDD');
 }
 
+//This command returns an image.
+if (command === 'image') {
+  const response = await openai.createImage({
+    prompt: 'dragon',
+    n: 1,
+    size: "1024x1024",
+  });
+  
+  message.reply(res.send(response.data.data[0].url));
+
+}
 
 
 //Handle the "haiku" command
