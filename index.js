@@ -510,7 +510,7 @@ async function generateHaiku() {
   const subject  = args[0];
 
   const prompt = `Generate a haiku about ${subject}`;
-  const model = 'gpt-3.5-turbo';
+  const model = 'text-davinci-002';
 
   const gptResponse = await openai.complete({
     engine: model,
