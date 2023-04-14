@@ -527,7 +527,7 @@ async function generateHaiku() {
 
 // this function generates an image with opanai then returns the URL to the image
 async function generateImage() {
-  const openai = require('openai');
+  const openai = require('openai/api');
   
   const response = await openai.createImage({
     prompt: 'dragon breathing fire',
@@ -539,7 +539,6 @@ async function generateImage() {
   return imageURL;
   
 }
-
 async function drawMap() {
 // Create a new message embed
 const embed = new MessageEmbed();
