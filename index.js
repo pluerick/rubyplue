@@ -399,13 +399,8 @@ if (command === 'blast') {
 
 //This command returns an image.
 if (command === 'image') {
-  const response = await openai.createImage({
-    prompt: 'dragon',
-    n: 1,
-    size: "1024x1024",
-  });
-  
-  message.reply(res.send(response.data.data[0].url));
+
+  message.reply(imageURL);
 
 }
 
@@ -528,7 +523,21 @@ async function generateHaiku() {
   return haiku;
 }
 
+// this function generates an image with opanai then returns the URL to the image
+async function generateImage() {
+  const response = await openai.createImage({
+    prompt: 'dragon',
+    n: 1,
+    size: "1024x1024",
+  });
+  
+  res.send(response.data.data[0].url);
+  const imageURL = response.data.data[0].url;
+  return imageURL;
 
+  
+  
+}
 
 async function drawMap() {
 // Create a new message embed
