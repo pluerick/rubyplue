@@ -10,6 +10,7 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const prefix = '?';
 let worldPrompt = '';
 clearchannelID = '';
+const openai = require('openai');
 
 
 // Parse the service account key JSON string from the environment variable
