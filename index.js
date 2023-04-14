@@ -528,7 +528,7 @@ async function generateHaiku() {
 async function generateImage() {
   const OpenAI = require('openai-api');
   const openai = new OpenAI(OPENAI_API_KEY);
-  const response = await openai.Image.create({
+  const response = await openai.createImage({
     prompt: 'dragon',
     n: 1,
     size: "1024x1024",
