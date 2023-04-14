@@ -400,6 +400,7 @@ if (command === 'blast') {
 //This command returns an image.
 if (command === 'image') {
 
+  const imageURL = await generateImage(args);
   message.reply(imageURL);
 
 }
