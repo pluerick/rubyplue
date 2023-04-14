@@ -534,7 +534,7 @@ async function generateImage() {
     size: "1024x1024",
   });
   
-  const imageURL = response.data.data[0].url;
+  imageURL = response.data.data[0].url;
   return imageURL;
   
 }
