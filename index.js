@@ -400,6 +400,7 @@ if (command === 'blast') {
 
 // This command returns an image.
 if (command === 'image') {
+  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
   const http = require("https");
 
   const url = 'https://api.openai.com/v1/images/generations';
@@ -413,7 +414,7 @@ if (command === 'image') {
   const data = `{
       "prompt": "a white siamese cat",
       "n": 1,
-      "size": "1024x1024"
+      "size": "256x256"
     }`;
   
   let result = '';
