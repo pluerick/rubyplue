@@ -417,9 +417,9 @@ if (command === 'image') {
       });
   
       if (response.url) {
-        message.channel.send(`Here's your image: ${response.url}`);
+        message.reply(`Here's your image: ${response.url}`);
       } else {
-        message.channel.send("Failed to create image.");
+        message.reply("Failed to create image.");
       }
     }
   });
