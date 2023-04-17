@@ -512,7 +512,8 @@ if (command === 'clear') {
 
 //This function writes haikus!
 async function generateHaiku() {
-  const openai = new openai(OPENAI_API_KEY);
+  const OpenAI = require('openai-api');
+  const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
 
   const prompt = `Generate a haiku about ${subject}`;
