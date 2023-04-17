@@ -401,43 +401,12 @@ if (command === 'blast') {
 // This command returns an image.
 if (command === 'image') {
   const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-  const http = require("https");
-
-  const url = 'https://api.openai.com/v1/images/generations';
-  
-  const options = {
-      method: 'POST',
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPENAI_API_KEY}`,
-  };
-  
-  const data = `{
-      "prompt": "a white siamese cat",
-      "n": 1,
-      "size": "256x256"
-    }`;
-  
-  let result = '';
-  const req = http.request(url, options, (res) => {
-      console.log(res.statusCode);
-  
-      res.setEncoding('utf8');
-      res.on('data', (chunk) => {
-          result += chunk;
-      });
-  
-      res.on('end', () => {
-          console.log(result);
-      });
+  const response = await openai.createImage({
+    prompt: "a white siamese cat",
+    n: 1,
+    size: "256x256",
   });
-  
-  req.on('error', (e) => {
-      console.error(e);
-  });
-  
-  req.write(data);
-  req.end();
-
+  image_url = response.data.data[0].url;
 
 
 }
