@@ -398,32 +398,30 @@ if (command === 'blast') {
   message.reply('PEW PEW database BALETTEEDD');
 }
 
-//This command returns an image.
+// This command returns an image.
 if (command === 'image') {
-  console.log('where the fuck did this go?');
-
-  const { Configuration, OpenAIApi } = require("openai");
+  const { Configuration, OpenAIApi } = require('openai');
   const configuration = new Configuration({
     apiKey: process.env.OPENAI_API_KEY,
   });
   const openai = new OpenAIApi(configuration);
-  
-  client.on("message", async (message) => {
-    if (message.content.startsWith(`${prefix}create-image`)) {
-      const response = await openai.createImage({
-        prompt: "A cute baby sea otter",
-        n: 2,
-        size: "1024x1024",
-      });
-  
-      if (response.url) {
-        message.reply(`Here's your image: ${response.url}`);
-      } else {
-        message.reply("Failed to create image.");
-      }
-    }
-  });
 
+  try {
+    const response = await openai.createImage({
+      prompt: 'A cute baby sea otter',
+      n: 2,
+      size: '1024x1024',
+    });
+
+    if (response.url) {
+      message.reply(`Here's your image: ${response.url}`);
+    } else {
+      message.reply('Failed to create image.');
+    }
+  } catch (error) {
+    console.error(error);
+    message.reply('An error occurred while creating the image.');
+  }
 }
 
 
