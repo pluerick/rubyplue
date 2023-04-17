@@ -400,6 +400,7 @@ if (command === 'blast') {
 
 //This command returns an image.
 if (command === 'image') {
+  console.log('where the fuck did this go?');
 
   const { Configuration, OpenAIApi } = require("openai");
   const configuration = new Configuration({
