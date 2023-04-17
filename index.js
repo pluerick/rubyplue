@@ -401,8 +401,27 @@ if (command === 'blast') {
 //This command returns an image.
 if (command === 'image') {
 
-  const imageURL = await generateImage(args);
-  message.reply(imageURL);
+  const { Configuration, OpenAIApi } = require("openai");
+  const configuration = new Configuration({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+  const openai = new OpenAIApi(configuration);
+  
+  client.on("message", async (message) => {
+    if (message.content.startsWith(`${prefix}create-image`)) {
+      const response = await openai.createImage({
+        prompt: "A cute baby sea otter",
+        n: 2,
+        size: "1024x1024",
+      });
+  
+      if (response.url) {
+        message.channel.send(`Here's your image: ${response.url}`);
+      } else {
+        message.channel.send("Failed to create image.");
+      }
+    }
+  });
 
 }
 
@@ -527,18 +546,11 @@ async function generateHaiku() {
 
 // this function generates an image with opanai then returns the URL to the image
 async function generateImage() {
-  const { Configuration, OpenAIApi } = require("openai");
-  const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  const openai = new OpenAIApi(configuration);
-  const response = await openai.createImage({
-    prompt: "A cute baby sea otter",
-    n: 2,
-    size: "128x128",
-  });
   
 }
+
+
+
 async function drawMap() {
 // Create a new message embed
 const embed = new MessageEmbed();
