@@ -400,28 +400,45 @@ if (command === 'blast') {
 
 // This command returns an image.
 if (command === 'image') {
-  const { Configuration, OpenAIApi } = require('openai');
-  const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
+  const http = require("https");
+
+  const url = 'https://api.openai.com/v1/images/generations';
+  
+  const options = {
+      method: 'POST',
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${OPENAI_API_KEY}`,
+  };
+  
+  const data = `{
+      "prompt": "a white siamese cat",
+      "n": 1,
+      "size": "1024x1024"
+    }`;
+  
+  let result = '';
+  const req = http.request(url, options, (res) => {
+      console.log(res.statusCode);
+  
+      res.setEncoding('utf8');
+      res.on('data', (chunk) => {
+          result += chunk;
+      });
+  
+      res.on('end', () => {
+          console.log(result);
+      });
   });
-  const openai = new OpenAIApi(configuration);
+  
+  req.on('error', (e) => {
+      console.error(e);
+  });
+  
+  req.write(data);
+  req.end();
 
-  try {
-    const response = await openai.createImage({
-      prompt: 'A cute baby sea otter',
-      n: 2,
-      size: '256x256',
-    });
 
-    if (response.url) {
-      message.reply(`Here's your image: ${response.url}`);
-    } else {
-      message.reply('Failed to create image.');
-    }
-  } catch (error) {
-    console.error(error);
-    message.reply('An error occurred while creating the image.');
-  }
+
 }
 
 
