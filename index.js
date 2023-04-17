@@ -408,6 +408,7 @@ if (command === 'image') {
 
   try {
     const response = await openai.createImage({
+      Authorization: Bearer OPENAI_API_KEY,
       prompt: 'A cute baby sea otter',
       n: 2,
       size: '128x128',
