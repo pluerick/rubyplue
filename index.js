@@ -407,6 +407,7 @@ if (command === 'image') {
     size: "256x256",
   });
   image_url = response.data.data[0].url;
+  console.log('image_url: ', image_url);
 
 
 }
@@ -511,7 +512,6 @@ if (command === 'clear') {
 
 //This function writes haikus!
 async function generateHaiku() {
-  const OpenAI = require('openai-api');
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
 
