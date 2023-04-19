@@ -421,6 +421,7 @@ if (command === 'image') {
       "size": "1024x1024",
     }'`;
 
+    try{
   exec(cmd, (error, stdout, stderr) => {
     if (error) {
       console.error(`exec error: ${error}`);
@@ -436,6 +437,9 @@ if (command === 'image') {
 
     message.reply(exampleEmbed);
   });
+    } catch (error) {
+      console.error(err); 
+    }
 }
 
 
