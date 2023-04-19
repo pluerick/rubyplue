@@ -293,7 +293,7 @@ if (command === 'generate') {
     {
       name: 'room 1',
       description: await generateDescription(args),
-      image: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-XjrCUPKR4fXAzcf0rGYObghI/user-TFJfurQEBcwjQPFzCiYSA29L/img-8LAqgj5Gd1zi5IgaF3BPcQsy.png?st=2023-04-19T20%3A30%3A35Z&se=2023-04-19T22%3A30%3A35Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-19T20%3A21%3A56Z&ske=2023-04-20T20%3A21%3A56Z&sks=b&skv=2021-08-06&sig=Qo3xkaJqCR/YCw9RsQqBrMdlmtt/m4odSt/qLjyYc6I%3D',
+      image: 'https://imgur.com/fePkCyU',
       north: 4,
       west: 0,
       east: 2,
@@ -302,7 +302,7 @@ if (command === 'generate') {
     {
       name: 'room 2',
       description: await generateDescription(args),
-      image: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-XjrCUPKR4fXAzcf0rGYObghI/user-TFJfurQEBcwjQPFzCiYSA29L/img-8LAqgj5Gd1zi5IgaF3BPcQsy.png?st=2023-04-19T20%3A30%3A35Z&se=2023-04-19T22%3A30%3A35Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-19T20%3A21%3A56Z&ske=2023-04-20T20%3A21%3A56Z&sks=b&skv=2021-08-06&sig=Qo3xkaJqCR/YCw9RsQqBrMdlmtt/m4odSt/qLjyYc6I%3D',
+      image: 'https://imgur.com/fePkCyU',
       north: 5,
       west: 1,
       east: 3,
@@ -311,7 +311,7 @@ if (command === 'generate') {
     {
       name: 'room 3',
       description: await generateDescription(args),
-      image: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-XjrCUPKR4fXAzcf0rGYObghI/user-TFJfurQEBcwjQPFzCiYSA29L/img-8LAqgj5Gd1zi5IgaF3BPcQsy.png?st=2023-04-19T20%3A30%3A35Z&se=2023-04-19T22%3A30%3A35Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-19T20%3A21%3A56Z&ske=2023-04-20T20%3A21%3A56Z&sks=b&skv=2021-08-06&sig=Qo3xkaJqCR/YCw9RsQqBrMdlmtt/m4odSt/qLjyYc6I%3D',
+      image: 'https://imgur.com/fePkCyU',
       north: 6,
       west: 2,
       east: 0,
@@ -320,7 +320,7 @@ if (command === 'generate') {
     {
       name: 'room 4',
       description: await generateDescription(args),
-      image: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-XjrCUPKR4fXAzcf0rGYObghI/user-TFJfurQEBcwjQPFzCiYSA29L/img-8LAqgj5Gd1zi5IgaF3BPcQsy.png?st=2023-04-19T20%3A30%3A35Z&se=2023-04-19T22%3A30%3A35Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-19T20%3A21%3A56Z&ske=2023-04-20T20%3A21%3A56Z&sks=b&skv=2021-08-06&sig=Qo3xkaJqCR/YCw9RsQqBrMdlmtt/m4odSt/qLjyYc6I%3D',
+      image: 'https://imgur.com/fePkCyU',
       north: 0,
       west: 0,
       east: 5,
@@ -329,7 +329,7 @@ if (command === 'generate') {
     {
       name: 'room 5',
       description: await generateDescription(args),
-      image: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-XjrCUPKR4fXAzcf0rGYObghI/user-TFJfurQEBcwjQPFzCiYSA29L/img-8LAqgj5Gd1zi5IgaF3BPcQsy.png?st=2023-04-19T20%3A30%3A35Z&se=2023-04-19T22%3A30%3A35Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-19T20%3A21%3A56Z&ske=2023-04-20T20%3A21%3A56Z&sks=b&skv=2021-08-06&sig=Qo3xkaJqCR/YCw9RsQqBrMdlmtt/m4odSt/qLjyYc6I%3D',
+      image: 'https://imgur.com/fePkCyU',
       north: 0,
       west: 4,
       east: 6,
@@ -338,7 +338,7 @@ if (command === 'generate') {
     {
       name: 'room 6',
       description: await generateDescription(args),
-      image: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-XjrCUPKR4fXAzcf0rGYObghI/user-TFJfurQEBcwjQPFzCiYSA29L/img-8LAqgj5Gd1zi5IgaF3BPcQsy.png?st=2023-04-19T20%3A30%3A35Z&se=2023-04-19T22%3A30%3A35Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-19T20%3A21%3A56Z&ske=2023-04-20T20%3A21%3A56Z&sks=b&skv=2021-08-06&sig=Qo3xkaJqCR/YCw9RsQqBrMdlmtt/m4odSt/qLjyYc6I%3D',
+      image: 'https://imgur.com/fePkCyU',
       north: 0,
       west: 5,
       east: 0,
@@ -347,7 +347,7 @@ if (command === 'generate') {
     {
       name: 'room 7',
       description: await generateDescription(args),
-      image: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-XjrCUPKR4fXAzcf0rGYObghI/user-TFJfurQEBcwjQPFzCiYSA29L/img-8LAqgj5Gd1zi5IgaF3BPcQsy.png?st=2023-04-19T20%3A30%3A35Z&se=2023-04-19T22%3A30%3A35Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-19T20%3A21%3A56Z&ske=2023-04-20T20%3A21%3A56Z&sks=b&skv=2021-08-06&sig=Qo3xkaJqCR/YCw9RsQqBrMdlmtt/m4odSt/qLjyYc6I%3D',
+      image: 'https://imgur.com/fePkCyU',
       north: 1,
       west: 0,
       east: 8,
@@ -356,7 +356,7 @@ if (command === 'generate') {
     {
       name: 'room 8',
       description: await generateDescription(args),
-      image: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-XjrCUPKR4fXAzcf0rGYObghI/user-TFJfurQEBcwjQPFzCiYSA29L/img-8LAqgj5Gd1zi5IgaF3BPcQsy.png?st=2023-04-19T20%3A30%3A35Z&se=2023-04-19T22%3A30%3A35Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-19T20%3A21%3A56Z&ske=2023-04-20T20%3A21%3A56Z&sks=b&skv=2021-08-06&sig=Qo3xkaJqCR/YCw9RsQqBrMdlmtt/m4odSt/qLjyYc6I%3D',
+      image: 'https://imgur.com/fePkCyU',
       north: 2,
       west: 7,
       east: 9,
@@ -365,7 +365,7 @@ if (command === 'generate') {
     {
       name: 'room 9',
       description: await generateDescription(args),
-      image: 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-XjrCUPKR4fXAzcf0rGYObghI/user-TFJfurQEBcwjQPFzCiYSA29L/img-8LAqgj5Gd1zi5IgaF3BPcQsy.png?st=2023-04-19T20%3A30%3A35Z&se=2023-04-19T22%3A30%3A35Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-19T20%3A21%3A56Z&ske=2023-04-20T20%3A21%3A56Z&sks=b&skv=2021-08-06&sig=Qo3xkaJqCR/YCw9RsQqBrMdlmtt/m4odSt/qLjyYc6I%3D',
+      image: 'https://imgur.com/fePkCyU',
       north: 3,
       west: 8,
       east: 0,
