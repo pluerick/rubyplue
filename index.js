@@ -421,6 +421,12 @@ if (command === 'image') {
     const imgURL = response.data[0].url;
     console.log(`Generated image URL: ${imgURL}`);
     message.reply(imgURL);
+    const exampleEmbed = new Discord.MessageEmbed()
+    .setColor('#0099ff')
+    .setTitle('Hello World!')
+    .setDescription('This is an example embed message.');
+
+  message.reply(exampleEmbed);
     
 
   });
