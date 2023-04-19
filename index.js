@@ -409,6 +409,7 @@ if (command === 'blast') {
 
 // This command returns an image.
 if (command === 'image') {
+  message.reply('Creating AI image...');
   const { exec } = require('child_process');
   const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
   const prompt = message.content.slice(7); // Get the prompt from the message content
