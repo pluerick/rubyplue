@@ -400,16 +400,27 @@ if (command === 'blast') {
 
 // This command returns an image.
 if (command === 'image') {
-  const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-  const response = await openai.createImage({
-    prompt: "a white siamese cat",
-    n: 1,
-    size: "256x256",
+  const { exec } = require('child_process');
+
+  const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
+  const cmd = `curl https://api.openai.com/v1/images/generations \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${openaiApiKey}" \
+    -d '{
+      "prompt": "A cute baby sea otter",
+      "n": 2,
+      "size": "1024x1024"
+    }'`;
+
+  exec(cmd, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    }
+    const response = JSON.parse(stdout);
+    const imgURL = response.data[0].url;
+    console.log(`Generated image URL: ${imgURL}`);
   });
-  image_url = response.data.data[0].url;
-  console.log('image_url: ', image_url);
-
-
 }
 
 
