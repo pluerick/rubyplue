@@ -403,11 +403,12 @@ if (command === 'image') {
   const { exec } = require('child_process');
 
   const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
+  const prompt = message.content.slice(7); // Get the prompt from the message content
   const cmd = `curl https://api.openai.com/v1/images/generations \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${openaiApiKey}" \
     -d '{
-      "prompt": "A cute baby sea otter",
+      "prompt": "${prompt}",
       "n": 2,
       "size": "1024x1024"
     }'`;
@@ -419,19 +420,16 @@ if (command === 'image') {
     }
     const response = JSON.parse(stdout);
     const imgURL = response.data[0].url;
-    console.log(`Generated image URL: ${imgURL}`);
-    message.reply(imgURL);
     const exampleEmbed = new Discord.MessageEmbed()
     .setColor('#0099ff')
-    .setTitle('Hello World!')
-    .setDescription('This is an example embed message.')
+    .setTitle('Generated Image')
+    .setDescription(`Generated image for prompt: ${prompt}`)
     .setImage(imgURL);
 
-  message.reply(exampleEmbed);
-    
-
+    message.reply(exampleEmbed);
   });
 }
+
 
 
 //Handle the "haiku" command
