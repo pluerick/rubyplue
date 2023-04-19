@@ -522,6 +522,7 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
   });
 
   const GeneratedDesc = gptResponse.data.choices[0].text.trim();
+  global.currentRoomDesc = GeneratedDesc;
   //console.log(GeneratedDesc);
   return GeneratedDesc;
 }
@@ -568,7 +569,7 @@ async function generateRoomImage() {
   
   const { exec } = require('child_process');
   const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
-  const prompt = message.content.slice(7); // Get the prompt from the message content
+  const prompt = global.currentRoomDesc;  //get the description of the room, and use it as the prompt
   const cmd = `curl https://api.openai.com/v1/images/generations \
     -H "Content-Type: application/json" \
     -H "Authorization: Bearer ${openaiApiKey}" \
