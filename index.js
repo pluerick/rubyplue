@@ -423,7 +423,7 @@ if (command === 'image') {
     const imageEmbed = new Discord.MessageEmbed()
       .setColor('#0099ff')
       .setTitle('Example Image')
-      .setImage(${imgURL}));
+      .setImage(imgURL);
 
     message.reply({ embeds: [imageEmbed] });
     
