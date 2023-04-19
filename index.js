@@ -293,6 +293,7 @@ if (command === 'generate') {
     {
       name: 'room 1',
       description: await generateDescription(args),
+      image: await generateRoomImage(args),
       north: 4,
       west: 0,
       east: 2,
@@ -401,7 +402,6 @@ if (command === 'blast') {
 // This command returns an image.
 if (command === 'image') {
   const { exec } = require('child_process');
-
   const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
   const prompt = message.content.slice(7); // Get the prompt from the message content
   const cmd = `curl https://api.openai.com/v1/images/generations \
@@ -550,106 +550,11 @@ async function generateHaiku() {
   return haiku;
 }
 
-// this function generates an image with opanai then returns the URL to the image
-async function generateImage() {
+// this function generates an image with opanai then returns the URL to be used in the room database
+async function generateRoomImage() {
   
-}
 
-
-
-async function drawMap() {
-// Create a new message embed
-const embed = new MessageEmbed();
-
-// Define the map characters
-const mapChars = {
-  north: '^',
-  east: '>',
-  south: 'v',
-  west: '<',
-  corner: '+',
-  empty: '-',
-  room: '#',
-};
-
-// Define the map size
-const mapSize = 3;
-
-// Define the map offset
-const mapOffset = 1;
-
-// Define the map border
-const mapBorder = '|';
-
-// Define the map padding
-const mapPadding = ' ';
-
-// Define the map spacing
-const mapSpacing = ' ';
-// cool
- // Set the embed title and description
- embed.setTitle('Dungeon Map');
- embed.setDescription('```' + getMap() + '```');
-}
-
-async function getMap() {
-  // Create an empty map array
-  const map = [];
-
-  // Loop through the rows of the map
-  for (let y = 0; y < mapSize; y++) {
-    // Create an empty row array
-    const row = [];
-
-    // Loop through the columns of the map
-    for (let x = 0; x < mapSize; x++) {
-      // Get the room at the current position
-      const room = getRoom(x, y);
-
-      // Check if the current position is the center of the map
-      if (x === mapOffset && y === mapOffset) {
-        // Add the corner character to the row
-        row.push(mapChars.corner);
-      } else {
-        // Check if the current position is on the top or bottom edge of the map
-        if (y === 0 || y === mapSize - 1) {
-          // Add the border character to the row
-          row.push(mapBorder.repeat(mapSize + mapPadding.length * 2));
-        } else {
-          // Check if the current position is on the left or right edge of the map
-          if (x === 0 || x === mapSize - 1) {
-            // Add the border character to the row
-            row.push(mapBorder);
-          } else {
-            // Check if there is a room at the current position
-            if (room !== null) {
-              // Add the room character to the row
-              row.push(mapChars.room);
-            } else {
-              // Add the empty character to the row
-              row.push(mapChars.empty);
-            }
-
-            // Check if there is a room to the east of the current position
-            if (getRoom(x + 1, y) !== null) {
-              // Add the east character to the row
-              row.push(mapChars.east);
-            } else {
-              // Add the empty character to the row
-              row.push(mapChars.empty);
-            }
-          }
-        }
-      }
-    }
-
-    // Add the row to the map
-    map.push(row.join(mapSpacing));
-  }
-
-  // Join the map rows into a single string with padding
-  return
-
+  
 }
 
 
