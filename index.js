@@ -428,6 +428,7 @@ if (command === 'image') {
       return;
     }
     const response = JSON.parse(stdout);
+    console.log('response:', response);
     const imgURL = response.data[0].url;
     const exampleEmbed = new Discord.MessageEmbed()
     .setColor('#0099ff')
