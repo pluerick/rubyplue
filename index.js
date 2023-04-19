@@ -420,12 +420,7 @@ if (command === 'image') {
     const response = JSON.parse(stdout);
     const imgURL = response.data[0].url;
     console.log(`Generated image URL: ${imgURL}`);
-    const imageEmbed = new Discord.MessageEmbed()
-      .setColor('#0099ff')
-      .setTitle('Example Image')
-      .setImage(imgURL);
-
-    message.reply({ embeds: [imageEmbed] });
+    message.reply(imgURL);
     
 
   });
