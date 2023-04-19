@@ -420,7 +420,7 @@ if (command === 'image') {
     const response = JSON.parse(stdout);
     const imgURL = response.data[0].url;
     console.log(`Generated image URL: ${imgURL}`);
-    message.reply(imgURL);
+    message.reply({ files: [imgURL]});
   });
 }
 
