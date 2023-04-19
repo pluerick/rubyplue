@@ -569,6 +569,7 @@ async function generateHaiku() {
 }
 
 async function replaceImagesinDatabase() {
+  console.log('replaceImagesinDatabase ran');
   const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
   const roomsSnapshot = await roomsRef.once('value');
   const rooms = roomsSnapshot.val();
