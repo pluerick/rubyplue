@@ -388,16 +388,33 @@ if (command === 'generate') {
       message.reply('Rooms data added to the database successfully!');
     }
   });
-
-  console.log('why isnt this working?');
-  
-  
-
-
-
 }
 
+if (command === 'makeimages') {
+  // Get a reference to the rooms node in the database
+  const roomsRef = admin.database().ref('test1/<server name>/rooms');
 
+  // Attach a listener for the "value" event to the roomsRef reference
+  roomsRef.on('value', (snapshot) => {
+    // Get the current value of the rooms node from the snapshot
+    const rooms = snapshot.val();
+
+    // Loop through each child node of the rooms node
+    for (const roomKey in rooms) {
+      // Get a reference to the current room node
+      const roomRef = roomsRef.child(roomKey);
+
+      // Update the image node for the current room to "google.com"
+      roomRef.update({ image: 'google.com' }, (error) => {
+        if (error) {
+          console.error(`Failed to update image for room ${roomKey}:`, error);
+        } else {
+          console.log(`Image for room ${roomKey} updated successfully`);
+        }
+      });
+    }
+  });
+}
 
 
 //Handle the "blast" command
