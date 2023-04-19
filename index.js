@@ -392,17 +392,7 @@ if (command === 'generate') {
   console.log('why isnt this working?');
   
   
-  roomsRef.once('value', (snapshot) => {
-    snapshot.forEach((roomSnapshot) => {
-      const roomName = roomSnapshot.key;
-      const roomData = roomSnapshot.val();
-      
-      if (roomData.image) {
-        roomData.image = 'https://google.com';
-        roomsRef.child(roomName).set(roomData);
-      }
-    });
-  });
+
 
 
 }
