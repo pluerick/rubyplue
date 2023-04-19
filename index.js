@@ -418,7 +418,7 @@ if (command === 'image') {
     -d '{
       "prompt": "${prompt}",
       "n": 2,
-      "size": "256x256"
+      "size": "1024x1024",
     }'`;
 
   exec(cmd, (error, stdout, stderr) => {
@@ -560,6 +560,36 @@ async function generateHaiku() {
 
 // this function generates an image with opanai then returns the URL to be used in the room database
 async function generateRoomImage() {
+  
+  const { exec } = require('child_process');
+  const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
+  const prompt = message.content.slice(7); // Get the prompt from the message content
+  const cmd = `curl https://api.openai.com/v1/images/generations \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer ${openaiApiKey}" \
+    -d '{
+      "prompt": "${prompt}",
+      "n": 2,
+      "size": "256x256"
+    }'`;
+
+  exec(cmd, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`exec error: ${error}`);
+      return;
+    }
+    const response = JSON.parse(stdout);
+    const imgURL = response.data[0].url;
+    const exampleEmbed = new Discord.MessageEmbed()
+    .setColor('#0099ff')
+    .setTitle('Generated Image')
+    .setDescription(`Generated image for prompt: ${prompt}`)
+    .setImage(imgURL);
+
+    message.reply(exampleEmbed);
+  });  
+  
+  
   const roomimgURL = 'https://oaidalleapiprodscus.blob.core.windows.net/private/org-XjrCUPKR4fXAzcf0rGYObghI/user-TFJfurQEBcwjQPFzCiYSA29L/img-sCUvzjTcqw86ychQtv51pptc.png?st=2023-04-19T16%3A25%3A07Z&se=2023-04-19T18%3A25%3A07Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-04-19T15%3A19%3A01Z&ske=2023-04-20T15%3A19%3A01Z&sks=b&skv=2021-08-06&sig=6rlanULxgrUBA6UPaljCywp1Ib1tRIob3sZNEkzHb0w%3D';
   return roomimgURL;
 }
