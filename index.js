@@ -569,6 +569,7 @@ async function generateHaiku() {
 }
 
 function replaceImagesinDatabase() {
+  console.log('why isnt this working?');
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
   
   roomsRef.once('value', (snapshot) => {
