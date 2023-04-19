@@ -410,7 +410,7 @@ if (command === 'image') {
     -d '{
       "prompt": "${prompt}",
       "n": 2,
-      "size": "1024x1024"
+      "size": "256x256"
     }'`;
 
   exec(cmd, (error, stdout, stderr) => {
