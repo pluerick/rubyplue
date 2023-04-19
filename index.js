@@ -392,8 +392,9 @@ if (command === 'generate') {
 
 if (command === 'makeimages') {
   console.log('christ!');
-  // Get a reference to the rooms node in the database
-  const roomsRef = admin.database().ref('test1/<server name>/rooms');
+
+    // Get a reference to the rooms node in the database
+    const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
 
   // Attach a listener for the "value" event to the roomsRef reference
   roomsRef.on('value', (snapshot) => {
