@@ -391,6 +391,7 @@ if (command === 'generate') {
 }
 
 if (command === 'makeimages') {
+  console.log('christ!');
   // Get a reference to the rooms node in the database
   const roomsRef = admin.database().ref('test1/<server name>/rooms');
 
