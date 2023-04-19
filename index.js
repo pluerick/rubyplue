@@ -401,6 +401,7 @@ if (command === 'blast') {
 // This command returns an image.
 if (command === 'image') {
   const { exec } = require('child_process');
+  const Discord = require('discord.js');
 
   const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
   const cmd = `curl https://api.openai.com/v1/images/generations \
@@ -419,7 +420,12 @@ if (command === 'image') {
     }
     const response = JSON.parse(stdout);
     const imgURL = response.data[0].url;
-    console.log(`Generated image URL: ${imgURL}`);
+    const embed = new Discord.MessageEmbed()
+      .setImage(imgURL)
+      .setColor('#0099ff')
+      .setTitle('Generated Image')
+      .setDescription('Here is your generated image!');
+    message.reply({ embeds: [embed] });
   });
 }
 
