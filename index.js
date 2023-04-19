@@ -459,6 +459,7 @@ async function lookAround(snapshot, roomsRef){
   const currentRoom = snapshot.val();
 
   // Create a message with the current room's name and description
+  let replymessage = currentRoom.image;
   let replyMessage = `You are currently in ${currentRoom.name}. ${currentRoom.description}\n`;
 
   // Check each direction for an adjacent room
@@ -469,10 +470,9 @@ async function lookAround(snapshot, roomsRef){
       const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
       const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
       replyMessage += `To the ${direction}, you can see ${neighborRoomName}.\n`;
-      replymessage += 'Image! ${currentRoom.image}';
     }
   }
-
+  
   // Return the message
   return replyMessage;
 }
