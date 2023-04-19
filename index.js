@@ -584,9 +584,7 @@ async function generateRoomImage() {
     .setColor('#0099ff')
     .setTitle('Generated Image')
     .setDescription(`Generated image for prompt: ${prompt}`)
-    .setImage(imgURL);
-
-    message.reply(exampleEmbed);
+    .setImage(imgURL);    
   });  
   
   
