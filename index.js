@@ -460,6 +460,7 @@ async function lookAround(snapshot, roomsRef){
 
   // Create a message with the current room's name and description
   let replymessage = currentRoom.image;
+  console.log('image', currentRoom.image);
   let replyMessage = `You are currently in ${currentRoom.name}. ${currentRoom.description}\n`;
 
   // Check each direction for an adjacent room
