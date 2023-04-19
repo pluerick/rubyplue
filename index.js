@@ -568,19 +568,20 @@ async function generateHaiku() {
   return haiku;
 }
 
-async function replaceImagesinDatabase() {
-  console.log('replaceImagesinDatabase ran');
-  const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
-  const roomsSnapshot = await roomsRef.once('value');
-  const rooms = roomsSnapshot.val();
-  for (const roomID in rooms) {
-    const room = rooms[roomID];
-    const roomName = room.name;
-    const roomImage = room.image;
-    const newImage = 'well that worked';
-    await roomsRef.child(roomID).update({ image: newImage });
-  }
-
+function replaceImagesinDatabase() {
+  const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+  
+  roomsRef.once('value', (snapshot) => {
+    snapshot.forEach((roomSnapshot) => {
+      const roomName = roomSnapshot.key;
+      const roomData = roomSnapshot.val();
+      
+      if (roomData.image) {
+        roomData.image = 'https://google.com';
+        roomsRef.child(roomName).set(roomData);
+      }
+    });
+  });
 }
 
 }});
