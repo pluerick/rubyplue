@@ -424,7 +424,8 @@ if (command === 'image') {
     const exampleEmbed = new Discord.MessageEmbed()
     .setColor('#0099ff')
     .setTitle('Hello World!')
-    .setDescription('This is an example embed message.');
+    .setDescription('This is an example embed message.')
+    .setImage(imgURL);
 
   message.reply(exampleEmbed);
     
