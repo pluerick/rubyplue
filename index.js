@@ -389,7 +389,20 @@ if (command === 'generate') {
     }
   });
 
-replaceImagesinDatabase();
+  console.log('why isnt this working?');
+  
+  
+  roomsRef.once('value', (snapshot) => {
+    snapshot.forEach((roomSnapshot) => {
+      const roomName = roomSnapshot.key;
+      const roomData = roomSnapshot.val();
+      
+      if (roomData.image) {
+        roomData.image = 'https://google.com';
+        roomsRef.child(roomName).set(roomData);
+      }
+    });
+  });
 
 
 }
@@ -568,22 +581,6 @@ async function generateHaiku() {
   return haiku;
 }
 
-function replaceImagesinDatabase() {
-  console.log('why isnt this working?');
-  const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
-  
-  roomsRef.once('value', (snapshot) => {
-    snapshot.forEach((roomSnapshot) => {
-      const roomName = roomSnapshot.key;
-      const roomData = roomSnapshot.val();
-      
-      if (roomData.image) {
-        roomData.image = 'https://google.com';
-        roomsRef.child(roomName).set(roomData);
-      }
-    });
-  });
-}
 
 }});
 
