@@ -418,7 +418,7 @@ if (command === 'image') {
     -d '{
       "prompt": "${prompt}",
       "n": 2,
-      "size": "1024x1024",
+      "size": "1024x1024"
     }'`;
 
 
