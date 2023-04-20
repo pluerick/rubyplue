@@ -414,12 +414,11 @@ if (command === 'makeimages') {
       const response = JSON.parse(stdout);
       const currentRoomImageUrl = response.data[0].url;
       message.reply(currentRoomImageUrl);
-      const imageFileName = currentRoomImageUrl;
-      const imageStream = fs.createWriteStream(imageFileName);
-      console.log(currentRoomImageUrl);
-      request(currentRoomImageUrl).pipe(fs.createWriteStream('image.png')).on('close', function() {
+
+      const imageFileName = 'room-image.png'; // change the filename to whatever you want
+      request(currentRoomImageUrl).pipe(fs.createWriteStream(imageFileName)).on('close', function() {
         const form = new FormData();
-        form.append('image', fs.createReadStream('image.png'));
+        form.append('image', fs.createReadStream(imageFileName));
         const uploadOptions = {
           url: 'https://api.imgur.com/3/image',
           headers: {
