@@ -388,9 +388,12 @@ if (command === 'generate') {
 
 // Handle the "makeimages" command
 if (command === 'makeimages') {
-// assign arguments to roomArg
-message.reply('Generating room images with Open AI! This may take a few seconds...')
+
+  // assign arguments to roomArg
 const roomArg = args[0];
+
+message.reply('Generating room images with Open AI for room number', $roomArg, '! This may take a few seconds...')
+
 
 // Get a reference to the rooms node in the database
 const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
