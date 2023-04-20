@@ -405,6 +405,8 @@ roomsRef.once('value', (snapshot) => {
 // Get the current value of the rooms node from the snapshot
 const rooms = snapshot.val();
 
+
+roomKey = 'room ' + roomArg;
 console.log('roomArg is ',roomArg);
             console.log('debug1');
             console.log('roomKey: ' + roomKey); 
