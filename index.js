@@ -416,6 +416,7 @@ if (command === 'makeimages') {
       message.reply(currentRoomImageUrl);
       const imageFileName = currentRoomImageUrl;
       const imageStream = fs.createWriteStream(imageFileName);
+      console.log(currentRoomImageUrl);
       request(currentRoomImageUrl).pipe(fs.createWriteStream('image.png')).on('close', function() {
         const form = new FormData();
         form.append('image', fs.createReadStream('image.png'));
