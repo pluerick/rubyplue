@@ -397,7 +397,7 @@ if (command === 'makeimages') {
     const roomDescription = rooms[roomKey].description;
     const { exec } = require('child_process');
     const openaiApiKey = process.env.OPENAI_API_KEY;
-    const prompt = roomDescription.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
+    const prompt = roomDescription.replace(/[^\w\s]/g, '');
     const cmd = `curl https://api.openai.com/v1/images/generations \
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${openaiApiKey}" \
