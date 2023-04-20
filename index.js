@@ -403,13 +403,13 @@ const rooms = snapshot.val();
 
       // Loop through each child node of the rooms node
     for (const roomKey in rooms) {
-            console.log('roomkey: ', roomKey);
+            console.log('debug1');
             // Get a reference to the current room node
             const roomRef = roomsRef.child(roomKey);
             //assign current rooms description to a variable
             const roomDescription = rooms[roomKey].description;
             //get an image from the AI for this room and put the URL in for currentRoomImageUrl
-            console.log('roomDescription: ', roomDescription);
+            console.log('debug2');
             
             const { exec } = require('child_process');
             const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
