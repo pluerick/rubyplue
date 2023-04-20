@@ -406,13 +406,6 @@ roomsRef.once('value', (snapshot) => {
 const rooms = snapshot.val();
 
 console.log('roomArg is ',roomArg);
-console.log('roomKey is ',roomKey);
-
-
-
-//if room matches isArgumentsObject, do dispatchEvent.
-    
-      if (roomKey === 'room ${roomArg}'){
             console.log('debug1');
             console.log('roomKey: ' + roomKey); 
             // Get a reference to the current room node
@@ -484,7 +477,6 @@ console.log('roomKey is ',roomKey);
                 console.log(`Image for room ${roomKey} updated successfully`);
               }
             });
-      }
  });
 }
 
