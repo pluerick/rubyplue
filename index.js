@@ -397,7 +397,7 @@ if (command === 'makeimages') {
 const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
 
 // Attach a listener for the "value" event to the roomsRef reference
-roomsRef.on('value', (snapshot) => {
+roomsRef.once('value', (snapshot) => {
 // Get the current value of the rooms node from the snapshot
 const rooms = snapshot.val();
 
