@@ -406,6 +406,10 @@ roomsRef.once('value', (snapshot) => {
 const rooms = snapshot.val();
 
 console.log('roomArg is ',roomArg);
+console.log('roomKey is ',roomKey);
+
+
+
 // Loop through each child node of the rooms node
     for (const roomKey in rooms) {
       if (roomKey === 'room ${roomArg}'){
