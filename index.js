@@ -392,7 +392,7 @@ if (command === 'makeimages') {
   // assign arguments to roomArg
 const roomArg = args[0];
 
-message.reply('Generating room images with Open AI for room number', $roomArg, '! This may take a few seconds...')
+message.reply('Generating room images with Open AI for room number', roomArg, '! This may take a few seconds...')
 
 
 // Get a reference to the rooms node in the database
