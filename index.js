@@ -422,7 +422,7 @@ if (command === 'makeimages') {
           const uploadOptions = {
             url: 'https://api.imgur.com/3/image',
             headers: {
-              Authorization: `Client-ID ${clientId}`,
+            Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
               ...formData.getHeaders(),
             },
             data: formData,
