@@ -11,6 +11,7 @@ const prefix = '?';
 let worldPrompt = '';
 clearchannelID = '';
 const openai = require('openai');
+const request = require('request');
 
 
 // Parse the service account key JSON string from the environment variable
@@ -416,6 +417,7 @@ console.log('roomKey: ' + roomKey);
 const roomRef = roomsRef.child(roomKey);
 //assign current rooms description to a variable
 const roomDescription = rooms[roomKey].description;
+
 //get an image from the AI for this room and put the URL in for currentRoomImageUrl
 console.log('debug2');            
 const { exec } = require('child_process');
@@ -429,8 +431,6 @@ const cmd = `curl https://api.openai.com/v1/images/generations \
     "n": 2,
     "size": "1024x1024"
   }'`;        
-
-
 exec(cmd, (error, stdout, stderr) => {
 if (error) {
   console.error(`exec error: ${error}`);
