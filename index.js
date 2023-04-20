@@ -389,9 +389,7 @@ if (command === 'generate') {
 if (command === 'makeimages') {
   const roomArg = args[0];
   message.reply('Generating room images with Open AI for room number', roomArg, '! This may take a few seconds...')
-
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
-
   roomsRef.once('value', (snapshot) => {
     const rooms = snapshot.val();
     const roomKey = 'room ' + roomArg;
@@ -417,9 +415,9 @@ if (command === 'makeimages') {
       const currentRoomImageUrl = response.data[0].url;
       const imageFileName = currentRoomImageUrl;
       const imageStream = fs.createWriteStream(imageFileName);
-      request(currentRoomImageUrl).pipe(imageStream).once('close', () => {
+      request(currentRoomImageUrl).pipe(fs.createWriteStream('image.png')).on('close', function() {
         const form = new FormData();
-        form.append('image', fs.createReadStream(imageFileName));
+        form.append('image', fs.createReadStream('image.png'));
         const uploadOptions = {
           url: 'https://api.imgur.com/3/image',
           headers: {
