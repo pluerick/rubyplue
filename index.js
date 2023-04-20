@@ -461,7 +461,7 @@ request.post(uploadOptions, (error, response, body) => {
   }
 const jsonResponse = JSON.parse(body);
 const imgurUrl = jsonResponse.data.link;
-console.log(`Imgur URL:`, $imgurUrl);
+console.log(`Imgur URL:`, imgurUrl);
 
 //Clean up the downloaded image file
     fs.unlink(imageFileName, (error) => {
