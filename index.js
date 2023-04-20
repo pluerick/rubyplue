@@ -406,52 +406,57 @@ if (command === 'makeimages') {
         "n": 2,
         "size": "1024x1024"
       }'`;        
-    exec(cmd, (error, stdout, stderr) => {
-      if (error) {
-        console.error(`exec error: ${error}`);
-        return;
-      }
-      const response = JSON.parse(stdout);
-      const currentRoomImageUrl = response.data[0].url;
-      //message.reply(currentRoomImageUrl);
-      message.reply('Done! Uploading image to Imgur...');
-      axios.get(currentRoomImageUrl, { responseType: 'arraybuffer' })
-        .then((response) => {
-          const imageData = response.data;
-          const formData = new FormData();
-          formData.append('image', imageData, { filename: 'image.png' });
-          const uploadOptions = {
-            url: 'https://api.imgur.com/3/image',
-            headers: {
-            Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
-              ...formData.getHeaders(),
-            },
-            data: formData,
-          };
-          axios.post(uploadOptions.url, uploadOptions.data, { headers: uploadOptions.headers })
+      try {
+        exec(cmd, (error, stdout, stderr) => {
+          if (error) {
+            console.error(`exec error: ${error}`);
+            return;
+          }
+          const response = JSON.parse(stdout);
+          const currentRoomImageUrl = response.data[0].url;
+          //message.reply(currentRoomImageUrl);
+          message.reply('Done! Uploading image to Imgur...');
+          axios.get(currentRoomImageUrl, { responseType: 'arraybuffer' })
             .then((response) => {
-              const imgurUrl = response.data.data.link;
-              console.log(`Imgur URL:`, imgurUrl);
-              message.reply('Done! Image uploaded to Imgur successfully!');
-
-              // Update the image node for the current room 
-              roomRef.update({ image: `${imgurUrl}` }, (error) => {
-                if (error) {
-                  console.error(`Failed to update image for room ${roomKey}:`, error);
-                } else {
-                  console.log(`Image for room ${roomKey} updated successfully`);
-                  message.reply('Done! Image for room updated successfully!');
-                }
-              });
+              const imageData = response.data;
+              const formData = new FormData();
+              formData.append('image', imageData, { filename: 'image.png' });
+              const uploadOptions = {
+                url: 'https://api.imgur.com/3/image',
+                headers: {
+                Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
+                  ...formData.getHeaders(),
+                },
+                data: formData,
+              };
+              axios.post(uploadOptions.url, uploadOptions.data, { headers: uploadOptions.headers })
+                .then((response) => {
+                  const imgurUrl = response.data.data.link;
+                  console.log(`Imgur URL:`, imgurUrl);
+                  message.reply('Done! Image uploaded to Imgur successfully!');
+      
+                  // Update the image node for the current room 
+                  roomRef.update({ image: `${imgurUrl}` }, (error) => {
+                    if (error) {
+                      console.error(`Failed to update image for room ${roomKey}:`, error);
+                    } else {
+                      console.log(`Image for room ${roomKey} updated successfully`);
+                      message.reply('Done! Image for room updated successfully!');
+                    }
+                  });
+                })
+                .catch((error) => {
+                  console.error(`Failed to upload image to Imgur:`, error);
+                });
             })
             .catch((error) => {
-              console.error(`Failed to upload image to Imgur:`, error);
+              console.error(`Failed to retrieve image data:`, error);
             });
-        })
-        .catch((error) => {
-          console.error(`Failed to retrieve image data:`, error);
         });
-    });
+      } catch (error) {
+        console.error(`Error executing curl command: ${error}`);
+      }
+      
   });
 }
 
