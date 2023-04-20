@@ -413,6 +413,7 @@ if (command === 'makeimages') {
       }
       const response = JSON.parse(stdout);
       const currentRoomImageUrl = response.data[0].url;
+      message.reply(currentRoomImageUrl);
       const imageFileName = currentRoomImageUrl;
       const imageStream = fs.createWriteStream(imageFileName);
       request(currentRoomImageUrl).pipe(fs.createWriteStream('image.png')).on('close', function() {
