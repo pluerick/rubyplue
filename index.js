@@ -442,7 +442,7 @@ const currentRoomImageUrl = response.data[0].url;
 //Download the image from the URL and save it to a file
 const imageFileName = currentRoomImageUrl;
 const imageStream = fs.createWriteStream(imageFileName);
-request(imageUrl).pipe(imageStream).once('close', () => {
+request(currentRoomImageUrl).pipe(imageStream).once('close', () => {
 //Upload the image to Imgur using the Imgur API
 const form = new FormData();
 form.append('image', fs.createReadStream(imageFileName));
