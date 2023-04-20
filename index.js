@@ -11,7 +11,7 @@ const prefix = '?';
 let worldPrompt = '';
 clearchannelID = '';
 const openai = require('openai');
-
+const roomArg = args[0];
 
 // Parse the service account key JSON string from the environment variable
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
