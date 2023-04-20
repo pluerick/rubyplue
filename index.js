@@ -391,7 +391,7 @@ if (command === 'generate') {
 }
 
 if (command === 'makeimages') {
-  console.log('christ!');
+
 
     // Get a reference to the rooms node in the database
     const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
@@ -412,7 +412,7 @@ if (command === 'makeimages') {
       
       const { exec } = require('child_process');
       const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
-      const prompt = roomDescription;
+      const prompt = roomDescription.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
       const cmd = `curl https://api.openai.com/v1/images/generations \
         -H "Content-Type: application/json" \
         -H "Authorization: Bearer ${openaiApiKey}" \
