@@ -410,7 +410,7 @@ const rooms = snapshot.val();
 
 // Loop through each child node of the rooms node
     for (const roomKey in rooms) {
-      if (roomkey === 'room ${roomArg}'){
+      if (roomKey === 'room ${roomArg}'){
             console.log('debug1');
             console.log('roomKey: ' + roomKey); 
             // Get a reference to the current room node
