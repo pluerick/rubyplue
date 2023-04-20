@@ -33,8 +33,6 @@ console.log('RubyBot lives!');
 
 client.on('message', async message => {
 
-  const roomArg = args[0];
-
 
 // Get the player's Discord name  
 const playerName = message.author.username;
@@ -85,7 +83,7 @@ if (command === 'start') {
     roomsRef.orderByKey().limitToFirst(1).once('value', snapshot => {
       const roomId = Object.keys(snapshot.val())[0].slice(-1);
 
-      // Check if the player is already in the database, if not, add them
+  // Check if the player is already in the database, if not, add them
       const playersRef = serverRef.child("players");
       playersRef.orderByChild("name").equalTo(playerName).once("value", (playerSnapshot) => {
         if (playerSnapshot.exists()) {
