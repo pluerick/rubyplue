@@ -469,7 +469,7 @@ const rooms = snapshot.val();
             
 
             // Update the image node for the current room 
-            roomRef.update({ image: '${imgurUrl}' }, (error) => {
+            roomRef.update({ image: imgurUrl }, (error) => {
               if (error) {
                 console.error(`Failed to update image for room ${roomKey}:`, error);
               } else {
