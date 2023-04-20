@@ -393,88 +393,89 @@ if (command === 'generate') {
 if (command === 'makeimages') {
 
 
-    // Get a reference to the rooms node in the database
-    const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+// Get a reference to the rooms node in the database
+const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
 
-  // Attach a listener for the "value" event to the roomsRef reference
-  roomsRef.on('value', (snapshot) => {
-    // Get the current value of the rooms node from the snapshot
-    const rooms = snapshot.val();
+// Attach a listener for the "value" event to the roomsRef reference
+roomsRef.on('value', (snapshot) => {
+// Get the current value of the rooms node from the snapshot
+const rooms = snapshot.val();
 
       // Loop through each child node of the rooms node
     for (const roomKey in rooms) {
-      // Get a reference to the current room node
-      const roomRef = roomsRef.child(roomKey);
-      //assign current rooms description to a variable
-      const roomDescription = rooms[roomKey].description;
-      //get an image from the AI for this room and put the URL in for currentRoomImageUrl
-      
-      
-      const { exec } = require('child_process');
-      const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
-      const prompt = roomDescription.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
-      const cmd = `curl https://api.openai.com/v1/images/generations \
-        -H "Content-Type: application/json" \
-        -H "Authorization: Bearer ${openaiApiKey}" \
-        -d '{
-          "prompt": "${prompt}",
-          "n": 2,
-          "size": "1024x1024"
-        }'`;
-    
-    
-      exec(cmd, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`exec error: ${error}`);
-          return;
-        }
-        const response = JSON.parse(stdout);
-        console.log('response:', response);
-        const imgURL = response.data[0].url;
-     
-// Step 1: Download the image from the URL and save it to a file
-const imageFileName = imgURL;
-const imageStream = fs.createWriteStream(imageFileName);
-request(imageUrl).pipe(imageStream).on('close', () => {
-  // Step 2: Upload the image to Imgur using the Imgur API
-  const form = new FormData();
-  form.append('image', fs.createReadStream(imageFileName));
-  const uploadOptions = {
-    url: 'https://api.imgur.com/3/image',
-    headers: {
-      Authorization: `Client-ID ${clientId}`,
-      ...form.getHeaders(),
-    },
-    formData: form,
-  };
-  request.post(uploadOptions, (error, response, body) => {
-    if (error) {
-      console.error(error);
-      return;
-    }
-    const jsonResponse = JSON.parse(body);
-    const imgurUrl = jsonResponse.data.link;
-    console.log(`Imgur URL: ${imgurUrl}`);
-    // Step 3: Clean up the downloaded image file
-    fs.unlink(imageFileName, (error) => {
-      if (error) {
-        console.error(error);
-      }
-    });
-  });
-});
+            console.log('roomkey: ', roomKey);
+            // Get a reference to the current room node
+            const roomRef = roomsRef.child(roomKey);
+            //assign current rooms description to a variable
+            const roomDescription = rooms[roomKey].description;
+            //get an image from the AI for this room and put the URL in for currentRoomImageUrl
+            console.log('roomDescription: ', roomDescription);
+            
+            const { exec } = require('child_process');
+            const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
+            const prompt = roomDescription.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
+            const cmd = `curl https://api.openai.com/v1/images/generations \
+              -H "Content-Type: application/json" \
+              -H "Authorization: Bearer ${openaiApiKey}" \
+              -d '{
+                "prompt": "${prompt}",
+                "n": 2,
+                "size": "1024x1024"
+              }'`;
+          
+          
+            exec(cmd, (error, stdout, stderr) => {
+              if (error) {
+                console.error(`exec error: ${error}`);
+                return;
+              }
+              const response = JSON.parse(stdout);
+              console.log('response:', response);
+              const imgURL = response.data[0].url;
+          
+            // Step 1: Download the image from the URL and save it to a file
+            const imageFileName = imgURL;
+            const imageStream = fs.createWriteStream(imageFileName);
+            request(imageUrl).pipe(imageStream).on('close', () => {
+              // Step 2: Upload the image to Imgur using the Imgur API
+              const form = new FormData();
+              form.append('image', fs.createReadStream(imageFileName));
+              const uploadOptions = {
+                url: 'https://api.imgur.com/3/image',
+                headers: {
+                  Authorization: `Client-ID ${clientId}`,
+                  ...form.getHeaders(),
+                },
+                formData: form,
+              };
+              request.post(uploadOptions, (error, response, body) => {
+                if (error) {
+                  console.error(error);
+                  return;
+                }
+                const jsonResponse = JSON.parse(body);
+                const imgurUrl = jsonResponse.data.link;
+                console.log(`Imgur URL: ${imgurUrl}`);
+                // Step 3: Clean up the downloaded image file
+                fs.unlink(imageFileName, (error) => {
+                  if (error) {
+                    console.error(error);
+                  }
+                });
+              });
+            });
 
-      });
-      
+                  });
+            
 
-      // Update the image node for the current room 
-      roomRef.update({ image: 'google.com' }, (error) => {
-        if (error) {
-          console.error(`Failed to update image for room ${roomKey}:`, error);
-        } else {
-          console.log(`Image for room ${roomKey} updated successfully`);
-        }
-      });
+            // Update the image node for the current room 
+            roomRef.update({ image: '${imgurUrl}' }, (error) => {
+              if (error) {
+                console.error(`Failed to update image for room ${roomKey}:`, error);
+              } else {
+                console.log(`Image for room ${roomKey} updated successfully`);
+              }
+            });
     }
  });
 }
