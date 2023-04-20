@@ -414,34 +414,40 @@ if (command === 'makeimages') {
       const response = JSON.parse(stdout);
       const currentRoomImageUrl = response.data[0].url;
       message.reply(currentRoomImageUrl);
-      const form = new FormData();
-      request(currentRoomImageUrl).pipe(form.append('image'));
-      const uploadOptions = {
-        url: 'https://api.imgur.com/3/image',
-        headers: {
-          Authorization: `Client-ID ${clientId}`,
-          ...form.getHeaders(),
-        },
-        formData: form,
-      };
-      request.post(uploadOptions, (error, response, body) => {
-        if (error) {
-          console.error(error);
-          return;
-        }
-        const jsonResponse = JSON.parse(body);
-        const imgurUrl = jsonResponse.data.link;
-        console.log(`Imgur URL:`, imgurUrl);
+      axios.get(currentRoomImageUrl, { responseType: 'arraybuffer' })
+        .then((response) => {
+          const imageData = response.data;
+          const formData = new FormData();
+          formData.append('image', imageData, { filename: 'image.png' });
+          const uploadOptions = {
+            url: 'https://api.imgur.com/3/image',
+            headers: {
+              Authorization: `Client-ID ${clientId}`,
+              ...formData.getHeaders(),
+            },
+            data: formData,
+          };
+          axios.post(uploadOptions.url, uploadOptions.data, { headers: uploadOptions.headers })
+            .then((response) => {
+              const imgurUrl = response.data.data.link;
+              console.log(`Imgur URL:`, imgurUrl);
 
-        // Update the image node for the current room 
-        roomRef.update({ image: `${imgurUrl}` }, (error) => {
-          if (error) {
-            console.error(`Failed to update image for room ${roomKey}:`, error);
-          } else {
-            console.log(`Image for room ${roomKey} updated successfully`);
-          }
+              // Update the image node for the current room 
+              roomRef.update({ image: `${imgurUrl}` }, (error) => {
+                if (error) {
+                  console.error(`Failed to update image for room ${roomKey}:`, error);
+                } else {
+                  console.log(`Image for room ${roomKey} updated successfully`);
+                }
+              });
+            })
+            .catch((error) => {
+              console.error(`Failed to upload image to Imgur:`, error);
+            });
+        })
+        .catch((error) => {
+          console.error(`Failed to retrieve image data:`, error);
         });
-      });
     });
   });
 }
