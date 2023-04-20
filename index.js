@@ -386,106 +386,74 @@ if (command === 'generate') {
   });
 }
 
-
-// Handle the "makeimages" command
 if (command === 'makeimages') {
+  const roomArg = args[0];
+  message.reply('Generating room images with Open AI for room number', roomArg, '! This may take a few seconds...')
 
-  // assign arguments to roomArg
-const roomArg = args[0];
+  const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
 
-message.reply('Generating room images with Open AI for room number', roomArg, '! This may take a few seconds...')
-
-
-// Get a reference to the rooms node in the database
-const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
-
-// Attach a listener for the "value" event to the roomsRef reference
-// Changed this to only run once because it was making changes and triggering itself.
-roomsRef.once('value', (snapshot) => {
-
-// Get the current value of the rooms node from the snapshot
-const rooms = snapshot.val();
-
-// Get the room key from the argument
-roomKey = 'room ' + roomArg;
-
-console.log('roomArg is ',roomArg);
-console.log('roomKey: ' + roomKey); 
-
-
-// Get a reference to the current room node
-const roomRef = roomsRef.child(roomKey);
-//assign current rooms description to a variable
-const roomDescription = rooms[roomKey].description;
-
-//get an image from the AI for this room and put the URL in for currentRoomImageUrl
-console.log('debug2');            
-const { exec } = require('child_process');
-const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
-const prompt = roomDescription.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
-const cmd = `curl https://api.openai.com/v1/images/generations \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer ${openaiApiKey}" \
-  -d '{
-    "prompt": "${prompt}",
-    "n": 2,
-    "size": "1024x1024"
-  }'`;        
-exec(cmd, (error, stdout, stderr) => {
-if (error) {
-  console.error(`exec error: ${error}`);
-  return;
-}
-const response = JSON.parse(stdout);
-const currentRoomImageUrl = response.data[0].url;
-
-//Download the image from the URL and save it to a file
-const imageFileName = currentRoomImageUrl;
-const imageStream = fs.createWriteStream(imageFileName);
-request(currentRoomImageUrl).pipe(imageStream).once('close', () => {
-//Upload the image to Imgur using the Imgur API
-const form = new FormData();
-form.append('image', fs.createReadStream(imageFileName));
-const uploadOptions = {
-    url: 'https://api.imgur.com/3/image',
-    headers: {
-      Authorization: `Client-ID ${clientId}`,
-      ...form.getHeaders(),
-  },
-    formData: form,
-  };
-request.post(uploadOptions, (error, response, body) => {
-  if (error) {
-    console.error(error);
-    return;
-  }
-const jsonResponse = JSON.parse(body);
-const imgurUrl = jsonResponse.data.link;
-console.log(`Imgur URL:`, imgurUrl);
-
-//Clean up the downloaded image file
-    fs.unlink(imageFileName, (error) => {
+  roomsRef.once('value', (snapshot) => {
+    const rooms = snapshot.val();
+    const roomKey = 'room ' + roomArg;
+    const roomRef = roomsRef.child(roomKey);
+    const roomDescription = rooms[roomKey].description;
+    const { exec } = require('child_process');
+    const openaiApiKey = process.env.OPENAI_API_KEY;
+    const prompt = roomDescription.replace(/[\x00-\x1F\x7F-\x9F]/g, '');
+    const cmd = `curl https://api.openai.com/v1/images/generations \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer ${openaiApiKey}" \
+      -d '{
+        "prompt": "${prompt}",
+        "n": 2,
+        "size": "1024x1024"
+      }'`;        
+    exec(cmd, (error, stdout, stderr) => {
       if (error) {
-        console.error(error);
+        console.error(`exec error: ${error}`);
+        return;
       }
+      const response = JSON.parse(stdout);
+      const currentRoomImageUrl = response.data[0].url;
+      const imageFileName = currentRoomImageUrl;
+      const imageStream = fs.createWriteStream(imageFileName);
+      request(currentRoomImageUrl).pipe(imageStream).once('close', () => {
+        const form = new FormData();
+        form.append('image', fs.createReadStream(imageFileName));
+        const uploadOptions = {
+          url: 'https://api.imgur.com/3/image',
+          headers: {
+            Authorization: `Client-ID ${clientId}`,
+            ...form.getHeaders(),
+          },
+          formData: form,
+        };
+        request.post(uploadOptions, (error, response, body) => {
+          if (error) {
+            console.error(error);
+            return;
+          }
+          const jsonResponse = JSON.parse(body);
+          const imgurUrl = jsonResponse.data.link;
+          console.log(`Imgur URL:`, imgurUrl);
+          fs.unlink(imageFileName, (error) => {
+            if (error) {
+              console.error(error);
+            }
+          });
+
+          // Update the image node for the current room 
+          roomRef.update({ image: `${imgurUrl}` }, (error) => {
+            if (error) {
+              console.error(`Failed to update image for room ${roomKey}:`, error);
+            } else {
+              console.log(`Image for room ${roomKey} updated successfully`);
+            }
+          });
+        });
+      });
     });
   });
-});
-
-// Update the image node for the current room 
-roomRef.update({ image: `${imgurUrl}` }, (error) => {
-  if (error) {
-    console.error(`Failed to update image for room ${roomKey}:`, error);
-  } else {
-    console.log(`Image for room ${roomKey} updated successfully`);
-  }
-});
-
-      });
-
-
-
- });
 }
 
 
