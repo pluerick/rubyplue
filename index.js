@@ -457,7 +457,7 @@ console.log('roomArg is ',roomArg);
               }
             const jsonResponse = JSON.parse(body);
             const imgurUrl = jsonResponse.data.link;
-            console.log(`Imgur URL: ${imgurUrl}`);
+            console.log(`Imgur URL:`, $imgurUrl);
 
             //Clean up the downloaded image file
                 fs.unlink(imageFileName, (error) => {
@@ -472,7 +472,7 @@ console.log('roomArg is ',roomArg);
             
 
             // Update the image node for the current room 
-            roomRef.update({ image: '${imgurUrl}' }, (error) => {
+            roomRef.update({ image: `${imgurUrl}` }, (error) => {
               if (error) {
                 console.error(`Failed to update image for room ${roomKey}:`, error);
               } else {
