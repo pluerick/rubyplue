@@ -401,12 +401,17 @@ if (command === 'makeimages') {
     // Get the current value of the rooms node from the snapshot
     const rooms = snapshot.val();
 
-    // Loop through each child node of the rooms node
+      // Loop through each child node of the rooms node
     for (const roomKey in rooms) {
       // Get a reference to the current room node
       const roomRef = roomsRef.child(roomKey);
+      //assign current rooms description to a variable
+      const roomDescription = rooms[roomKey].description;
+      //get an image from the AI for this room and put the URL in for currentRoomImageUrl
+      //const currentRoomImageUrl = await generateImage(roomDescription);
+      
 
-      // Update the image node for the current room to "google.com"
+      // Update the image node for the current room 
       roomRef.update({ image: 'google.com' }, (error) => {
         if (error) {
           console.error(`Failed to update image for room ${roomKey}:`, error);
@@ -445,7 +450,7 @@ if (command === 'image') {
     -d '{
       "prompt": "${prompt}",
       "n": 2,
-      "size": "1024x1024"
+      "size": "256x256"
     }'`;
 
 
