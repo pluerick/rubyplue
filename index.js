@@ -407,6 +407,7 @@ const rooms = snapshot.val();
 // Loop through each child node of the rooms node
     for (const roomKey in rooms) {
             console.log('debug1');
+            console.log('roomKey: ' + roomKey); 
             // Get a reference to the current room node
             const roomRef = roomsRef.child(roomKey);
             //assign current rooms description to a variable
@@ -455,7 +456,7 @@ const rooms = snapshot.val();
             const jsonResponse = JSON.parse(body);
             const imgurUrl = jsonResponse.data.link;
             console.log(`Imgur URL: ${imgurUrl}`);
-            
+
             //Clean up the downloaded image file
                 fs.unlink(imageFileName, (error) => {
                   if (error) {
