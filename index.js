@@ -436,7 +436,7 @@ const rooms = snapshot.val();
             // Step 1: Download the image from the URL and save it to a file
             const imageFileName = imgURL;
             const imageStream = fs.createWriteStream(imageFileName);
-            request(imageUrl).pipe(imageStream).on('close', () => {
+            request(imageUrl).pipe(imageStream).once('close', () => {
               // Step 2: Upload the image to Imgur using the Imgur API
               const form = new FormData();
               form.append('image', fs.createReadStream(imageFileName));
