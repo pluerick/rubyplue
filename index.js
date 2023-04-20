@@ -429,6 +429,8 @@ const cmd = `curl https://api.openai.com/v1/images/generations \
     "n": 2,
     "size": "1024x1024"
   }'`;        
+
+
 exec(cmd, (error, stdout, stderr) => {
 if (error) {
   console.error(`exec error: ${error}`);
@@ -470,9 +472,6 @@ console.log(`Imgur URL:`, $imgurUrl);
   });
 });
 
-      });
-
-
 // Update the image node for the current room 
 roomRef.update({ image: `${imgurUrl}` }, (error) => {
   if (error) {
@@ -481,6 +480,11 @@ roomRef.update({ image: `${imgurUrl}` }, (error) => {
     console.log(`Image for room ${roomKey} updated successfully`);
   }
 });
+
+      });
+
+
+
  });
 }
 
