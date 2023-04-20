@@ -410,8 +410,8 @@ console.log('roomKey is ',roomKey);
 
 
 
-// Loop through each child node of the rooms node
-    for (const roomKey in rooms) {
+//if room matches isArgumentsObject, do dispatchEvent.
+    
       if (roomKey === 'room ${roomArg}'){
             console.log('debug1');
             console.log('roomKey: ' + roomKey); 
@@ -485,7 +485,6 @@ console.log('roomKey is ',roomKey);
               }
             });
       }
-    }
  });
 }
 
