@@ -39,7 +39,7 @@ client.on('ready', () => {
 console.log('RubyBot lives!');
 });
 
-client.on('message', async message => {
+client.on('messageCreate', async message => {
 
 
 // Get the player's Discord name  
