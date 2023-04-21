@@ -556,25 +556,30 @@ async function lookAround(snapshot, roomsRef){
   }
 
   // Add buttons for each direction
-  const northButton = new MessageButton()
-    .setCustomId('north')
-    .setLabel('North')
-    .setStyle('PRIMARY');
-  const southButton = new MessageButton()
-    .setCustomId('south')
-    .setLabel('South')
-    .setStyle('PRIMARY');
-  const eastButton = new MessageButton()
-    .setCustomId('east')
-    .setLabel('East')
-    .setStyle('PRIMARY');
-  const westButton = new MessageButton()
-    .setCustomId('west')
-    .setLabel('West')
-    .setStyle('PRIMARY');
+// Create a new action row with buttons
+const row = new MessageActionRow()
+	.addComponents(
+		new MessageButton()
+			.setCustomId('north')
+			.setLabel('North')
+			.setStyle('PRIMARY'),
+		new MessageButton()
+			.setCustomId('south')
+			.setLabel('South')
+			.setStyle('PRIMARY'),
+		new MessageButton()
+			.setCustomId('east')
+			.setLabel('East')
+			.setStyle('PRIMARY'),
+		new MessageButton()
+			.setCustomId('west')
+			.setLabel('West')
+			.setStyle('PRIMARY'),
+	);
+
 
   // Add the buttons to the embed
-  embed.addComponents([northButton, southButton, eastButton, westButton]);
+  embed.addComponents([north, west, east, south]);
 
   // Return the embed
   return embed;
