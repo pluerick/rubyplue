@@ -1,8 +1,8 @@
-const { Client, Intents } = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 const client = new Client({
    Intents: [
-    Intents.FLAGS.GUILDS, 
-    Intents.FLAGS.GUILD_MESSAGES
+    GatewayIntentBits.GUILDS, 
+    GatewayIntentBits.GUILD_MESSAGES
   ] 
   });
 const axios = require('axios');
