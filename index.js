@@ -578,7 +578,7 @@ const row = new ActionRowBuilder()
 
 
   // Add the buttons to the embed
-  // not working!
+  embed.addFields(fields);
 
 
 
