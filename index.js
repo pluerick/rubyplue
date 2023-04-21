@@ -545,12 +545,13 @@ async function lookAround(snapshot, roomsRef){
 
   // Check each direction for an adjacent room
   const directions = ["north", "south", "east", "west"];
+  const fields = [];
   for (const direction of directions) {
     if (currentRoom[direction]) {
       const neighborRoomID = currentRoom[direction];
       const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
       const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
-      embed.addFields(`To the ${direction}`, neighborRoomName);
+      fields.push({ name: `To the ${direction}`, value: neighborRoomName });
     }
   }
 
