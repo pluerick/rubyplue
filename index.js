@@ -579,7 +579,9 @@ const row = new ActionRowBuilder()
 
 
   // Add the buttons to the embed
-  await interaction.reply({ components: [row] });
+  embed.addFields(fields);
+  
+
 
   // Return the embed
   return embed;
