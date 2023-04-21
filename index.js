@@ -402,7 +402,7 @@ if (command === 'makeimages') {
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${openaiApiKey}" \
       -d '{
-        "prompt": "${prompt}",
+        "prompt": "create an image for a video game that suits this description-- ${prompt}",
         "n": 2,
         "size": "1024x1024"
       }'`;        
