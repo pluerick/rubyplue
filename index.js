@@ -539,7 +539,6 @@ async function lookAround(snapshot, roomsRef){
     .setColor('#0099ff')
     .setTitle(currentRoom.name)
     .setDescription(currentRoom.description)
-    //.setThumbnail(currentRoom.image)
     .setImage(currentRoom.image)
     .setTimestamp();
 
@@ -579,7 +578,7 @@ const row = new ActionRowBuilder()
 
 
   // Add the buttons to the embed
-  embed.addFields(fields);
+  //embed.addFields(fields);
 
 
 
