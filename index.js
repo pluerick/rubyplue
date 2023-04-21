@@ -535,7 +535,7 @@ async function lookAround(snapshot, roomsRef){
   const currentRoom = snapshot.val();
 
   // Create an embed with the current room's name and description
-  const embed = new client.MessageEmbed()
+  const embed = new MessageEmbed()
     .setColor('#0099ff')
     .setTitle(currentRoom.name)
     .setDescription(currentRoom.description)
@@ -555,19 +555,19 @@ async function lookAround(snapshot, roomsRef){
   }
 
   // Add buttons for each direction
-  const northButton = new client.MessageButton()
+  const northButton = new MessageButton()
     .setCustomId('north')
     .setLabel('North')
     .setStyle('PRIMARY');
-  const southButton = new client.MessageButton()
+  const southButton = new MessageButton()
     .setCustomId('south')
     .setLabel('South')
     .setStyle('PRIMARY');
-  const eastButton = new client.MessageButton()
+  const eastButton = new MessageButton()
     .setCustomId('east')
     .setLabel('East')
     .setStyle('PRIMARY');
-  const westButton = new client.MessageButton()
+  const westButton = new MessageButton()
     .setCustomId('west')
     .setLabel('West')
     .setStyle('PRIMARY');
