@@ -270,8 +270,8 @@ if (command === 'look' || command === 'l') {
         if (!snapshot.exists()) {
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
         } else {
-          const replyMessage = await lookAround(snapshot, roomsRef);
-          message.reply(replyMessage);
+          const replyEmbed = await lookAround(snapshot, roomsRef);
+          message.reply({ embeds: [replyEmbed] });
         }
       });
     }
@@ -527,9 +527,14 @@ async function lookAround(snapshot, roomsRef){
   // Get the current room's data
   const currentRoom = snapshot.val();
 
-  // Create a message with the current room's name and description
-  console.log('image', currentRoom.image);
-  let replyMessage = `${currentRoom.image}\nYou are currently in ${currentRoom.name}. ${currentRoom.description}\n`;
+  // Create an embed with the current room's name and description
+  const embed = new Discord.MessageEmbed()
+    .setColor('#0099ff')
+    .setTitle(currentRoom.name)
+    .setDescription(currentRoom.description)
+    .setThumbnail(currentRoom.image)
+    .setAuthor('Game', 'https://i.imgur.com/wSTFkRM.png', 'https://www.example.com')
+    .setTimestamp();
 
   // Check each direction for an adjacent room
   const directions = ["north", "south", "east", "west"];
@@ -538,13 +543,37 @@ async function lookAround(snapshot, roomsRef){
       const neighborRoomID = currentRoom[direction];
       const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
       const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
-      replyMessage += `To the ${direction}, you can see ${neighborRoomName}.\n`;
+      embed.addField(`To the ${direction}`, neighborRoomName);
     }
   }
-  
-  // Return the message
-  return replyMessage;
+
+  // Add buttons for each direction
+  const northButton = new Discord.MessageButton()
+    .setCustomId('north')
+    .setLabel('North')
+    .setStyle('PRIMARY');
+  const southButton = new Discord.MessageButton()
+    .setCustomId('south')
+    .setLabel('South')
+    .setStyle('PRIMARY');
+  const eastButton = new Discord.MessageButton()
+    .setCustomId('east')
+    .setLabel('East')
+    .setStyle('PRIMARY');
+  const westButton = new Discord.MessageButton()
+    .setCustomId('west')
+    .setLabel('West')
+    .setStyle('PRIMARY');
+
+  // Add the buttons to the embed
+  embed.addComponents([northButton, southButton, eastButton, westButton]);
+
+  // Return the embed
+  return embed;
 }
+
+
+
 
 //This function writes descriptions of the rooms and assigns to the data
 async function generateDescription(args) {
