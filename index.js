@@ -506,7 +506,7 @@ if (command === 'image') {
     const response = JSON.parse(stdout);
     console.log('response:', response);
     const imgURL = response.data[0].url;
-    const exampleEmbed = new client.MessageEmbed()
+    const exampleEmbed = new client.EmbedBuilder()
     .setColor('#0099ff')
     .setTitle('Generated Image')
     .setDescription(`Generated image for prompt: ${prompt}`)
