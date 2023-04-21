@@ -562,19 +562,19 @@ const row = new ActionRowBuilder()
 		new ButtonBuilder()
 			.setCustomId('north')
 			.setLabel('North')
-			.setStyle('ButtonStyle.Primary'),
+			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()
 			.setCustomId('south')
 			.setLabel('South')
-			.setStyle('ButtonStyle.Primary'),
+			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()
 			.setCustomId('east')
 			.setLabel('East')
-			.setStyle('ButtonStyle.Primary'),
+			.setStyle(ButtonStyle.Primary),
 		new ButtonBuilder()
 			.setCustomId('west')
 			.setLabel('West')
-			.setStyle('ButtonStyle.Primary'),
+			.setStyle(ButtonStyle.Primary),
 	);
 
 
