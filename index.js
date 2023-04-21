@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, EmbedBuilder, MessageButton } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder, MessageActionRow, MessageButton } = require('discord.js');
 const client = new Client({
    intents: [
 		GatewayIntentBits.Guilds,
