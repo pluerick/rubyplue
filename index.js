@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, MessageEmbed } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const client = new Client({
    intents: [
 		GatewayIntentBits.Guilds,
@@ -535,7 +535,7 @@ async function lookAround(snapshot, roomsRef){
   const currentRoom = snapshot.val();
 
   // Create an embed with the current room's name and description
-  const embed = new client.MessageEmbed()
+  const embed = new client.EmbedBuilder()
     .setColor('#0099ff')
     .setTitle(currentRoom.name)
     .setDescription(currentRoom.description)
