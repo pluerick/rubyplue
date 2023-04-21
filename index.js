@@ -2,8 +2,12 @@ const { Client, GatewayIntentBits } = require('discord.js');
 const client = new Client({
    Intents: [
     GatewayIntentBits.GUILDS, 
-    GatewayIntentBits.GUILD_MESSAGES
-  ] 
+    GatewayIntentBits.GUILD_MESSAGES,
+    GatewayIntentBits.GUILD_WEBHOOKS,
+    GatewayIntentBits.GUUILD_MESSAGE_REACTIONS,
+    GatewayIntentBits.DIRECT_MESSAGES,
+    GatewayIntentBits.DIRECT_MESSAGE_REACTIONS
+    ] 
   });
 const axios = require('axios');
 const admin = require('firebase-admin');
