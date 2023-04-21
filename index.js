@@ -506,7 +506,7 @@ if (command === 'image') {
     const response = JSON.parse(stdout);
     console.log('response:', response);
     const imgURL = response.data[0].url;
-    const exampleEmbed = new client.EmbedBuilder()
+    const exampleEmbed = new EmbedBuilder()
     .setColor('#0099ff')
     .setTitle('Generated Image')
     .setDescription(`Generated image for prompt: ${prompt}`)
@@ -535,7 +535,7 @@ async function lookAround(snapshot, roomsRef){
   const currentRoom = snapshot.val();
 
   // Create an embed with the current room's name and description
-  const embed = new client.EmbedBuilder()
+  const embed = new EmbedBuilder()
     .setColor('#0099ff')
     .setTitle(currentRoom.name)
     .setDescription(currentRoom.description)
