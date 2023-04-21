@@ -402,7 +402,7 @@ if (command === 'makeimages') {
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${openaiApiKey}" \
       -d '{
-        "prompt": "${prompt}",
+        "prompt": "make an image that looks like a painting and depicts a room matching the following description-- ${prompt}",
         "n": 2,
         "size": "1024x1024"
       }'`;        
