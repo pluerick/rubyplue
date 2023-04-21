@@ -539,8 +539,8 @@ async function lookAround(snapshot, roomsRef){
     .setColor('#0099ff')
     .setTitle(currentRoom.name)
     .setDescription(currentRoom.description)
-    .setThumbnail(currentRoom.image)
-    //.setAuthor('Game', 'https://i.imgur.com/wSTFkRM.png', 'https://www.example.com')
+    //.setThumbnail(currentRoom.image)
+    .setImage(currentRoom.image)
     .setTimestamp();
 
   // Check each direction for an adjacent room
@@ -580,7 +580,7 @@ const row = new ActionRowBuilder()
 
   // Add the buttons to the embed
   embed.addFields(fields);
-  
+
 
 
   // Return the embed
