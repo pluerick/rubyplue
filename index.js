@@ -579,7 +579,7 @@ const row = new ActionRowBuilder()
 
 
   // Add the buttons to the embed
-  embed.addComponents([north, west, east, south]);
+  embed.addComponents(row);
 
   // Return the embed
   return embed;
