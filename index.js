@@ -506,7 +506,7 @@ if (command === 'image') {
     const response = JSON.parse(stdout);
     console.log('response:', response);
     const imgURL = response.data[0].url;
-    const exampleEmbed = new Discord.MessageEmbed()
+    const exampleEmbed = new client.MessageEmbed()
     .setColor('#0099ff')
     .setTitle('Generated Image')
     .setDescription(`Generated image for prompt: ${prompt}`)
@@ -535,7 +535,7 @@ async function lookAround(snapshot, roomsRef){
   const currentRoom = snapshot.val();
 
   // Create an embed with the current room's name and description
-  const embed = new Discord.MessageEmbed()
+  const embed = new client.MessageEmbed()
     .setColor('#0099ff')
     .setTitle(currentRoom.name)
     .setDescription(currentRoom.description)
@@ -555,19 +555,19 @@ async function lookAround(snapshot, roomsRef){
   }
 
   // Add buttons for each direction
-  const northButton = new Discord.MessageButton()
+  const northButton = new client.MessageButton()
     .setCustomId('north')
     .setLabel('North')
     .setStyle('PRIMARY');
-  const southButton = new Discord.MessageButton()
+  const southButton = new client.MessageButton()
     .setCustomId('south')
     .setLabel('South')
     .setStyle('PRIMARY');
-  const eastButton = new Discord.MessageButton()
+  const eastButton = new client.MessageButton()
     .setCustomId('east')
     .setLabel('East')
     .setStyle('PRIMARY');
-  const westButton = new Discord.MessageButton()
+  const westButton = new client.MessageButton()
     .setCustomId('west')
     .setLabel('West')
     .setStyle('PRIMARY');
