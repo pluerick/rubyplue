@@ -1,12 +1,10 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const client = new Client({
    Intents: [
-    GatewayIntentBits.GUILDS, 
-    GatewayIntentBits.GUILD_MESSAGES,
-    GatewayIntentBits.GUILD_WEBHOOKS,
-    GatewayIntentBits.GUUILD_MESSAGE_REACTIONS,
-    GatewayIntentBits.DIRECT_MESSAGES,
-    GatewayIntentBits.DIRECT_MESSAGE_REACTIONS
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.MessageContent,
+		GatewayIntentBits.GuildMembers
     ] 
   });
 const axios = require('axios');
