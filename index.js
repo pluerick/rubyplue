@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, EmbedBuilder, MessageActionRow, MessageButton } = require('discord.js');
+const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, MessageButton } = require('discord.js');
 const client = new Client({
    intents: [
 		GatewayIntentBits.Guilds,
@@ -557,7 +557,7 @@ async function lookAround(snapshot, roomsRef){
 
   // Add buttons for each direction
 // Create a new action row with buttons
-const row = new MessageActionRow()
+const row = new ActionRowBuilder()
 	.addComponents(
 		new MessageButton()
 			.setCustomId('north')
