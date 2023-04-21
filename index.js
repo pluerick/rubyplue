@@ -540,7 +540,7 @@ async function lookAround(snapshot, roomsRef){
     .setTitle(currentRoom.name)
     .setDescription(currentRoom.description)
     .setThumbnail(currentRoom.image)
-    .setAuthor('Game', 'https://i.imgur.com/wSTFkRM.png', 'https://www.example.com')
+    //.setAuthor('Game', 'https://i.imgur.com/wSTFkRM.png', 'https://www.example.com')
     .setTimestamp();
 
   // Check each direction for an adjacent room
