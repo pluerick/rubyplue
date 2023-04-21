@@ -1,10 +1,10 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const client = new Client({
-   Intents: [
+   intents: [
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
-		GatewayIntentBits.GuildMembers
+		GatewayIntentBits.GuildMembers,
     ] 
   });
 const axios = require('axios');
