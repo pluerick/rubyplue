@@ -555,7 +555,7 @@ async function lookAround(snapshot, roomsRef){
     }
   }
 
-  // Add buttons for each direction
+// Add buttons for each direction
 // Create a new action row with buttons
 const row = new ActionRowBuilder()
 	.addComponents(
@@ -579,7 +579,7 @@ const row = new ActionRowBuilder()
 
 
   // Add the buttons to the embed
-  embed.addComponents(row);
+  addComponents(row);
 
   // Return the embed
   return embed;
