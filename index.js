@@ -569,7 +569,7 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
       // // Send a message to the same channel with the worldDesc
       // message.channel.send(worldPrompt);
     } else {
-  global.worldPrompt = 'a basic medevil world';
+  global.worldPrompt = 'a basic dungeon and dragons like world in the medieval times.';
     }
   });
 
