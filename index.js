@@ -536,7 +536,6 @@ async function lookAround(snapshot, roomsRef){
 
   // Create an embed with the current room's name and description
   const embed = new EmbedBuilder()
-    .setWidth(1200)
     .setColor('#0099ff')
     .setTitle(currentRoom.name)
     .setDescription(currentRoom.description)
