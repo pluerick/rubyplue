@@ -1,5 +1,10 @@
 const { Client, Intents } = require('discord.js');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const client = new Client({
+   intents: [
+    Intents.FLAGS.GUILDS, 
+    Intents.FLAGS.GUILD_MESSAGES
+  ] 
+  });
 const axios = require('axios');
 const admin = require('firebase-admin');
 const FormData = require('form-data');
