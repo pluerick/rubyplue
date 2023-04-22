@@ -581,8 +581,8 @@ async function lookAround(snapshot, roomsRef){
   
 
   // Return the embed
-  return embed;
   embed.addFields(fields);
+  return embed;
 }
 
 
