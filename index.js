@@ -262,31 +262,6 @@ if (command === 'north' || command === 'south' || command === 'east' || command 
 }
 
 
-// Handle the "look" command
-if (command === 'look' || command === 'l') {
-
-  // Check if the player exists in the database
-  playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
-    if (!snapshot.exists()) {
-      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
-    } else {
-      // Get the player's current room ID
-      const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
-
-      // Get the current room's data and use lookAround() to generate the reply message
-      roomsRef.child("room " + currentRoomID).once('value', async (snapshot) => {
-        if (!snapshot.exists()) {
-          message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
-        } else {
-          const replyEmbed = await lookAround(snapshot, roomsRef);
-          message.reply({ embeds: [replyEmbed] });
-        }
-      });
-    }
-  });
-}
-
-
 //Handle the "generate" command
 if (command === 'generate') {
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
@@ -394,7 +369,7 @@ if (command === 'generate') {
   });
 }
 
-if (command === 'makeimages') {
+if (command === 'makeimage') {
   const roomArg = args[0];
   message.reply('Generating room images with Open AI for room number', roomArg, '! This may take a few seconds...')
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
@@ -530,6 +505,32 @@ if (command === 'haiku') {
   message.reply(haiku);
 }
 
+
+
+// Handle the "look" command
+if (command === 'look' || command === 'l') {
+
+  // Check if the player exists in the database
+  playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
+    } else {
+      // Get the player's current room ID
+      const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
+
+      // Get the current room's data and use lookAround() to generate the reply message
+      roomsRef.child("room " + currentRoomID).once('value', async (snapshot) => {
+        if (!snapshot.exists()) {
+          message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
+        } else {
+          const replyEmbed = await lookAround(snapshot, roomsRef);
+          message.reply({ embeds: [replyEmbed], components: [row] });
+        }
+      });
+    }
+  });
+}
+
 async function lookAround(snapshot, roomsRef){
 
   // Get the current room's data
@@ -555,33 +556,6 @@ async function lookAround(snapshot, roomsRef){
     }
   }
   embed.addFields(fields);
-
-// Add buttons for each direction
-// Create a new action row with buttons
-const row = new ActionRowBuilder()
-	.addComponents(
-		new ButtonBuilder()
-			.setCustomId('north')
-			.setLabel('North')
-			.setStyle(ButtonStyle.Primary),
-		new ButtonBuilder()
-			.setCustomId('south')
-			.setLabel('South')
-			.setStyle(ButtonStyle.Primary),
-		new ButtonBuilder()
-			.setCustomId('east')
-			.setLabel('East')
-			.setStyle(ButtonStyle.Primary),
-		new ButtonBuilder()
-			.setCustomId('west')
-			.setLabel('West')
-			.setStyle(ButtonStyle.Primary),
-	);
-
-
- 
-
-
 
   // Return the embed
   return embed;
@@ -636,23 +610,6 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
   //console.log(GeneratedDesc);
   return GeneratedDesc;
 }
-
-
-// Handle the 'clear' command
-if (command === 'clear') {
-  // Get the channel where the command was sent
-  const channel = message.channel;
-
-  // Fetch the last 100 messages in the channel
-  const messages = await channel.messages.fetch({ limit: 100 });
-
-  // Delete all messages in the channel
-  await channel.bulkDelete(messages);
-
-  // Send a confirmation message
-  //await channel.send(`${playerName}, all messages have been deleted!`);
-}
-
 
 //This function writes haikus!
   async function generateHaiku() {
