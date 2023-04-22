@@ -656,9 +656,7 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
     return haiku;
   }
 
-
 }}});
-
 
 
 client.login(process.env.TOKEN);
