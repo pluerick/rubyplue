@@ -551,7 +551,7 @@ async function lookAround(snapshot, roomsRef){
       const neighborRoomID = currentRoom[direction];
       const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
       const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
-      fields.push({ name: `${direction}`});
+      fields.push({ name: `${direction}`, value: ''});
     }
   }
   embed.addFields(fields);
@@ -579,7 +579,6 @@ const row = new ActionRowBuilder()
 	);
 
 
-  // Add the buttons to the embed
  
 
 
