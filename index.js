@@ -244,8 +244,9 @@ if (command === 'north' || command === 'south' || command === 'east' || command 
                   if (!snapshot.exists()) {
                     message.reply(`Sorry, ${playerName}, the new room does not exist in the database.`);
                   } else {
-                    const replyMessage = await lookAround(snapshot, roomsRef);
+                    const replyEmbed = await lookAround(snapshot, roomsRef);
                     //message.reply(replyMessage);
+                    message.reply({ embeds: [replyEmbed] });
                   }
                 });
               }
