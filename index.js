@@ -542,11 +542,9 @@ if (command === 'look' || command === 'l') {
                               .setCustomId('west')
                               .setLabel('West')
                               .setStyle(ButtonStyle.Primary),
-	);
+	                  );
 
-
-
-          message.reply({ embeds: [replyEmbed], components: [row] });
+          message.reply({ embeds: [replyEmbed]}); //, components: [row] 
         }
       });
     }
