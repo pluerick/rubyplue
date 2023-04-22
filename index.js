@@ -511,9 +511,11 @@ if (command === 'haiku') {
 if (command === 'look' || command === 'l') {
 
   // Check if the player exists in the database
-  playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
+    try{
+      const snapshot = await playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
     if (!snapshot.exists()) {
       message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
+      return;
     } else {
       // Get the player's current room ID
       const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
@@ -542,14 +544,15 @@ if (command === 'look' || command === 'l') {
                               .setCustomId('west')
                               .setLabel('West')
                               .setStyle(ButtonStyle.Primary),
-	                  );
+	                          );
 
           message.reply({ embeds: [replyEmbed]}); //, components: [row] 
         }
       });
-    }
-  });
-}
+    } 
+  }
+  );
+} catch (error) {}
 
 async function lookAround(snapshot, roomsRef){
 
@@ -575,10 +578,11 @@ async function lookAround(snapshot, roomsRef){
       fields.push({ name: `${direction}`, value: ''});
     }
   }
-  embed.addFields(fields);
+  
 
   // Return the embed
   return embed;
+  embed.addFields(fields);
 }
 
 
