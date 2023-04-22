@@ -273,7 +273,7 @@ if (command === 'look' || command === 'l') {
       // Get the player's current room ID
       const currentRoomID = snapshot.val()[Object.keys(snapshot.val())[0]].current_room;
 
-      // Get the current room's data
+      // Get the current room's data and use lookAround() to generate the reply message
       roomsRef.child("room " + currentRoomID).once('value', async (snapshot) => {
         if (!snapshot.exists()) {
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
@@ -551,9 +551,10 @@ async function lookAround(snapshot, roomsRef){
       const neighborRoomID = currentRoom[direction];
       const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
       const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
-      fields.push({ name: `To the ${direction}`, value: neighborRoomName });
+      fields.push({ name: `${direction}`});
     }
   }
+  embed.addFields(fields);
 
 // Add buttons for each direction
 // Create a new action row with buttons
@@ -579,7 +580,7 @@ const row = new ActionRowBuilder()
 
 
   // Add the buttons to the embed
-  embed.addFields(fields);
+ 
 
 
 
