@@ -657,7 +657,7 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
   }
 
 
-}});
+}}});
 
 
 
