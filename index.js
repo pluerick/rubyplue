@@ -566,7 +566,7 @@ async function lookAround(snapshot, roomsRef){
     .setDescription(currentRoom.description + '\n\n')
     .setImage(currentRoom.image)
     .setTimestamp();
-
+  console.log(currentRoom.description);
 // Check each direction for an adjacent room
 const directions = ["north", "south", "east", "west"];
 const fields = [];
