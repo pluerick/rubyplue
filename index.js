@@ -574,9 +574,13 @@ for (const direction of directions) {
 
 
 
-console.log(exitString);
+
   }
 }
+
+// Add the exit string to the end of the description
+exitString = exitString.slice(0, -2) + ".";
+
 
   // Check if the exitString contains a comma
   const lastCommaIndex = exitString.lastIndexOf(",");
@@ -584,9 +588,6 @@ console.log(exitString);
     // Insert "and " after the last comma
     exitString = exitString.slice(0, lastCommaIndex) + ", and" + exitString.slice(lastCommaIndex + 1);
   }
-  
-exitString = exitString.slice(0, -2) + ".";
-// Add the exit string to the end of the description
 
 
   // Create an embed with the current room's name and description
