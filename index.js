@@ -245,8 +245,7 @@ if (command === 'north' || command === 'south' || command === 'east' || command 
                     message.reply(`Sorry, ${playerName}, the new room does not exist in the database.`);
                   } else {
                     const replyEmbed = await lookAround(snapshot, roomsRef);
-                    //message.reply(replyMessage);
-                    message.reply({ embeds: [replyEmbed] });
+                    message.reply({ embeds: [replyEmbed]}); //, components: [row] 
                   }
                 });
               }
@@ -526,26 +525,6 @@ if (command === 'look' || command === 'l') {
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
         } else {
           const replyEmbed = await lookAround(snapshot, roomsRef);
-          const row = new ActionRowBuilder()
-                          .addComponents(
-                            new ButtonBuilder()
-                              .setCustomId('north')
-                              .setLabel('North')
-                              .setStyle(ButtonStyle.Primary),
-                            new ButtonBuilder()
-                              .setCustomId('south')
-                              .setLabel('South')
-                              .setStyle(ButtonStyle.Primary),
-                            new ButtonBuilder()
-                              .setCustomId('east')
-                              .setLabel('East')
-                              .setStyle(ButtonStyle.Primary),
-                            new ButtonBuilder()
-                              .setCustomId('west')
-                              .setLabel('West')
-                              .setStyle(ButtonStyle.Primary),
-	                          );
-
           message.reply({ embeds: [replyEmbed]}); //, components: [row] 
         }
       });
