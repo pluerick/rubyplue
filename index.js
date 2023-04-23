@@ -567,22 +567,24 @@ async function lookAround(snapshot, roomsRef){
     .setImage(currentRoom.image)
     .setTimestamp();
 
-  // Check each direction for an adjacent room
-  const directions = ["north", "south", "east", "west"];
-  const fields = [];
-  for (const direction of directions) {
-    if (currentRoom[direction]) {
-      const neighborRoomID = currentRoom[direction];
-      const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
-      const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
-      
-    }
+// Check each direction for an adjacent room
+const directions = ["north", "south", "east", "west"];
+const fields = [];
+let exitString = "You see exits to the ";
+for (const direction of directions) {
+  if (currentRoom[direction]) {
+    const neighborRoomID = currentRoom[direction];
+    const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
+    const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
+    exitString += `${direction.charAt(0).toUpperCase() + direction.slice(1)}, `;
   }
-  
+}
+exitString = exitString.slice(0, -2) + ".";
+// Add the exit string to the end of the description
+embed.description += ` ${exitString}`;
 
-  // Return the embed
-  
-  return embed;
+// Return the embed
+return embed;
 }
 
 
