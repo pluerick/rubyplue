@@ -559,14 +559,7 @@ async function lookAround(snapshot, roomsRef){
   // Get the current room's data
   const currentRoom = snapshot.val();
 
-  // Create an embed with the current room's name and description
-  const embed = new EmbedBuilder()
-    .setColor('#0099ff')
-    .setTitle(currentRoom.name)
-    .setDescription(currentRoom.description + '\n\n')
-    .setImage(currentRoom.image)
-    .setTimestamp();
-  console.log(currentRoom.description);
+
 // Check each direction for an adjacent room
 const directions = ["north", "south", "east", "west"];
 const fields = [];
@@ -580,6 +573,18 @@ for (const direction of directions) {
   console.log('exit string', exitString);
   }
 }
+
+
+
+  // Create an embed with the current room's name and description
+  const embed = new EmbedBuilder()
+    .setColor('#0099ff')
+    .setTitle(currentRoom.name)
+    .setDescription(currentRoom.description + '\n\n')
+    .setImage(currentRoom.image)
+    .setTimestamp();
+
+
 exitString = exitString.slice(0, -2) + ".";
 // Add the exit string to the end of the description
 embed.description += ` ${exitString}`;
