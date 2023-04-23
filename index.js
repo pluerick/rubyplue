@@ -570,15 +570,17 @@ for (const direction of directions) {
     const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
     const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
     exitString += `${direction.charAt(0).toUpperCase() + direction.slice(1)}, `;
-    // // Check if the exitString contains a comma
-    // if (exitString.includes(",")) {
-    //   // Split the string into an array using commas as the separator
-    //   const splitString = exitString.split(",");
-    //   // Get the last comma-separated value in the array
-    //   const lastValue = splitString.pop().trim();
-    //   // Concatenate the remaining values in the array with "and " and the last value
-    //   exitString = splitString.join(", ") + ", and " + lastValue;
-    // }
+    // Example exitString variable
+    let exitString = "You can see an exit to the South, East.";
+
+    // Check if the exitString contains a comma
+    const lastCommaIndex = exitString.lastIndexOf(",");
+    if (lastCommaIndex !== -1) {
+      // Insert "and " after the last comma
+      exitString = exitString.slice(0, lastCommaIndex) + ", and" + exitString.slice(lastCommaIndex + 1);
+    }
+
+console.log(exitString);
 
 console.log(exitString);
   }
