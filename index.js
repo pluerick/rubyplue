@@ -575,7 +575,7 @@ async function lookAround(snapshot, roomsRef){
       const neighborRoomID = currentRoom[direction];
       const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
       const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
-      fields.push({ name: `${direction}`, value: ''});
+      fields.push({ name: `${direction}`, value: 'north'});
     }
   }
   
@@ -656,7 +656,9 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
     return haiku;
   }
 
+  
+  
 }}});
-
+// }}});
 
 client.login(process.env.TOKEN);
