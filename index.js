@@ -582,8 +582,8 @@ for (const direction of directions) {
 }
 exitString = exitString.slice(0, -2) + ".";
 // Add the exit string to the end of the description
-embed.setDescription += ` ${exitString}`;
-console.log('setDescription', setDescription);
+embed.description += ` ${exitString}`;
+console.log('description', embed.description);
 
 // Return the embed
 return embed;
