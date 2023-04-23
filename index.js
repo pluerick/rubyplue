@@ -563,7 +563,7 @@ async function lookAround(snapshot, roomsRef){
   const embed = new EmbedBuilder()
     .setColor('#0099ff')
     .setTitle(currentRoom.name)
-    .setDescription(currentRoom.description + '\nTest')
+    .setDescription(currentRoom.description + '\n\n')
     .setImage(currentRoom.image)
     .setTimestamp();
 
@@ -575,7 +575,7 @@ async function lookAround(snapshot, roomsRef){
       const neighborRoomID = currentRoom[direction];
       const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
       const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
-      fields.push({ name: `${direction}`, value: 'north'});
+      fields.push({ name: `You see exits to the `, value: 'north'});
     }
   }
   
