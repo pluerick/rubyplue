@@ -584,7 +584,7 @@ exitString = exitString.slice(0, -2) + ".";
 // Add the exit string to the end of the description
 embed.description += ` ${exitString}`;
 console.log('description', embed.description);
-console.log('name', embed.name);
+console.log('name', embed.title);
 
 // Return the embed
 return embed;
