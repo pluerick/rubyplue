@@ -570,9 +570,7 @@ for (const direction of directions) {
     const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
     const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
     exitString += `${direction.charAt(0).toUpperCase() + direction.slice(1)}, `;
-    // Example exitString variable
-    let exitString = "You can see an exit to the South, East.";
-
+    
     // Check if the exitString contains a comma
     const lastCommaIndex = exitString.lastIndexOf(",");
     if (lastCommaIndex !== -1) {
