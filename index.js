@@ -563,7 +563,7 @@ async function lookAround(snapshot, roomsRef){
   const embed = new EmbedBuilder()
     .setColor('#0099ff')
     .setTitle(currentRoom.name)
-    .setDescription(currentRoom.description, '\nTest')
+    .setDescription(currentRoom.description + '\nTest')
     .setImage(currentRoom.image)
     .setTimestamp();
 
