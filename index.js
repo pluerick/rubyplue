@@ -570,26 +570,25 @@ for (const direction of directions) {
     const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
     const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
     exitString += `${direction.charAt(0).toUpperCase() + direction.slice(1)}, `;
-  console.log('exit string', exitString);
+  
   }
 }
-
-
-
-  // Create an embed with the current room's name and description
-  const embed = new EmbedBuilder()
-    .setColor('#0099ff')
-    .setTitle(currentRoom.name)
-    .setDescription(currentRoom.description + '\n\n')
-    .setImage(currentRoom.image)
-    .setTimestamp();
-
 
 exitString = exitString.slice(0, -2) + ".";
 // Add the exit string to the end of the description
 embed.description += ` ${exitString}`;
 console.log('description', embed.description);
 console.log('name', embed.title);
+  // Create an embed with the current room's name and description
+  const embed = new EmbedBuilder()
+    .setColor('#0099ff')
+    .setTitle(currentRoom.name)
+    .setDescription(currentRoom.description + '\n\n' + 'You can see exits to the ' + exitString)
+    .setImage(currentRoom.image)
+    .setTimestamp();
+
+
+
 
 // Return the embed
 return embed;
