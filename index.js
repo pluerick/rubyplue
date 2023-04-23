@@ -576,8 +576,8 @@ for (const direction of directions) {
 
 exitString = exitString.slice(0, -2) + ".";
 // Add the exit string to the end of the description
-console.log('description', embed.description);
-console.log('name', embed.title);
+
+
   // Create an embed with the current room's name and description
   const embed = new EmbedBuilder()
     .setColor('#0099ff')
