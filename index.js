@@ -570,15 +570,15 @@ for (const direction of directions) {
     const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
     const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
     exitString += `${direction.charAt(0).toUpperCase() + direction.slice(1)}, `;
-    // Check if the exitString contains a comma
-    if (exitString.includes(",")) {
-      // Split the string into an array using commas as the separator
-      const splitString = exitString.split(",");
-      // Get the last comma-separated value in the array
-      const lastValue = splitString.pop().trim();
-      // Concatenate the remaining values in the array with "and " and the last value
-      exitString = splitString.join(", ") + ", and " + lastValue;
-    }
+    // // Check if the exitString contains a comma
+    // if (exitString.includes(",")) {
+    //   // Split the string into an array using commas as the separator
+    //   const splitString = exitString.split(",");
+    //   // Get the last comma-separated value in the array
+    //   const lastValue = splitString.pop().trim();
+    //   // Concatenate the remaining values in the array with "and " and the last value
+    //   exitString = splitString.join(", ") + ", and " + lastValue;
+    // }
 
 console.log(exitString);
   }
