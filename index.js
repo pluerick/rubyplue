@@ -563,7 +563,7 @@ async function lookAround(snapshot, roomsRef){
 // Check each direction for an adjacent room
 const directions = ["north", "south", "east", "west"];
 const fields = [];
-let exitString = "You see exits to the ";
+let exitString = "You can see an exit to the ";
 for (const direction of directions) {
   if (currentRoom[direction]) {
     const neighborRoomID = currentRoom[direction];
@@ -582,7 +582,7 @@ exitString = exitString.slice(0, -2) + ".";
   const embed = new EmbedBuilder()
     .setColor('#0099ff')
     .setTitle(currentRoom.name)
-    .setDescription(currentRoom.description + '\n\n' + 'You can see exits to the ' + exitString)
+    .setDescription(currentRoom.description + '\n\n' + exitString)
     .setImage(currentRoom.image)
     .setTimestamp();
 
