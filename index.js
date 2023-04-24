@@ -675,6 +675,7 @@ currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "roo
 currentRoomID = currentRoomID.replace("room ", "");
 playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (snapshot) => {
   console.log('triggered');
+  console.log(snapshot.val());  
   if (snapshot.exists()) {
     const players = snapshot.val();
     let othersHereString = "";
