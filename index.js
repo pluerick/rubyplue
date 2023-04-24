@@ -19,6 +19,9 @@ let worldPrompt = '';
 clearchannelID = '';
 const openai = require('openai');
 const request = require('request');
+let imagePrompt = "generate an image of a room that looks like a view from an older 3d video game";
+let descPrompt = 'From the second person perspective of a person as they enter a room, describe a room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room. Try not to use language that would be considered offensive when generating images later like blood';
+let defaultWorldPrompt = 'a basic dungeon and dragons like world in the medieval times.';
 
 
 // Parse the service account key JSON string from the environment variable
@@ -384,7 +387,7 @@ if (command === 'makeimage') {
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${openaiApiKey}" \
       -d '{
-        "prompt": "make an image that looks like a computer game graphic for a older 3d game and depicts a room. try to show as much of the room as possible and the room should match the following description-- ${prompt}",
+        "prompt": "${imagePrompt} try to show as much of the room as possible and the room should match the following description-- ${prompt}",
         "n": 2,
         "size": "1024x1024"
       }'`;        
@@ -592,7 +595,7 @@ async function generateDescription(args) {
   const OpenAI = require('openai-api');
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
-  let prompt = 'From the second person perspective of a person as they enter a room, describe a room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room. Try not to use language that would be considered offensive when generating images later like blood';
+  let prompt = descPrompt;
   
 
 // Set up a Firebase Realtime Database reference to the worldDesc property
@@ -610,7 +613,7 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
       // // Send a message to the same channel with the worldDesc
       // message.channel.send(worldPrompt);
     } else {
-  global.worldPrompt = 'a basic dungeon and dragons like world in the medieval times.';
+  global.worldPrompt = defaultWorldPrompt;
     }
   });
 
