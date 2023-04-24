@@ -668,17 +668,22 @@ exitString = exitString.slice(0, -2) + ".";
     exitString = exitString.slice(0, lastCommaIndex) + ", and" + exitString.slice(lastCommaIndex + 1);
   }
 
-//Check every player that's in the same room as the current player, and lists them in a new field of the embed called "Others here"
-const playersRef = admin.database().ref(`test1/${message.guild.name}/players`);
+//Check every players entry that's in the same room as the current player, and lists them in a new field of the embed called "Others here"
+// the database is structured like this: test1 > serverName > players > playerID > current_room, name, etc.
+const playersRef = admin.database().ref(`test1/${serverName}/players`);
 let currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
 //change currentRoomID to be only the number at the end, losing the "room " part
 currentRoomID = currentRoomID.replace("room ", "");
 const playersSnapshot = await playersRef.orderByChild('current_room').equalTo(currentRoomID).once('value');
-console.log(playersSnapshot.val());
 const players = playersSnapshot.val();
-console.log(players, currentRoomID);
 let othersHereString = "";
+
+console.log(currentRoomID + " is the current room ID");
+console.log(playersSnapshot.val() + " is the players snapshot");
+
 for (const playerID in players) {
+  console.log(playerID + " is the player ID");
+  console.log(player.name + " is the player name");
   if (playerID !== message.author.id) {
     othersHereString += player.name + ", ";
   }
