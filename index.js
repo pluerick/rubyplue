@@ -668,7 +668,7 @@ exitString = exitString.slice(0, -2) + ".";
     exitString = exitString.slice(0, lastCommaIndex) + ", and" + exitString.slice(lastCommaIndex + 1);
   }
 
-//Check every players entry that's in the same room as the current player, and lists them in a new field of the embed called "Others here"
+//Check every players entry that's in the same room as the current player, and lists them in a new field of the embed called "Players here"
 // the database is structured like this: test1 > serverName > players > playerID > current_room, name, etc.
 const playersRef = serverRef.child("players");
 currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
@@ -682,14 +682,16 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
     const players = snapshot.val();
     let othersHereString = "";
     for (const playerID in players) {
-      if (playerID !== message.author.id) {
+      console.log(playerID);
+      console.log(players[playerID].name);
+      console.log(players[playerID].current_room);      
         othersHereString += `${players[playerID].name}, `;
-      }
+      
     }
     if (othersHereString !== "") {
       othersHereString = othersHereString.slice(0, -2) + ".";
       fields.push({
-        name: "Others here",
+        name: "Players here",
         value: othersHereString
       });
     }
