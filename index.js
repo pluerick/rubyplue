@@ -21,7 +21,6 @@ const openai = require('openai');
 const request = require('request');
 let imagePrompt = "generate an image that looks photo realistic.";
 let descPrompt = 'From the second person perspective of a person as they enter a room, describe a room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room. Try not to use language that would be considered offensive when generating images later like blood';
-let defaultWorldPrompt = 'a basic dungeon and dragons like world in the medieval times.';
 let worldDesc = 'a dark dank dungeon made of stone. there are torches on the walls every so often and creepy dripping sounds and small critters running around';
 
 
@@ -195,6 +194,63 @@ if (command === 'setworlddesc' || command === 'swd') {
   }
 }
 
+// Handle the "setdescprompt" command
+if (command === 'setdescprompt' || command === 'sdp') {
+  let descPrompt = args.join(' ');
+  const descPromptRef = admin.database().ref(`test1/${message.guild.name}/descPrompt`);
+
+  if (!descPrompt) {
+    descPromptRef.once('value', (snapshot) => {
+      const val = snapshot.val();
+      if (val) {
+        message.channel.send(`Current Description Prompt: ${val}`);
+      } else {
+        message.channel.send('No Description Prompt set.');
+      }
+    }).catch((error) => {
+      console.error(error);
+      message.channel.send('An error occurred while retrieving the Description Prompt. Please try again later.');
+    });
+  } else {
+    descPromptRef.set(descPrompt)
+      .then(() => {
+        message.channel.send(`Description Prompt updated to: ${descPrompt}.`);
+      })
+      .catch((error) => {
+        console.error(error);
+        message.channel.send('An error occurred while updating the Description Prompt. Please try again later.');
+      });
+  }
+}
+
+// Handle the "setimageprompt" command
+if (command === 'setimageprompt' || command === 'sip') {
+  let imagePrompt = args.join(' ');
+  const imagePromptRef = admin.database().ref(`test1/${message.guild.name}/imagePrompt`);
+
+  if (!imagePrompt) {
+    imagePromptRef.once('value', (snapshot) => {
+      const val = snapshot.val();
+      if (val) {
+        message.channel.send(`Current Image Prompt: ${val}`);
+      } else {
+        message.channel.send('No Image Prompt set.');
+      }
+    }).catch((error) => {
+      console.error(error);
+      message.channel.send('An error occurred while retrieving the Image Prompt. Please try again later.');
+    });
+  } else {
+    imagePromptRef.set(imagePrompt)
+      .then(() => {
+        message.channel.send(`Image Prompt updated to: ${imagePrompt}.`);
+      })
+      .catch((error) => {
+        console.error(error);
+        message.channel.send('An error occurred while updating the Image Prompt. Please try again later.');
+      });
+  }
+}
 
 // Handle the movement commands
 if (command === 'north' || command === 'south' || command === 'east' || command === 'west' || command === 'n' || command === 's' || command === 'e' || command === 'w') {
