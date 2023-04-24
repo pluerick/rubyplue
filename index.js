@@ -680,17 +680,15 @@ console.log(players, currentRoomID);
 let othersHereString = "";
 for (const playerID in players) {
   if (playerID !== message.author.id) {
-    othersHereString += `<@${playerID}>, `;
+    othersHereString += players[playerID].name + ", ";
   }
 }
-if (othersHereString !== "") {
-  othersHereString = othersHereString.slice(0, -2) + ".";
-  fields.push({
-    name: "Others here",
-    value: othersHereString
-  });
-}
-
+// Add the othersHereString to the end of the description
+othersHereString = othersHereString.slice(0, -2) + ".";
+fields.push({
+  name: "Others here",
+  value: othersHereString
+});
 
 
   // Create an embed with the current room's name and description
