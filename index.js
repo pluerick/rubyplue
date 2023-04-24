@@ -23,6 +23,18 @@ let imagePrompt = "generate an image that looks photo realistic.";
 let descPrompt = 'From the second person perspective of a person as they enter a room, describe a room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room. Try not to use language that would be considered offensive when generating images later like blood';
 let worldDesc = 'a dark dank dungeon made of stone. there are torches on the walls every so often and creepy dripping sounds and small critters running around';
 
+
+
+// Parse the service account key JSON string from the environment variable
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
+
+// Initialize the Firebase Admin SDK with the service account key
+admin.initializeApp({
+credential: admin.credential.cert(serviceAccount),
+databaseURL: "https://rubyplue-a4332-default-rtdb.firebaseio.com"
+});
+
+
 // Check the database for existing values and replace default variables if they exist
 const promptsRef = admin.database().ref(`test1/${message.guild.name}`);
 promptsRef.once('value', (snapshot) => {
@@ -42,16 +54,6 @@ promptsRef.once('value', (snapshot) => {
   console.error(error);
   message.channel.send('An error occurred while retrieving the prompts. Please try again later.');
 });
-
-// Parse the service account key JSON string from the environment variable
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
-
-// Initialize the Firebase Admin SDK with the service account key
-admin.initializeApp({
-credential: admin.credential.cert(serviceAccount),
-databaseURL: "https://rubyplue-a4332-default-rtdb.firebaseio.com"
-});
-
 
 
 // Define the cardinal directions
