@@ -669,38 +669,11 @@ exitString = exitString.slice(0, -2) + ".";
   }
 
 //Check every player that's in the same room as the current player, and lists them in a new field of the embed called "Others here"
-//first, get the current player's "current_room" value from the database. here's a sample of the database structure:
-// // {
-//   "test1": {
-//     "Plue's Flabby Bird House": {
-//       "players": {
-//         "-NTlPdsXfaG_g4oAiIFh": {
-//           "current_room": 5,
-//           "name": "plueballs"
-//         }
-//       },
-//       "rooms": {
-//         "room 1": {
-//           "description": "You step into the room and are immediately aware of the musty smell. It's clear that no one has been in this room for a long time. There are cobwebs in the corners and the dust on the floor has been undisturbed. You see a table in the center of the room with a few chairs around it. On the table is a deck of cards and a chess set. It looks like someone was in the middle of a game.",
-//           "east": 2,
-//           "image": "https://i.imgur.com/4dhhUrv.jpg",
-//           "name": "room 1",
-//           "north": 4,
-//           "south": 0,
-//           "west": 0
-//         },
-// //
-//
-//then, get all the players that have the same "current_room" value as the current player
-//then, add them to a string that will be displayed in the embed
-//then, add that string to the embed
-//then, send the embed as a reply to the user.
-
 const playersRef = admin.database().ref(`test1/${message.guild.name}/players`);
-const currentRoomID = snapshot.key; //snapshot.key is the current room's ID 
+const currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
 const playersSnapshot = await playersRef.orderByChild('current_room').equalTo(currentRoomID).once('value');
 const players = playersSnapshot.val();
-console.log(players);
+console.log(players, currentRoomID, currentRoom, currentRoomDescription);
 let othersHereString = "";
 for (const playerID in players) {
   if (playerID !== message.author.id) {
