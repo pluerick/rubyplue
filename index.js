@@ -441,16 +441,17 @@ if (command === 'makeimage') {
 
 //Handle the "blast" command
 if (command === 'blast') {
-  const rootRef = admin.database().ref().child('rooms');
+  const rootRef = admin.database().ref();
+  const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
 
-  rootRef.remove()
+  roomsRef.remove()
   .then(() => {
     console.log('Rooms data removed successfully.');
   })
   .catch((error) => {
     console.error('Error removing rooms data:', error);
   });
-  message.reply('PEW PEW rooms data BALETED');
+  message.reply('PEW PEW database ROOMS BALETED');
 }
 
 // This command returns an image.
