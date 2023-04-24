@@ -606,7 +606,7 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
       // // Send a message to the same channel with the worldDesc
       // message.channel.send(worldPrompt);
     } else {
-  global.worldPrompt = defaultWorldPrompt;
+  global.worldPrompt = `The world description: ${worldDesc}`;
     }
   });
 
