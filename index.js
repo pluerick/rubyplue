@@ -73,15 +73,17 @@ const serverName = message.guild.name;
 
 // Handle the "help" command
 if (command === 'help') {
-  const helpMessage = `Available commands:
-  - register <name>: Registers a new player with the given name
-  - look: Shows the description of the current room
-  - north/south/east/west (or n/s/e/w): Moves the player to the room in the specified direction
-  - generate <num_rooms>: Generates a specified number of new rooms with descriptions using OpenAI
-  - setworlddesc or swd: Set or retrieve the current world description.
-  - setdescprompt or sdp: Set or retrieve the current description prompt.
-  - setimageprompt or sip: Set or retrieve the current image prompt.
+  const helpMessage = `
+  
+- look: Shows the description of the current room
+- north/south/east/west (or n/s/e/w): Moves the player to the room in the specified direction
+- generate <num_rooms>: Generates a specified number of new rooms with descriptions using OpenAI
+- setworlddesc or swd: Set or retrieve the current world description.
+- setdescprompt or sdp: Set or retrieve the current description prompt.
+- setimageprompt or sip: Set or retrieve the current image prompt.
+- setmaproom or smr: Set the current discord channel to be a map room.
   `;
+
   message.reply(helpMessage);
 }
 
