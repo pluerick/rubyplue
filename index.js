@@ -22,6 +22,7 @@ const request = require('request');
 let imagePrompt = "generate an image that looks photo realistic.";
 let descPrompt = 'From the second person perspective of a person as they enter a room, describe a room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room. Try not to use language that would be considered offensive when generating images later like blood';
 let defaultWorldPrompt = 'a basic dungeon and dragons like world in the medieval times.';
+let worldDesc = 'a dark dank dungeon made of stone. there are torches on teh walls every so often and creepy dripping sounds and small critters running around'
 
 
 // Parse the service account key JSON string from the environment variable
@@ -387,7 +388,7 @@ if (command === 'makeimage') {
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${openaiApiKey}" \
       -d '{
-        "prompt": "${imagePrompt} try to show as much of the room as possible and the room should match the following description-- ${prompt}",
+        "prompt": "${imagePrompt} The room exists in a world described like this-- ${worldDesc}.(END OF WORLD DESCRIPTION) Here's a description of someone entering the room. Include all these details-- ${prompt}",
         "n": 2,
         "size": "1024x1024"
       }'`;        
