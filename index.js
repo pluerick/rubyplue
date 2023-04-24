@@ -673,7 +673,7 @@ const playersRef = admin.database().ref(`test1/${message.guild.name}/players`);
 const currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
 const playersSnapshot = await playersRef.orderByChild('current_room').equalTo(currentRoomID).once('value');
 const players = playersSnapshot.val();
-console.log(players, currentRoomID, currentRoom, currentRoomDescription);
+console.log(players, currentRoomID);
 let othersHereString = "";
 for (const playerID in players) {
   if (playerID !== message.author.id) {
