@@ -66,6 +66,11 @@ if (message.author.bot) return;
 // Check if the message starts with a question mark
 if (message.content.startsWith('?')) {
 
+
+// Parse the command and arguments
+const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
+const serverName = message.guild.name;
+
 // Handle the "help" command
 if (command === 'help') {
   const helpMessage = `Available commands:
@@ -80,11 +85,6 @@ if (command === 'help') {
   `;
   message.reply(helpMessage);
 }
-
-
-// Parse the command and arguments
-const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
-const serverName = message.guild.name;
 
 // Handle the 'start') command
 if (command === 'start') {
