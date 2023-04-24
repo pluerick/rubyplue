@@ -397,6 +397,7 @@ if (command === 'makeimage') {
             console.error(`exec error: ${error}`);
             return;
           }
+          console.log(cmd);
           const response = JSON.parse(stdout);
           const currentRoomImageUrl = response.data[0].url;
           //message.reply(currentRoomImageUrl);
