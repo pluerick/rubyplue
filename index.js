@@ -673,8 +673,8 @@ const playersRef = admin.database().ref(`test1/${message.guild.name}/players`);
 let currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
 //change currentRoomID to be only the number at the end, losing the "room " part
 currentRoomID = currentRoomID.replace("room ", "");
-
 const playersSnapshot = await playersRef.orderByChild('current_room').equalTo(currentRoomID).once('value');
+console.log(playersSnapshot.val());
 const players = playersSnapshot.val();
 console.log(players, currentRoomID);
 let othersHereString = "";
