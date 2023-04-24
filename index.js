@@ -675,9 +675,10 @@ exitString = exitString.slice(0, -2) + ".";
     .setTitle(currentRoom.name)
     .setDescription(currentRoom.description + '\n\n' + exitString)
     .setImage(currentRoom.image)
+    .setImageDimensions(1200, 1200)
     .setTimestamp();
 
-embed.image.width = 500;
+
 
 
 // Return the embed
