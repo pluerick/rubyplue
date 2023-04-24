@@ -392,12 +392,13 @@ if (command === 'makeimage') {
         "size": "1024x1024"
       }'`;        
       try {
+        console.log(cmd);
         exec(cmd, (error, stdout, stderr) => {
           if (error) {
             console.error(`exec error: ${error}`);
             return;
           }
-          console.log(cmd);
+
           const response = JSON.parse(stdout);
           const currentRoomImageUrl = response.data[0].url;
           //message.reply(currentRoomImageUrl);
