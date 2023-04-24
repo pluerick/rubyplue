@@ -680,7 +680,7 @@ console.log(players, currentRoomID);
 let othersHereString = "";
 for (const playerID in players) {
   if (playerID !== message.author.id) {
-    othersHereString += players[playerID].name + ", ";
+    othersHereString += player.name + ", ";
   }
 }
 // Add the othersHereString to the end of the description
