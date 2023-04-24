@@ -20,9 +20,8 @@ clearchannelID = '';
 const openai = require('openai');
 const request = require('request');
 let imagePrompt = "generate an image that looks photo realistic.";
-let descPrompt = 'From the second person perspective of a person as they enter a room, describe a room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room. Try not to use language that would be considered offensive when generating images later like blood';
 let defaultWorldPrompt = 'a basic dungeon and dragons like world in the medieval times.';
-let worldDesc = 'a dark dank dungeon made of stone. there are torches on teh walls every so often and creepy dripping sounds and small critters running around'
+let worldDesc = 'a dark dank dungeon made of stone. there are torches on the walls every so often and creepy dripping sounds and small critters running around';
 
 
 // Parse the service account key JSON string from the environment variable
@@ -168,41 +167,16 @@ if (command === 'setmaproom') {
 
 // Handle the "setworlddesc" command
 if (command === 'setworlddesc' || command === 'swd') {
-  const serverName = message.guild.name;
-  const channelId = message.channel.id;
-   // Join all arguments into a single string
-  const worldDesc = args.join(' ');
-
-  // Set up a Firebase Realtime Database reference to the worldDesc property
-  const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
-
-  // Check if the server already has a worldDesc and overwrite it if it exists
-  worldDescRef.child('worldDesc').once('value', (snapshot) => {
-    if (snapshot.exists()) {
-      worldDescRef.child('worldDesc').set(worldDesc)
-        .then(() => {
-          // Send a confirmation message to the same channel
-          message.channel.send(`Overwrote world description to: ${worldDesc}. \n This will be used when the map is generated again.`);
-        })
-        .catch((error) => {
-          console.error(error);
-          // Send an error message to the same channel
-          message.channel.send('An error occurred while updating the map room. Please try again later.');
-        });
-    } else {
-      // Create a new worldDesc node with the channelId if it does not exist
-      worldDescRef.child('worldDesc').set(worldDesc)
-        .then(() => {
-          // Send a confirmation message to the same channel
-          message.channel.send(`New world description set to: ${worldDesc}. \n This will be used when the map is generated.`);
-        })
-        .catch((error) => {
-          console.error(error);
-          // Send an error message to the same channel
-          message.channel.send('An error occurred while setting the map room. Please try again later.');
-        });
-    }
-  });
+  let worldDesc = args.join(' ');
+  const worldDescRef = admin.database().ref(`test1/${message.guild.name}/worldDesc`);
+  worldDescRef.set(worldDesc)
+    .then(() => {
+      message.channel.send(`World description updated to: ${worldDesc}.`);
+    })
+    .catch((error) => {
+      console.error(error);
+      message.channel.send('An error occurred while updating the world description. Please try again later.');
+    });
 }
 
 
