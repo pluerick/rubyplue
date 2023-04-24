@@ -510,7 +510,7 @@ if (command === 'haiku') {
 if (command === 'look' || command === 'l') {
 
   // Check if the player exists in the database
-    try{
+    
       const snapshot = await playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
     if (!snapshot.exists()) {
       message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
@@ -531,7 +531,7 @@ if (command === 'look' || command === 'l') {
     } 
   }
   );
-} catch (error) {}
+}
 
 async function lookAround(snapshot, roomsRef){
 
@@ -657,7 +657,7 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
 
   
   
-}}});
+}});
 // }}});
 
 client.login(process.env.TOKEN);
