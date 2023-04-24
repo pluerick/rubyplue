@@ -670,7 +670,10 @@ exitString = exitString.slice(0, -2) + ".";
 
 //Check every player that's in the same room as the current player, and lists them in a new field of the embed called "Others here"
 const playersRef = admin.database().ref(`test1/${message.guild.name}/players`);
-const currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
+let currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
+//change currentRoomID to be only the number at the end, losing the "room " part
+currentRoomID = currentRoomID.replace("room ", "");
+
 const playersSnapshot = await playersRef.orderByChild('current_room').equalTo(currentRoomID).once('value');
 const players = playersSnapshot.val();
 console.log(players, currentRoomID);
