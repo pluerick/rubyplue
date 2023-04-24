@@ -51,8 +51,7 @@ promptsRef.once('value', (snapshot) => {
     }
   }
 }).catch((error) => {
-  console.error(error);
-  message.channel.send('An error occurred while retrieving the prompts. Please try again later.');
+  console.error(error);  
 });
 
 
