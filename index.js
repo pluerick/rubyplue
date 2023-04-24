@@ -696,24 +696,6 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
 
 
 
-//loop through each unique player in the database. if the player is not the current player, add them to the othersHereString
-for (const playerID in players) {
-  console.log(playerID + " is the player ID");
-  console.log(player.name + " is the player name"); //why is this broken? it's not showing up in the console
-  if (playerID !== message.author.id) {
-    othersHereString += player.name + ", ";
-  }
-}
-//this forloop doesn't work with the database structure as it is now. it needs to be changed to work with the new structure. note that the playerID is the key, and the player's name is the value.
-
-// Add the othersHereString to the end of the description
-othersHereString = othersHereString.slice(0, -2) + ".";
-fields.push({
-  name: "Others here",
-  value: othersHereString
-});
-
-
   // Create an embed with the current room's name and description
   const embed = new EmbedBuilder()
     .setColor('#0099ff')
