@@ -74,7 +74,6 @@ const serverName = message.guild.name;
 // Handle the "help" command
 if (command === 'help') {
   const helpMessage = `Available commands:
-  - help: Shows this message
   - register <name>: Registers a new player with the given name
   - look: Shows the description of the current room
   - north/south/east/west (or n/s/e/w): Moves the player to the room in the specified direction
