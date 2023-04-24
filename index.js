@@ -34,27 +34,6 @@ credential: admin.credential.cert(serviceAccount),
 databaseURL: "https://rubyplue-a4332-default-rtdb.firebaseio.com"
 });
 
-
-// Check the database for existing values and replace default variables if they exist
-const promptsRef = admin.database().ref(`test1/${message.guild.name}`);
-promptsRef.once('value', (snapshot) => {
-  const data = snapshot.val();
-  if (data) {
-    if (data.imagePrompt) {
-      imagePrompt = data.imagePrompt;
-    }
-    if (data.descPrompt) {
-      descPrompt = data.descPrompt;
-    }
-    if (data.worldDesc) {
-      worldDesc = data.worldDesc;
-    }
-  }
-}).catch((error) => {
-  console.error(error);  
-});
-
-
 // Define the cardinal directions
 const directions = ["north", "south", "east", "west"];
 
@@ -90,6 +69,27 @@ if (message.content.startsWith('?')) {
 // Parse the command and arguments
 const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
 const serverName = message.guild.name;
+
+// Check the database for existing values and replace default variables if they exist
+const promptsRef = admin.database().ref(`test1/${message.guild.name}`);
+promptsRef.once('value', (snapshot) => {
+  const data = snapshot.val();
+  if (data) {
+    if (data.imagePrompt) {
+      imagePrompt = data.imagePrompt;
+    }
+    if (data.descPrompt) {
+      descPrompt = data.descPrompt;
+    }
+    if (data.worldDesc) {
+      worldDesc = data.worldDesc;
+    }
+  }
+}).catch((error) => {
+  console.error(error);  
+});
+
+
 
 // Handle the "help" command
 if (command === 'help') {
