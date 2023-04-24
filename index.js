@@ -169,14 +169,29 @@ if (command === 'setmaproom') {
 if (command === 'setworlddesc' || command === 'swd') {
   let worldDesc = args.join(' ');
   const worldDescRef = admin.database().ref(`test1/${message.guild.name}/worldDesc`);
-  worldDescRef.set(worldDesc)
-    .then(() => {
-      message.channel.send(`World description updated to: ${worldDesc}.`);
-    })
-    .catch((error) => {
+
+  if (!worldDesc) {
+    worldDescRef.once('value', (snapshot) => {
+      const val = snapshot.val();
+      if (val) {
+        message.channel.send(`Current world description: ${val}`);
+      } else {
+        message.channel.send('No world description set.');
+      }
+    }).catch((error) => {
       console.error(error);
-      message.channel.send('An error occurred while updating the world description. Please try again later.');
+      message.channel.send('An error occurred while retrieving the world description. Please try again later.');
     });
+  } else {
+    worldDescRef.set(worldDesc)
+      .then(() => {
+        message.channel.send(`World description updated to: ${worldDesc}.`);
+      })
+      .catch((error) => {
+        console.error(error);
+        message.channel.send('An error occurred while updating the world description. Please try again later.');
+      });
+  }
 }
 
 
