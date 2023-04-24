@@ -670,7 +670,7 @@ exitString = exitString.slice(0, -2) + ".";
 
 //Check every players entry that's in the same room as the current player, and lists them in a new field of the embed called "Players here"
 // the database is structured like this: test1 > serverName > players > playerID > current_room, name, etc.
-const playersRef = serverRef.child("players");
+const playersRef = admin.database().ref(`test1/${serverName}/players`);
 currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
 currentRoomID = currentRoomID.replace("room ", "");
 console.log('currentRoomID', currentRoomID);
@@ -686,7 +686,6 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
       console.log(players[playerID].name);
       console.log(players[playerID].current_room);      
         othersHereString += `${players[playerID].name}, `;
-      
     }
     if (othersHereString !== "") {
       othersHereString = othersHereString.slice(0, -2) + ".";
