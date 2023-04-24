@@ -677,7 +677,7 @@ exitString = exitString.slice(0, -2) + ".";
     .setImage(currentRoom.image)
     .setTimestamp();
 
-
+embed.image.width = 500;
 
 
 // Return the embed
