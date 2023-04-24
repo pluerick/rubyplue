@@ -681,7 +681,7 @@ let othersHereString = "";
 console.log(currentRoomID + " is the current room ID");
 console.log(playersSnapshot.val() + " is the players snapshot");
 
-for (const playerID in players) {
+for (const name in players) {
   console.log(playerID + " is the player ID");
   console.log(player.name + " is the player name");
   if (playerID !== message.author.id) {
