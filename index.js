@@ -673,6 +673,8 @@ exitString = exitString.slice(0, -2) + ".";
 const playersRef = serverRef.child("players");
 currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
 currentRoomID = currentRoomID.replace("room ", "");
+console.log('currentRoomID', currentRoomID);
+
 playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (snapshot) => {
   console.log('triggered');
   console.log(snapshot.val());  
