@@ -93,7 +93,7 @@ if (command === 'start') {
   serverRef.once("value", serverSnapshot => {
   if (!serverSnapshot.exists()) {
   // The server's data doesn't exist in the database, inform the user and take no further action
-  message.reply(`Sorry, ${serverName} is not registered in the game. Use the 'generate' command to create a new game database.`);
+  message.reply(`Sorry, ${serverName} does not hcurrently have a dungeon. Use the 'generate' command to create a new game database and try again.`);
   } else {
   // The server's data exists in the database, check if the player already exists
   const playerName = message.author.username;
