@@ -384,7 +384,7 @@ if (command === 'makeimage') {
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${openaiApiKey}" \
       -d '{
-        "prompt": "make an image that looks like a computer game graphic for a MUD and depicts a room. try to show as much of the room as possible and the room should match the following description-- ${prompt}",
+        "prompt": "make an image that looks like a computer game graphic for a older 3d game and depicts a room. try to show as much of the room as possible and the room should match the following description-- ${prompt}",
         "n": 2,
         "size": "1024x1024"
       }'`;        
