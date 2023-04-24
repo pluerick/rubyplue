@@ -125,7 +125,7 @@ if (command === 'start') {
   serverRef.once("value", serverSnapshot => {
   if (!serverSnapshot.exists()) {
   // The server's data doesn't exist in the database, inform the user and take no further action
-  message.reply(`Sorry, ${serverName} does not hcurrently have a dungeon. Use the 'generate' command to create a new game database and try again.`);
+  message.reply(`Sorry, ${serverName} does not currently have a dungeon. Use the 'generate' command to create a new game database and try again.`);
   } else {
   // The server's data exists in the database, check if the player already exists
   const playerName = message.author.username;
@@ -670,24 +670,50 @@ exitString = exitString.slice(0, -2) + ".";
 
 //Check every players entry that's in the same room as the current player, and lists them in a new field of the embed called "Others here"
 // the database is structured like this: test1 > serverName > players > playerID > current_room, name, etc.
-const playersRef = admin.database().ref(`test1/${serverName}/players`);
-let currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
-//change currentRoomID to be only the number at the end, losing the "room " part
-currentRoomID = currentRoomID.replace("room ", "");
-const playersSnapshot = await playersRef.orderByChild('current_room').equalTo(currentRoomID).once('value');
-const players = playersSnapshot.val();
-let othersHereString = "";
+const playersRef = serverRef.child("players");
+playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (snapshot) => {
+  if (playerSnapshot.exists()) {
+    const players = snapshot.val();
+    let othersHereString = "";
+    for (const playerID in players) {
+      if (playerID !== message.author.id) {
+        othersHereString += `${players[playerID].name}, `;
+      }
+    }
+    if (othersHereString !== "") {
+      othersHereString = othersHereString.slice(0, -2) + ".";
+      fields.push({
+        name: "Others here",
+        value: othersHereString
+      });
+    }
 
-console.log(currentRoomID + " is the current room ID");
-console.log(playersSnapshot.val() + " is the players snapshot");
+  }
 
-for (const name in players) {
+});
+
+// let currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
+// //change currentRoomID to be only the number at the end, losing the "room " part
+// currentRoomID = currentRoomID.replace("room ", "");
+// const playersSnapshot = await playersRef.orderByChild('current_room').equalTo(currentRoomID).once('value');
+// const players = playersSnapshot.val();
+// let othersHereString = "";
+
+// console.log(currentRoomID + " is the current room ID");
+// console.log(playersSnapshot.val() + " is the players snapshot");
+
+
+
+//loop through each unique player in the database. if the player is not the current player, add them to the othersHereString
+for (const playerID in players) {
   console.log(playerID + " is the player ID");
-  console.log(player.name + " is the player name");
+  console.log(player.name + " is the player name"); //why is this broken? it's not showing up in the console
   if (playerID !== message.author.id) {
     othersHereString += player.name + ", ";
   }
 }
+//this forloop doesn't work with the database structure as it is now. it needs to be changed to work with the new structure. note that the playerID is the key, and the player's name is the value.
+
 // Add the othersHereString to the end of the description
 othersHereString = othersHereString.slice(0, -2) + ".";
 fields.push({
