@@ -77,11 +77,19 @@ if (command === 'help') {
   
 - look: Shows the description of the current room
 - north/south/east/west (or n/s/e/w): Moves the player to the room in the specified direction
-- generate <num_rooms>: Generates a specified number of new rooms with descriptions using OpenAI
+- generate generates the same 9 rooms until we add the maze generator with descriptions using OpenAI (if there's no dungeon yet, it will create one)
+- makeimage: Generate an image based on the current image prompt.
+[Server Variables]
 - setworlddesc or swd: Set or retrieve the current world description.
 - setdescprompt or sdp: Set or retrieve the current description prompt.
 - setimageprompt or sip: Set or retrieve the current image prompt.
 - setmaproom or smr: Set the current discord channel to be a map room.
+
+when making images the prompt will be
+
+[imagePrompt] The room exists in a world described like this-- [worldDesc].END OF WORLD DESCRIPTION Here is a description of someone entering the room. Include all these details [description of room]",
+
+
   `;
 
   message.reply(helpMessage);
