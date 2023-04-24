@@ -60,13 +60,21 @@ const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
  // Set up a Firebase Realtime Database reference to the server's data
  const serverRef = admin.database().ref(`test1/${serverName}`);
 
-
-
 // Only respond to messages sent by humans (not bots)
 if (message.author.bot) return;
 
 // Check if the message starts with a question mark
 if (message.content.startsWith('?')) {
+
+// Handle the "help" command
+if (command === 'help') {
+  const helpMessage = `Here are the available commands:
+    - setworlddesc or swd: Set or retrieve the current world description.
+    - setdescprompt or sdp: Set or retrieve the current description prompt.
+    - setimageprompt or sip: Set or retrieve the current image prompt.`;
+  message.reply(helpMessage);
+}
+
 
 // Parse the command and arguments
 const [command, ...args] = message.content.slice(1).trim().split(/\s+/);
