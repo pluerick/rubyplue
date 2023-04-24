@@ -392,6 +392,7 @@ if (command === 'makeimage') {
         "size": "1024x1024"
       }'`;        
       try {
+        console.log('debug1');
         console.log(cmd);
         exec(cmd, (error, stdout, stderr) => {
           if (error) {
