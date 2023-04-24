@@ -388,7 +388,7 @@ if (command === 'makeimage') {
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${openaiApiKey}" \
       -d '{
-        "prompt": "${imagePrompt} The room exists in a world described like this-- ${worldDesc}.(END OF WORLD DESCRIPTION) Here's a description of someone entering the room. Include all these details-- ${prompt}",
+        "prompt": "${imagePrompt} The room exists in a world described like this-- ${worldDesc}.END OF WORLD DESCRIPTION Here is a description of someone entering the room. Include all these details-- ${prompt}",
         "n": 2,
         "size": "1024x1024"
       }'`;        
