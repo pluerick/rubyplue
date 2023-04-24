@@ -668,6 +668,25 @@ exitString = exitString.slice(0, -2) + ".";
     exitString = exitString.slice(0, lastCommaIndex) + ", and" + exitString.slice(lastCommaIndex + 1);
   }
 
+//Check every player that's in the same room as the current player, and lis them in a new field of the embed called "Others here"
+const playersRef = admin.database().ref(`test1/${message.guild.name}/players`);
+const playersSnapshot = await playersRef.orderByChild('current_room').equalTo(currentRoom.id).once('value');
+const players = playersSnapshot.val();
+let othersHereString = "";
+for (const playerID in players) {
+  if (playerID !== message.author.id) {
+    othersHereString += `<@${playerID}>, `;
+  }
+}
+if (othersHereString !== "") {
+  othersHereString = othersHereString.slice(0, -2) + ".";
+  fields.push({
+    name: "Others here",
+    value: othersHereString
+  });
+}
+
+
 
   // Create an embed with the current room's name and description
   const embed = new EmbedBuilder()
