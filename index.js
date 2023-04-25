@@ -707,7 +707,6 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
   // Create an embed with the current room's name and description
   const embed = new EmbedBuilder()
     .setColor('#0099ff')
-    .setTitle(currentRoom.name)
     .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString)
     .setImage(currentRoom.image)
     .setTimestamp();
