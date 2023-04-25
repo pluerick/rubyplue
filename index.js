@@ -721,10 +721,10 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
     .setColor('#0099ff')
     .setTitle(currentRoom.name)
     .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString)
-    console.log('othersherestring: ',othersHereString);
     .setImage(currentRoom.image)
     .setTimestamp();
 
+    console.log('othersherestring: ', othersHereString);
 
 
 
