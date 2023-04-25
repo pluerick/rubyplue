@@ -674,37 +674,39 @@ currentRoomID = currentRoomID.replace("room ", "");
 console.log('currentRoomID', currentRoomID);
 
 
-
-global.descString = 'test1'
+global.descString = 'test1';
 let othersHereString = '';
 
-playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (snapshot) => {
+try {
+  const snapshot = await playersRef.orderByChild('current_room').equalTo(currentRoomID).once('value');
   console.log('triggered');
-  console.log(snapshot.val());  
+  console.log(snapshot.val());
+
   if (snapshot.exists()) {
     const players = snapshot.val();
     for (const playerID in players) {
       console.log(playerID);
       console.log(players[playerID].name);
-      console.log(players[playerID].current_room);      
+      console.log(players[playerID].current_room);
       othersHereString += `${players[playerID].name}, `;
       console.log('othersherestring inside for loop: ', othersHereString);
     }
-    othersHereString = othersHereString.slice(0, -2) + ".";
+    othersHereString = othersHereString.slice(0, -2) + '.';
     global.descString = currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString;
     console.log('descString inside if statement: ', global.descString);
     console.log('othersherestring inside if statement: ', othersHereString);
   } else {
     global.descString = currentRoom.description + '\n\n' + exitString + '\n\n' + 'No one else is here.';
   }
-});
+} catch (error) {
+  console.error(error);
+}
+
 console.log('descString outside if statement: ', global.descString);
+
 const embed = new EmbedBuilder()
   .setColor('#0099ff')
   .setImage(currentRoom.image);
-
-  
-  
 
 // Return the embed
 return embed;
