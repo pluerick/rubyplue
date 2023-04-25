@@ -698,10 +698,10 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
 
 const embed = new EmbedBuilder()
   .setColor('#0099ff')
-  .setImage(currentRoom.image)
-  .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString);
+  .setImage(currentRoom.image);
+
   
-  console.log('global description string - ', global.descString);
+  
 
 // Return the embed
 return embed;
