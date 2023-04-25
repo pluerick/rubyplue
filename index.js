@@ -22,7 +22,7 @@ const request = require('request');
 let imagePrompt = "generate an image that looks photo realistic.";
 let descPrompt = 'From the second person perspective of a person as they enter a room, describe a room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room. Try not to use language that would be considered offensive when generating images later like blood';
 let worldDesc = 'a dark dank dungeon made of stone. there are torches on the walls every so often and creepy dripping sounds and small critters running around';
-
+global.descString =  'test';
 
 
 // Parse the service account key JSON string from the environment variable
@@ -674,9 +674,7 @@ console.log('currentRoomID', currentRoomID);
 
 
 
-const embed = new EmbedBuilder()
-  .setColor('#0099ff')
-  .setImage(currentRoom.image);
+
 let othersHereString = '';
 
 playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (snapshot) => {
@@ -691,14 +689,16 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
       othersHereString += `${players[playerID].name}, `;
       console.log('othersherestring inside for loop: ', othersHereString);
     }
-  
-    othersHereString = othersHereString.slice(0, -2) + ".";
+      othersHereString = othersHereString.slice(0, -2) + ".";
     embed.setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString);
     console.log('othersherestring inside if statement: ', othersHereString);
   }
 });
 
-console.log('othersherestring outside if statement: ', othersHereString);
+const embed = new EmbedBuilder()
+  .setColor('#0099ff')
+  .setImage(currentRoom.image)
+  .setDescription(global.descString);
 
 // Return the embed
 return embed;
