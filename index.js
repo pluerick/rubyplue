@@ -703,7 +703,9 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
 
 
 console.log('othersherestring outside if statement: ', othersHereString);
+
   // Create an embed with the current room's name and description
+  console.log('debug point 1');
   const embed = new EmbedBuilder()
     .setColor('#0099ff')
     .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString)
