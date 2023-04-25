@@ -709,8 +709,8 @@ console.log('othersherestring outside if statement: ', othersHereString);
   const embed = new EmbedBuilder()
     .setColor('#0099ff')
     .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString)
-    .setImage(currentRoom.image)
-    .setTimestamp();
+    .setImage(currentRoom.image);
+    
 
     console.log('othersherestring: ', othersHereString);
 
