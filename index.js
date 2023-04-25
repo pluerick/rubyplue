@@ -649,10 +649,6 @@ for (const direction of directions) {
     const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
     const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
     exitString += `${direction.charAt(0).toUpperCase() + direction.slice(1)}, `; 
-  
-
-
-
 
   }
 }
@@ -676,7 +672,12 @@ currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "roo
 currentRoomID = currentRoomID.replace("room ", "");
 console.log('currentRoomID', currentRoomID);
 
-let othersHereString = "";
+
+
+const embed = new EmbedBuilder()
+  .setColor('#0099ff')
+  .setImage(currentRoom.image);
+let othersHereString = '';
 
 playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (snapshot) => {
   console.log('triggered');
@@ -691,30 +692,13 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
       console.log('othersherestring inside for loop: ', othersHereString);
     }
   
-      othersHereString = othersHereString.slice(0, -2) + ".";
-      fields.push({
-        name: "Players here",
-        value: othersHereString
-      });
-      console.log('othersherestring inside if statement: ', othersHereString);
+    othersHereString = othersHereString.slice(0, -2) + ".";
+    embed.setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString);
+    console.log('othersherestring inside if statement: ', othersHereString);
   }
-
 });
 
-
 console.log('othersherestring outside if statement: ', othersHereString);
-
-  // Create an embed with the current room's name and description
-  console.log('debug point 1');
-  const embed = new EmbedBuilder()
-    .setColor('#0099ff')
-    .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString)
-    .setImage(currentRoom.image);
-    
-
-    console.log('othersherestring: ', othersHereString);
-
-
 
 // Return the embed
 return embed;
