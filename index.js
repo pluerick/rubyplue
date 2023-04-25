@@ -638,9 +638,6 @@ async function lookAround(snapshot, roomsRef){
   // Get the current room's data
   const currentRoom = snapshot.val();
 
-  const embed = new EmbedBuilder();
-
-  let descString = currentRoom.description;
 
 // Check each direction for an adjacent room
 const directions = ["north", "south", "east", "west"];
@@ -652,12 +649,16 @@ for (const direction of directions) {
     const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
     const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
     exitString += `${direction.charAt(0).toUpperCase() + direction.slice(1)}, `; 
+  
+
+
+
+
   }
 }
 
 // Add the exit string to the end of the description
 exitString = exitString.slice(0, -2) + ".";
-descString += "\n\n" + exitString;
 
 
   // Check if the exitString contains a comma
@@ -666,44 +667,65 @@ descString += "\n\n" + exitString;
     // Insert "and " after the last comma
     exitString = exitString.slice(0, lastCommaIndex) + ", and" + exitString.slice(lastCommaIndex + 1);
   }
-  const playersRef = admin.database().ref(`test1/${serverName}/players`);
-  currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
-  currentRoomID = currentRoomID.replace("room ", "");
-  console.log('currentRoomID', currentRoomID);
-  
-  function getOthersHere() {
+
+//Check every players entry that's in the same room as the current player, and lists them in a new field of the embed called "Players here"
+// the database is structured like this: test1 > serverName > players > playerID > current_room, name, etc.
+
+
+  // // Check if the player is already in the database, if not, add them
+  // const playersRef = serverRef.child("players");
+  // playersRef.orderByChild("name").equalTo(playerName).once("value", (playerSnapshot) => {
+  //   if (playerSnapshot.exists()) {
+  //     message.reply(`You have already started the game!`);
+  //   } else {
+  //     // Add the player's name and current room to the database
+  //     const playerData = {
+  //       name: playerName,
+  //       current_room: roomId,
+
+
+const playersRef = admin.database().ref(`test1/${serverName}/players`);
+currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
+currentRoomID = currentRoomID.replace("room ", "");
+console.log('currentRoomID', currentRoomID);
+
+playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (snapshot) => {
+  console.log('triggered');
+  console.log(snapshot.val());  
+  if (snapshot.exists()) {
+    const players = snapshot.val();
     let othersHereString = "";
     for (const playerID in players) {
       console.log(playerID);
       console.log(players[playerID].name);
       console.log(players[playerID].current_room);      
-      othersHereString += `${players[playerID].name}, `;
+        othersHereString += `${players[playerID].name}, `;
     }
     if (othersHereString !== "") {
       othersHereString = othersHereString.slice(0, -2) + ".";
-      descString += "\n\n" + othersHereString;
+      fields.push({
+        name: "Players here",
+        value: othersHereString
+      });
+    }
 
-    }
-  
-    return othersHereString;
   }
-  
-  playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (snapshot) => {
-    console.log('triggered');
-    console.log(snapshot.val());  
-    if (snapshot.exists()) {
-      const players = snapshot.val();
-      const othersHere = getOthersHere();
-      // Create an embed with the current room's name and description
-      const embed = new EmbedBuilder()
-        .setColor('#0099ff')
-        .setTitle(currentRoom.name)
-        .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHere) 
-        .setImage(currentRoom.image)
-        .setTimestamp();
-    }
-  
-  });
+
+});
+
+
+
+  // Create an embed with the current room's name and description
+  const embed = new EmbedBuilder()
+    .setColor('#0099ff')
+    .setTitle(currentRoom.name)
+    .setDescription(currentRoom.description + '\n\n' + exitString)
+    .setImage(currentRoom.image)
+    .setTimestamp();
+
+
+
+
 // Return the embed
 return embed;
 }
