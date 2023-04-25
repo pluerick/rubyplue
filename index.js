@@ -690,7 +690,7 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
       console.log('othersherestring inside for loop: ', othersHereString);
     }
       othersHereString = othersHereString.slice(0, -2) + ".";
-    global.descString = currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString;
+    global.descString = currentRoom.description, '\n\n',  exitString,  '\n\n', othersHereString;
     console.log('othersherestring inside if statement: ', othersHereString);
   }
 });
