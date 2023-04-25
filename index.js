@@ -731,6 +731,7 @@ async function generateDescription(args) {
   const OpenAI = require('openai-api');
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
+  const embed = new EmbedBuilder();
   let prompt = descPrompt;
   
 
