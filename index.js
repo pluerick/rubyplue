@@ -674,7 +674,7 @@ console.log('currentRoomID', currentRoomID);
 
 
 
-
+global.descString = 'test1'
 let othersHereString = '';
 
 playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (snapshot) => {
@@ -691,7 +691,7 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
     }
       othersHereString = othersHereString.slice(0, -2) + ".";
 //      global.descString = currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString;
-global.descString = 'test2';
+    global.descString = 'test2';
     console.log('othersherestring inside if statement: ', othersHereString);
   }
 });
@@ -700,6 +700,7 @@ const embed = new EmbedBuilder()
   .setColor('#0099ff')
   .setImage(currentRoom.image)
   .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString);
+  
   console.log('global description string - ', global.descString);
 
 // Return the embed
