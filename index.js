@@ -698,8 +698,8 @@ global.descString = 'test2';
 
 const embed = new EmbedBuilder()
   .setColor('#0099ff')
-  .setImage(currentRoom.image);
-  //.setDescription(global.descString);
+  .setImage(currentRoom.image)
+  .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString);
 
 // Return the embed
 return embed;
