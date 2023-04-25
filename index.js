@@ -649,11 +649,6 @@ for (const direction of directions) {
     const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
     const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
     exitString += `${direction.charAt(0).toUpperCase() + direction.slice(1)}, `; 
-  
-
-
-
-
   }
 }
 
@@ -684,40 +679,42 @@ exitString = exitString.slice(0, -2) + ".";
   //       current_room: roomId,
 
 
-const playersRef = admin.database().ref(`test1/${serverName}/players`);
-currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
-currentRoomID = currentRoomID.replace("room ", "");
-console.log('currentRoomID', currentRoomID);
-
-playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (snapshot) => {
-  console.log('triggered');
-  console.log(snapshot.val());  
-  if (snapshot.exists()) {
-    const players = snapshot.val();
+  const playersRef = admin.database().ref(`test1/${serverName}/players`);
+  currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
+  currentRoomID = currentRoomID.replace("room ", "");
+  console.log('currentRoomID', currentRoomID);
+  
+  function getOthersHere() {
     let othersHereString = "";
     for (const playerID in players) {
       console.log(playerID);
       console.log(players[playerID].name);
       console.log(players[playerID].current_room);      
-        othersHereString += `${players[playerID].name}, `;
+      othersHereString += `${players[playerID].name}, `;
     }
     if (othersHereString !== "") {
       othersHereString = othersHereString.slice(0, -2) + ".";
     }
-
+  
+    return othersHereString;
   }
-
-});
-
-
-
-  // Create an embed with the current room's name and description
-  const embed = new EmbedBuilder()
-    .setColor('#0099ff')
-    .setTitle(currentRoom.name)
-    .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString)
-    .setImage(currentRoom.image)
-    .setTimestamp();
+  
+  playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (snapshot) => {
+    console.log('triggered');
+    console.log(snapshot.val());  
+    if (snapshot.exists()) {
+      const players = snapshot.val();
+      const othersHere = getOthersHere();
+      // Create an embed with the current room's name and description
+      const embed = new EmbedBuilder()
+        .setColor('#0099ff')
+        .setTitle(currentRoom.name)
+        .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHere) 
+        .setImage(currentRoom.image)
+        .setTimestamp();
+    }
+  
+  });
 
 
 
