@@ -703,10 +703,6 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
     }
     if (othersHereString !== "") {
       othersHereString = othersHereString.slice(0, -2) + ".";
-      fields.push({
-        name: "Players here",
-        value: othersHereString
-      });
     }
 
   }
@@ -719,7 +715,7 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
   const embed = new EmbedBuilder()
     .setColor('#0099ff')
     .setTitle(currentRoom.name)
-    .setDescription(currentRoom.description + '\n\n' + exitString)
+    .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString)
     .setImage(currentRoom.image)
     .setTimestamp();
 
