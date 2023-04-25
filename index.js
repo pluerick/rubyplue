@@ -693,6 +693,7 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
       othersHereString = othersHereString.slice(0, -2) + ".";
 //      global.descString = currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString;
     global.descString = 'test2';
+    console.log('descString inside if statement: ', global.descString);
     console.log('othersherestring inside if statement: ', othersHereString);
   }
 });
