@@ -698,7 +698,7 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
     global.descString = currentRoom.description + '\n\n' + exitString + '\n\n' + 'No one else is here.';
   }
 });
-
+console.log('descString outside if statement: ', global.descString);
 const embed = new EmbedBuilder()
   .setColor('#0099ff')
   .setImage(currentRoom.image);
