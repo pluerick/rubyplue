@@ -341,6 +341,7 @@ if (command === 'north' || command === 'south' || command === 'east' || command 
                   } else {
                     const replyEmbed = await lookAround(snapshot, roomsRef);
                     message.reply({ embeds: [replyEmbed]}); //, components: [row] 
+                    message.reply(global.descString);
                   }
                 });
               }
