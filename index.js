@@ -688,6 +688,9 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
     }
   }
 
+
+});
+
     // Create an embed with the current room's name and description
     const embed = new EmbedBuilder()
     .setColor('#0099ff')
@@ -695,14 +698,6 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
     .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString)
     .setImage(currentRoom.image)
     .setTimestamp();
-
-
-});
-
-
-
-
-
 
 
 // Return the embed
