@@ -330,7 +330,7 @@ if (command === 'north' || command === 'south' || command === 'east' || command 
             // Update the player's current room to the new room in the appropriate direction
             const newRoomID = snapshot.val()[direction];
             const playerRef = playersRef.child(playerID);
-            playerRef.child('current_room').set(newRoomID, (error) => {
+            playerRef.child('current_room').set(newRoomID.toString(), (error) => {
               if (error) {
                 message.reply(`Sorry, ${playerName}, there was an error updating your current room.`);
               } else {
