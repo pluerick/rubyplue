@@ -640,7 +640,7 @@ async function lookAround(snapshot, roomsRef){
 
   const embed = new EmbedBuilder();
 
-  const descString = currentRoom.description;
+  let descString = currentRoom.description;
 
 // Check each direction for an adjacent room
 const directions = ["north", "south", "east", "west"];
