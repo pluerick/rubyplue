@@ -672,18 +672,6 @@ exitString = exitString.slice(0, -2) + ".";
 // the database is structured like this: test1 > serverName > players > playerID > current_room, name, etc.
 
 
-  // // Check if the player is already in the database, if not, add them
-  // const playersRef = serverRef.child("players");
-  // playersRef.orderByChild("name").equalTo(playerName).once("value", (playerSnapshot) => {
-  //   if (playerSnapshot.exists()) {
-  //     message.reply(`You have already started the game!`);
-  //   } else {
-  //     // Add the player's name and current room to the database
-  //     const playerData = {
-  //       name: playerName,
-  //       current_room: roomId,
-
-
 const playersRef = admin.database().ref(`test1/${serverName}/players`);
 currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
 currentRoomID = currentRoomID.replace("room ", "");
