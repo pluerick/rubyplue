@@ -696,14 +696,13 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
         name: "Players here",
         value: othersHereString
       });
-    
-
+      console.log('othersherestring inside if statement: ', othersHereString);
   }
 
 });
 
 
-
+console.log('othersherestring outside if statement: ', othersHereString);
   // Create an embed with the current room's name and description
   const embed = new EmbedBuilder()
     .setColor('#0099ff')
