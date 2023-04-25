@@ -700,7 +700,7 @@ const embed = new EmbedBuilder()
   .setColor('#0099ff')
   .setImage(currentRoom.image)
   .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString);
-  console.log(global.descString);
+  console.log('global description string - ', global.descString);
 
 // Return the embed
 return embed;
