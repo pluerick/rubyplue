@@ -695,14 +695,11 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
       console.log(playerID);
       console.log(players[playerID].name);
       console.log(players[playerID].current_room);      
-        othersHereString += `${players[playerID].name}, `;
+      othersHereString += `${players[playerID].name}, `;
     }
     if (othersHereString !== "") {
       othersHereString = othersHereString.slice(0, -2) + ".";
-      fields.push({
-        name: "Players here",
-        value: othersHereString
-      });
+      embed.addField("Players here", othersHereString);
     }
 
   }
