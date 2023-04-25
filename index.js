@@ -638,6 +638,8 @@ async function lookAround(snapshot, roomsRef){
   // Get the current room's data
   const currentRoom = snapshot.val();
 
+  let othersHereString = "";
+
 
 // Check each direction for an adjacent room
 const directions = ["north", "south", "east", "west"];
@@ -649,11 +651,6 @@ for (const direction of directions) {
     const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
     const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
     exitString += `${direction.charAt(0).toUpperCase() + direction.slice(1)}, `; 
-  
-
-
-
-
   }
 }
 
@@ -671,15 +668,6 @@ exitString = exitString.slice(0, -2) + ".";
 //Check every players entry that's in the same room as the current player, and lists them in a new field of the embed called "Players here"
 // the database is structured like this: test1 > serverName > players > playerID > current_room, name, etc.
 
-
-  // Create an embed with the current room's name and description
-  const embed = new EmbedBuilder()
-    .setColor('#0099ff')
-    .setTitle(currentRoom.name)
-    .setDescription(currentRoom.description + '\n\n' + exitString)
-    .setImage(currentRoom.image)
-    .setTimestamp();
-
 const playersRef = admin.database().ref(`test1/${serverName}/players`);
 currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
 currentRoomID = currentRoomID.replace("room ", "");
@@ -690,7 +678,7 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
   console.log(snapshot.val());  
   if (snapshot.exists()) {
     const players = snapshot.val();
-    let othersHereString = "";
+
     for (const playerID in players) {
       console.log(playerID);
       console.log(players[playerID].name);
@@ -699,10 +687,16 @@ playersRef.orderByChild("current_room").equalTo(currentRoomID).once("value", (sn
     }
     if (othersHereString !== "") {
       othersHereString = othersHereString.slice(0, -2) + ".";
-      embed.addField("Players here", othersHereString);
     }
-
   }
+
+  // Create an embed with the current room's name and description
+  const embed = new EmbedBuilder()
+    .setColor('#0099ff')
+    .setTitle(currentRoom.name)
+    .setDescription(currentRoom.description + '\n\n' + exitString + '\n\n' + othersHereString)
+    .setImage(currentRoom.image)
+    .setTimestamp();
 
 });
 
