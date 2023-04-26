@@ -595,17 +595,33 @@ if (command === 'image') {
 
 //Test Avatar Command
 if (command === 'avatar') {
-  const username = msg.content.slice(11); // Get the username from the message
-  const user = msg.guild.members.cache.find(member => member.user.username === username); // Find the user in the guild
-  
-  if (!user) {
-    return msg.reply('User not found in this server.'); // Return if user not found
+  const args = msg.content.split(' ');
+  if (args.length !== 3) {
+    return msg.reply('Invalid arguments. Usage: !overlay [Discord username] [Imgur link]');
   }
-  
-  const avatarUrl = user.user.displayAvatarURL({ format: 'png', dynamic: true }); // Get the user's avatar URL
-  const attachment = new Discord.MessageAttachment(avatarUrl); // Save the avatar to memory as a MessageAttachment
-  
-  msg.reply(`Here is ${username}'s avatar!`, attachment); // Send the avatar back to the user who invoked the command
+  const username = args[1];
+  const imgUrl = args[2];
+
+  // Find the user in the guild
+  const user = msg.guild.members.cache.find(member => member.user.username === username);
+  if (!user) {
+    return msg.reply('User not found in this server.');
+  }
+
+  // Load the user's avatar and the Imgur image
+  const avatarUrl = user.user.displayAvatarURL({ format: 'png', dynamic: true });
+  const avatar = await loadImage(avatarUrl);
+  const image = await loadImage(fetch(imgUrl).then(res => res.buffer()));
+
+  // Create a canvas and draw the images
+  const canvas = createCanvas(image.width, image.height);
+  const ctx = canvas.getContext('2d');
+  ctx.drawImage(image, 0, 0);
+  ctx.drawImage(avatar, 0, canvas.height - avatar.height, avatar.width, avatar.height);
+
+  // Convert the canvas to a Discord.js attachment and send it back to the user
+  const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'overlay.png');
+  msg.reply(`Here's the overlay of ${username}'s avatar on the Imgur image!`, attachment);
 }
 
 
