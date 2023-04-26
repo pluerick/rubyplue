@@ -694,6 +694,76 @@ if (command === 'look' || command === 'l') {
   );
 }
 
+function generateRoomImage(roomNumber) {
+  const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+  const roomKey = 'room ' + roomNumber;
+  roomsRef.child(roomKey).once('value', (snapshot) => {
+    const roomDescription = snapshot.child('description').val();
+    const { exec } = require('child_process');
+    const openaiApiKey = process.env.OPENAI_API_KEY;
+    const prompt = roomDescription.replace(/[^\w\s]/g, '');
+    const cmd = `curl https://api.openai.com/v1/images/generations \
+      -H "Content-Type: application/json" \
+      -H "Authorization: Bearer ${openaiApiKey}" \
+      -d '{
+        "prompt": "${imagePrompt} The room exists in a world described like this-- ${worldDesc}.END OF WORLD DESCRIPTION Here is a description of someone entering the room. Include all these details-- ${prompt}",
+        "n": 2,
+        "size": "1024x1024"
+      }'`;
+
+    try {
+      console.log('debug1');
+      console.log(cmd);
+      exec(cmd, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`exec error: ${error}`);
+          return;
+        }
+
+        const response = JSON.parse(stdout);
+        const currentRoomImageUrl = response.data[0].url;
+        console.log(currentRoomImageUrl);
+        axios.get(currentRoomImageUrl, { responseType: 'arraybuffer' })
+          .then((response) => {
+            const imageData = response.data;
+            const formData = new FormData();
+            formData.append('image', imageData, { filename: 'image.png' });
+            const uploadOptions = {
+              url: 'https://api.imgur.com/3/image',
+              headers: {
+                Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
+                ...formData.getHeaders(),
+              },
+              data: formData,
+            };
+            axios.post(uploadOptions.url, uploadOptions.data, { headers: uploadOptions.headers })
+              .then((response) => {
+                const imgurUrl = response.data.data.link;
+                console.log(`Imgur URL:`, imgurUrl);
+
+                // Update the image node for the current room 
+                roomsRef.child(roomKey).update({ image: `${imgurUrl}` }, (error) => {
+                  if (error) {
+                    console.error(`Failed to update image for room ${roomKey}:`, error);
+                  } else {
+                    console.log(`Image for room ${roomKey} updated successfully`);
+                  }
+                });
+              })
+              .catch((error) => {
+                console.error(`Failed to upload image to Imgur:`, error);
+              });
+          })
+          .catch((error) => {
+            console.error(`Failed to retrieve image data:`, error);
+          });
+      });
+    } catch (error) {
+      console.error(`Error executing curl command: ${error}`);
+    }
+  });
+}
+
 async function lookAround(snapshot, roomsRef){
 
   // Get the current room's data
