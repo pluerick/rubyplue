@@ -208,8 +208,7 @@ if (command === 'stats') {
         { name: 'Dexterity', value: `${playerStats.dexterity}`, inline: true },
         { name: 'Experience', value: `${playerStats.experience}`, inline: true },
         { name: 'Level', value: `${Math.floor(Math.sqrt(playerStats.experience / 100)) + 1}`, inline: true },
-        { name: 'Experience to Next Level', value: `${experienceToNextLevel}`, inline: true },
-        { name: 'Progress', value: `${progressBar}`, inline: true },
+        { name: 'Progress', value: `${progressBar}`, inline: false },
       )
       .setTitle(`${playerName}'s Stats`);
 
