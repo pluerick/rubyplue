@@ -180,22 +180,17 @@ if (command === 'start') {
 
 // Handle the 'stats' command
 if (command === 'stats') {
-  // Get the player's name from the message
   const playerName = message.author.username;
-  // Set up a Firebase Realtime Database reference to the server's data
-  const serverRef = admin.database().ref(`test1/${serverName}`);
-  // Retrieve the player's stats from the database
-  serverRef.child(`players/${playerName}/stats`).once('value', snapshot => {
-    console.log('playerName: ', playerName);
-    console.log(snapshot.val());
-    // Check if the player has stats in the database
-    if (!snapshot.exists()) {
-      message.reply(`Sorry, ${playerName}, you don't have any stats yet.`);
+  const playersRef = admin.database().ref(`test1/${serverName}/players`);
+  playersRef.orderByChild('name').equalTo(playerName).once('value', snapshot => {
+    if (snapshot.exists()) {
+      const playerData = snapshot.val();
+      const playerId = Object.keys(playerData)[0];
+      const playerStats = playerData[playerId].stats;
+      const statsMessage = `Your stats are:\nStrength: ${playerStats.strength}\nIntelligence: ${playerStats.intelligence}\nAgility: ${playerStats.agility}\nDexterity: ${playerStats.dexterity}`;
+      message.reply(statsMessage);
     } else {
-      // Retrieve the player's stats from the snapshot
-      const { strength, intelligence, agility, dexterity } = snapshot.val();
-      // Display the player's stats to the user
-      message.reply(`Your current stats are:\nStrength: ${strength}\nIntelligence: ${intelligence}\nAgility: ${agility}\nDexterity: ${dexterity}`);
+      message.reply(`You haven't started the game yet!`);
     }
   }, error => {
     console.error(error);
