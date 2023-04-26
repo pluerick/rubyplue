@@ -650,7 +650,7 @@ for (const direction of directions) {
     const neighborRoomID = currentRoom[direction];
     const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
     const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
-    exitString += `**${direction.charAt(0).toUpperCase() + direction.slice(1)}, **`; 
+    exitString += `**${direction.charAt(0).toUpperCase() + direction.slice(1)}**, `; 
 
   }
 }
