@@ -526,8 +526,8 @@ if (command === 'generate') {
 if (command === 'newimage') {
   const roomArg = args[0];
   message.reply(`Generating room images with Open AI for room number ${roomArg}! This may take a few seconds...`);
-  generateroomimage(roomArg, message);
-  message.reply(`Success!`);
+  await generateRoomImage(roomArg);
+  message.reply(`Image for room ${roomArg} generated successfully!`);
 }
 
 
@@ -701,79 +701,62 @@ if (command === 'look' || command === 'l') {
   }
   );
 }
-function generateroomimage(roomArg, message) {
-  message.reply(`Generating room images with Open AI for room number ${roomArg}! This may take a few seconds...`);
+
+async function generateRoomImage(roomNumber) {
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
-  roomsRef.once('value', (snapshot) => {
-    const rooms = snapshot.val();
-    const roomKey = `room ${roomArg}`;
-    const roomRef = roomsRef.child(roomKey);
-    const roomDescription = rooms[roomKey].description;
-    const { exec } = require('child_process');
-    const openaiApiKey = process.env.OPENAI_API_KEY;
-    const prompt = roomDescription.replace(/[^\w\s]/g, '');
-    const cmd = `curl https://api.openai.com/v1/images/generations \
+  const snapshot = await roomsRef.once('value');
+  const rooms = snapshot.val();
+  const roomKey = 'room ' + roomNumber;
+  const roomRef = roomsRef.child(roomKey);
+  const roomDescription = rooms[roomKey].description;
+  const { exec } = require('child_process');
+  const openaiApiKey = process.env.OPENAI_API_KEY;
+  const prompt = roomDescription.replace(/[^\w\s]/g, '');
+  const cmd = `curl https://api.openai.com/v1/images/generations \
       -H "Content-Type: application/json" \
       -H "Authorization: Bearer ${openaiApiKey}" \
       -d '{
         "prompt": "${imagePrompt} The room exists in a world described like this-- ${worldDesc}.END OF WORLD DESCRIPTION Here is a description of someone entering the room. Include all these details-- ${prompt}",
         "n": 2,
         "size": "1024x1024"
-      }'`;
+      }'`;        
 
-    try {
-      console.log('debug1');
-      console.log(cmd);
-      exec(cmd, (error, stdout, stderr) => {
-        if (error) {
-          console.error(`exec error: ${error}`);
-          return;
-        }
+  try {
+    console.log('debug1');
+    console.log(cmd);
+    const { stdout } = await exec(cmd);
+    const response = JSON.parse(stdout);
+    const currentRoomImageUrl = response.data[0].url;
+    //message.reply(currentRoomImageUrl);
+    console.log('Done! Uploading image to Imgur...');
+    const { data } = await axios.get(currentRoomImageUrl, { responseType: 'arraybuffer' });
+    const imageData = data;
+    const formData = new FormData();
+    formData.append('image', imageData, { filename: 'image.png' });
+    const uploadOptions = {
+      url: 'https://api.imgur.com/3/image',
+      headers: {
+        Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
+        ...formData.getHeaders(),
+      },
+      data: formData,
+    };
+    const uploadResponse = await axios.post(uploadOptions.url, uploadOptions.data, { headers: uploadOptions.headers });
+    const imgurUrl = uploadResponse.data.data.link;
+    console.log(`Imgur URL:`, imgurUrl);
+    console.log('Done! Image uploaded to Imgur successfully!');
 
-        const response = JSON.parse(stdout);
-        const currentRoomImageUrl = response.data[0].url;
-        message.reply('Done! Uploading image to Imgur...');
-        axios.get(currentRoomImageUrl, { responseType: 'arraybuffer' })
-          .then((response) => {
-            const imageData = response.data;
-            const formData = new FormData();
-            formData.append('image', imageData, { filename: 'image.png' });
-            const uploadOptions = {
-              url: 'https://api.imgur.com/3/image',
-              headers: {
-                Authorization: `Client-ID ${IMGUR_CLIENT_ID}`,
-                ...formData.getHeaders(),
-              },
-              data: formData,
-            };
-            axios.post(uploadOptions.url, uploadOptions.data, { headers: uploadOptions.headers })
-              .then((response) => {
-                const imgurUrl = response.data.data.link;
-                console.log(`Imgur URL:`, imgurUrl);
-                message.reply('Done! Image uploaded to Imgur successfully!');
-
-                // Update the image node for the current room 
-                roomRef.update({ image: `${imgurUrl}` }, (error) => {
-                  if (error) {
-                    console.error(`Failed to update image for room ${roomKey}:`, error);
-                  } else {
-                    console.log(`Image for room ${roomKey} updated successfully`);
-                    message.reply('Done! Image for room updated successfully!');
-                  }
-                });
-              })
-              .catch((error) => {
-                console.error(`Failed to upload image to Imgur:`, error);
-              });
-          })
-          .catch((error) => {
-            console.error(`Failed to retrieve image data:`, error);
-          });
-      });
-    } catch (error) {
-      console.error(`Error executing curl command: ${error}`);
+    // Update the image node for the current room 
+    const updateError = await roomRef.update({ image: `${imgurUrl}` });
+    if (updateError) {
+      console.error(`Failed to update image for room ${roomKey}:`, updateError);
+    } else {
+      console.log(`Image for room ${roomKey} updated successfully`);
+      console.log('Done! Image for room updated successfully!');
     }
-  });
+  } catch (error) {
+    console.error(`Error: ${error}`);
+  }
 }
 
 async function lookAround(snapshot, roomsRef){
