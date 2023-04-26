@@ -523,6 +523,14 @@ if (command === 'generate') {
   });
 }
 
+if (command === 'newimage') {
+  const roomArg = args[0];
+  message.reply(`Generating room images with Open AI for room number ${roomArg}! This may take a few seconds...`);
+  makeImage(roomArg, message);
+  message.reply(`Success!`);
+}
+
+
 if (command === 'makeimage') {
   const roomArg = args[0];
   message.reply('Generating room images with Open AI for room number', roomArg, '! This may take a few seconds...')
