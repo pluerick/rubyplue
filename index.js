@@ -194,9 +194,11 @@ if (command === 'stats') {
       
       
        const progressBar = "[" + "#".repeat(experienceProgress) + "-".repeat(10 - experienceProgress) + "]";
+       console.log('strength', playerStats.strength);
        const statsEmbed = new EmbedBuilder()      
        .setColor('#0099ff')
        
+     
        .addFields(
        //  { name: 'Strength', value: playerStats.strength, inline: true },
       //   { name: 'Intelligence', value: playerStats.intelligence, inline: true },
