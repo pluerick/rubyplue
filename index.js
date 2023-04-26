@@ -22,7 +22,30 @@ const request = require('request');
 let imagePrompt = "generate an image that looks photo realistic.";
 let descPrompt = 'From the second person perspective of a person as they enter a room, describe a room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room. Try not to use language that would be considered offensive when generating images later like blood';
 let worldDesc = 'a dark dank dungeon made of stone. there are torches on the walls every so often and creepy dripping sounds and small critters running around';
-global.descString =  'test 0';
+global.descString =  '';
+const navigationButtons = [
+  {
+    label: "Button 1",
+    style: "primary",
+    callback: () => {
+      message.channel.send("You clicked button 1!");
+    },
+  },
+  {
+    label: "Button 2",
+    style: "secondary",
+    callback: () => {
+      message.channel.send("You clicked button 2!");
+    },
+  },
+  {
+    label: "Button 3",
+    style: "danger",
+    callback: () => {
+      message.channel.send("You clicked button 3!");
+    },
+  },
+];
 
 
 // Parse the service account key JSON string from the environment variable
@@ -625,9 +648,18 @@ if (command === 'look' || command === 'l') {
         if (!snapshot.exists()) {
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
         } else {
+          const theMessage = {
+            content: global.descString,
+            components: [
+              {
+                type: "actionRow",
+                components: buttons,
+              },
+            ],
+          };
           const replyEmbed = await lookAround(snapshot, roomsRef);
           message.reply({ embeds: [replyEmbed]}); //, components: [row] 
-          message.reply(global.descString);
+          message.reply(theMessage);
         }
       });
     } 
