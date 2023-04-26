@@ -191,7 +191,7 @@ if (command === 'stats') {
       const playerStats = playerData[playerId].stats;
       const level = Math.floor(Math.sqrt(playerData.experience));
       const statsMessage = `Your stats are:\nStrength: ${playerStats.strength}\nIntelligence: ${playerStats.intelligence}\nAgility: ${playerStats.agility}\nDexterity: ${playerStats.dexterity}`;
-      message.reply({ files: [drawCoolText(statsMessage)] });      
+      message.reply(statsMessage);
     } else {
       message.reply(`You haven't started the game yet!`);
     }
@@ -794,10 +794,6 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
   global.currentRoomDesc = GeneratedDesc;
   //console.log(GeneratedDesc);
   return GeneratedDesc;
-}
-
-function drawCoolText(text, Discord) {
-message.reply(text);
 }
 
   
