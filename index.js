@@ -200,7 +200,7 @@ if (command === 'stats') {
        
      
        .addFields(
-        { name: 'Strength', value: playerStats.strength, inline: true },
+        { name: 'Strength', value: '18', inline: true },
        //  { name: 'Strength', value: playerStats.strength, inline: true },
       //   { name: 'Intelligence', value: playerStats.intelligence, inline: true },
       //   { name: 'Agility', value: playerStats.agility, inline: true },
