@@ -526,7 +526,7 @@ if (command === 'generate') {
 if (command === 'newimage') {
   const roomArg = args[0];
   message.reply(`Generating room images with Open AI for room number ${roomArg}! This may take a few seconds...`);
-  makeImage(roomArg, message);
+  generateroomimage(roomArg, message);
   message.reply(`Success!`);
 }
 
@@ -701,12 +701,14 @@ if (command === 'look' || command === 'l') {
   }
   );
 }
-
-function generateRoomImage(roomNumber) {
+function generateroomimage(roomArg, message) {
+  message.reply(`Generating room images with Open AI for room number ${roomArg}! This may take a few seconds...`);
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
-  const roomKey = 'room ' + roomNumber;
-  roomsRef.child(roomKey).once('value', (snapshot) => {
-    const roomDescription = snapshot.child('description').val();
+  roomsRef.once('value', (snapshot) => {
+    const rooms = snapshot.val();
+    const roomKey = `room ${roomArg}`;
+    const roomRef = roomsRef.child(roomKey);
+    const roomDescription = rooms[roomKey].description;
     const { exec } = require('child_process');
     const openaiApiKey = process.env.OPENAI_API_KEY;
     const prompt = roomDescription.replace(/[^\w\s]/g, '');
@@ -730,7 +732,7 @@ function generateRoomImage(roomNumber) {
 
         const response = JSON.parse(stdout);
         const currentRoomImageUrl = response.data[0].url;
-        console.log(currentRoomImageUrl);
+        message.reply('Done! Uploading image to Imgur...');
         axios.get(currentRoomImageUrl, { responseType: 'arraybuffer' })
           .then((response) => {
             const imageData = response.data;
@@ -748,13 +750,15 @@ function generateRoomImage(roomNumber) {
               .then((response) => {
                 const imgurUrl = response.data.data.link;
                 console.log(`Imgur URL:`, imgurUrl);
+                message.reply('Done! Image uploaded to Imgur successfully!');
 
                 // Update the image node for the current room 
-                roomsRef.child(roomKey).update({ image: `${imgurUrl}` }, (error) => {
+                roomRef.update({ image: `${imgurUrl}` }, (error) => {
                   if (error) {
                     console.error(`Failed to update image for room ${roomKey}:`, error);
                   } else {
                     console.log(`Image for room ${roomKey} updated successfully`);
+                    message.reply('Done! Image for room updated successfully!');
                   }
                 });
               })
