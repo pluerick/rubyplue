@@ -593,6 +593,20 @@ if (command === 'image') {
 
 }
 
+//Test Avatar Command
+if (command === 'avatar') {
+  const username = msg.content.slice(11); // Get the username from the message
+  const user = msg.guild.members.cache.find(member => member.user.username === username); // Find the user in the guild
+  
+  if (!user) {
+    return msg.reply('User not found in this server.'); // Return if user not found
+  }
+  
+  const avatarUrl = user.user.displayAvatarURL({ format: 'png', dynamic: true }); // Get the user's avatar URL
+  const attachment = new Discord.MessageAttachment(avatarUrl); // Save the avatar to memory as a MessageAttachment
+  
+  msg.reply(`Here is ${username}'s avatar!`, attachment); // Send the avatar back to the user who invoked the command
+}
 
 
 //Handle the "haiku" command
