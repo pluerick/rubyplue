@@ -1,4 +1,21 @@
 const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+// Define the Button class
+class Button {
+  constructor({ label, style, callback }) {
+    this.label = label;
+    this.style = style;
+    this.callback = callback;
+  }
+
+  toJSON() {
+    return {
+      type: "button",
+      label: this.label,
+      style: this.style,
+      callback: this.callback,
+    };
+  }
+}
 const client = new Client({
    intents: [
 		GatewayIntentBits.Guilds,
