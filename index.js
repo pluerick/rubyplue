@@ -653,7 +653,7 @@ if (command === 'look' || command === 'l') {
             components: [
               {
                 type: "actionRow",
-                components: navigationButtons,
+                components: buttons.map(button => button.toJSON()),
               },
             ],
           };
