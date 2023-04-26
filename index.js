@@ -798,8 +798,6 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
 
 function drawCoolText(text, Discord) {
 message.reply(text);
-  return embed;
-
 }
 
   
