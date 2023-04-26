@@ -154,6 +154,7 @@ if (command === 'start') {
                     agility: 18,
                     dexterity: 18,
                     experience: 0,
+                    level: 1,
                   }
                 };
                 playersRef.push(playerData)
