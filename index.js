@@ -187,7 +187,6 @@ if (command === 'start') {
 }
 
 // Handle the 'stats' command
-// Handle the 'stats' command
 if (command === 'stats') {
   const playerName = message.author.username;
   const playersRef = admin.database().ref(`test1/${serverName}/players`);
@@ -223,6 +222,7 @@ if (command === 'stats') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
+
 
 
 
