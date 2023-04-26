@@ -189,7 +189,19 @@ if (command === 'stats') {
       const playerData = snapshot.val();
       const playerId = Object.keys(playerData)[0];
       const playerStats = playerData[playerId].stats;
-      const statsMessage = `Your stats are:\nStrength: ${playerStats.strength}\nIntelligence: ${playerStats.intelligence}\nAgility: ${playerStats.agility}\nDexterity: ${playerStats.dexterity}\nExperience: ${playerStats.experience}\nLevel: ${playerStats.level}`;
+      const experienceToNextLevel = Math.pow(playerStats.level, 2) * 100;
+      const experienceProgress = Math.round((playerStats.experience / experienceToNextLevel) * 10);
+      const progressBar = "[" + "#".repeat(experienceProgress) + "-".repeat(10 - experienceProgress) + "]";
+
+      const statsMessage = `${playerName}, your stats are:
+                            - Strength: ${playerStats.strength}
+                            - Intelligence: ${playerStats.intelligence}
+                            - Agility: ${playerStats.agility}
+                            - Dexterity: ${playerStats.dexterity}
+                            - Experience: ${playerStats.experience}
+                            - Level: ${Math.floor(Math.sqrt(playerStats.experience / 100)) + 1}
+                            - Experience to Next Level: ${experienceToNextLevel}
+                            - Progress: ${progressBar}`;
       message.reply(statsMessage);
     } else {
       message.reply(`You haven't started the game yet!`);
