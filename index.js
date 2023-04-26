@@ -94,10 +94,16 @@ promptsRef.once('value', (snapshot) => {
 // Handle the "help" command
 if (command === 'help') {
   const helpMessage = `
-  
+
+- help: Shows this message
+- start: Creates your player character and places you in the first room of the dungeon.
 - look: Shows the description of the current room
 - north/south/east/west (or n/s/e/w): Moves the player to the room in the specified direction
-- generate generates the same 9 rooms until we add the maze generator with descriptions using OpenAI (if there's no dungeon yet, it will create one)
+- stats: Shows the player's current stats
+
+[Server Commands]
+
+- generate: generates the same 9 rooms until we add the maze generator with descriptions using OpenAI (if there's no dungeon yet, it will create one)
 - makeimage: Generate an image based on the current image prompt.
 
 [Server Variables]
