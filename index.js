@@ -186,6 +186,8 @@ if (command === 'stats') {
   const serverRef = admin.database().ref(`test1/${serverName}`);
   // Retrieve the player's stats from the database
   serverRef.child(`players/${playerName}/stats`).once('value', snapshot => {
+    console.log('playerName: ', playerName);
+    console.log(snapshot.val());
     // Check if the player has stats in the database
     if (!snapshot.exists()) {
       message.reply(`Sorry, ${playerName}, you don't have any stats yet.`);
