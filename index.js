@@ -190,8 +190,8 @@ if (command === 'stats') {
       const playerId = Object.keys(playerData)[0];
       const playerStats = playerData[playerId].stats;
       const level = Math.floor(Math.sqrt(playerData.experience));
-      const statsMessage = `╭─────────────────────╮\n│  ${playerName}'s Stats  │\n│  Level: ${level} (${playerData.experience} XP)  │\n│  Strength: ${playerStats.strength}  │\n│  Intelligence: ${playerStats.intelligence}  │\n│  Agility: ${playerStats.agility}  │\n│  Dexterity: ${playerStats.dexterity}  │\n╰─────────────────────╯`;
-      message.reply(statsMessage);
+      const statsMessage = `Your stats are:\nStrength: ${playerStats.strength}\nIntelligence: ${playerStats.intelligence}\nAgility: ${playerStats.agility}\nDexterity: ${playerStats.dexterity}`;
+      message.reply({ files: [drawCoolText(statsMessage)] });      
     } else {
       message.reply(`You haven't started the game yet!`);
     }
@@ -796,26 +796,22 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
   return GeneratedDesc;
 }
 
-//This function writes haikus!
-  async function generateHaiku() {
-    const OpenAI = require('openai-api');
-    const openai = new OpenAI(OPENAI_API_KEY);
-    const subject  = args[0];
-
-    const prompt = `Generate a haiku about ${subject}`;
-    const model = 'text-davinci-002';
-
-    const gptResponse = await openai.complete({
-      engine: model,
-      prompt: prompt,
-      maxTokens: 50,
-      n: 1,
-      temperature: 0.7
-    });
-
-    const haiku = gptResponse.data.choices[0].text.trim();
-    return haiku;
-  }
+function drawCoolText(text) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 300;
+  canvas.height = 100;
+  const ctx = canvas.getContext('2d');
+  const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+  gradient.addColorStop(0, '#f00');
+  gradient.addColorStop(0.5, '#0f0');
+  gradient.addColorStop(1, '#00f');
+  ctx.fillStyle = gradient;
+  ctx.font = 'bold 24px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText(text, canvas.width / 2, canvas.height / 2);
+  const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'text.png');
+  return attachment;
+}
 
   
   
