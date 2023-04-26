@@ -178,6 +178,29 @@ if (command === 'start') {
   });
 }
 
+// Handle the 'stats' command
+if (command === 'stats') {
+  // Get the player's name from the message
+  const playerName = message.author.username;
+  // Set up a Firebase Realtime Database reference to the server's data
+  const serverRef = admin.database().ref(`test1/${serverName}`);
+  // Retrieve the player's stats from the database
+  serverRef.child(`players/${playerName}/stats`).once('value', snapshot => {
+    // Check if the player has stats in the database
+    if (!snapshot.exists()) {
+      message.reply(`Sorry, ${playerName}, you don't have any stats yet.`);
+    } else {
+      // Retrieve the player's stats from the snapshot
+      const { strength, intelligence, agility, dexterity } = snapshot.val();
+      // Display the player's stats to the user
+      message.reply(`Your current stats are:\nStrength: ${strength}\nIntelligence: ${intelligence}\nAgility: ${agility}\nDexterity: ${dexterity}`);
+    }
+  }, error => {
+    console.error(error);
+    message.reply(`Sorry, there was an error accessing the database.`);
+  });
+}
+
 
 // Handle the "setmaproom" command
 if (command === 'setmaproom') {
@@ -244,6 +267,10 @@ if (command === 'setworlddesc' || command === 'swd') {
       });
   }
 }
+
+
+
+
 
 // Handle the "setdescprompt" command
 if (command === 'setdescprompt' || command === 'sdp') {
