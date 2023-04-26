@@ -189,8 +189,7 @@ if (command === 'stats') {
       const playerData = snapshot.val();
       const playerId = Object.keys(playerData)[0];
       const playerStats = playerData[playerId].stats;
-      const level = Math.floor(Math.sqrt(playerData.experience));
-      const statsMessage = `Your stats are:\nStrength: ${playerStats.strength}\nIntelligence: ${playerStats.intelligence}\nAgility: ${playerStats.agility}\nDexterity: ${playerStats.dexterity}\nExperience: ${playerStats.experience}\nLevel: ${level}`;
+      const statsMessage = `Your stats are:\nStrength: ${playerStats.strength}\nIntelligence: ${playerStats.intelligence}\nAgility: ${playerStats.agility}\nDexterity: ${playerStats.dexterity}\nExperience: ${playerStats.experience}\nLevel: $playerStats.level}`;
       message.reply(statsMessage);
     } else {
       message.reply(`You haven't started the game yet!`);
