@@ -653,7 +653,7 @@ if (command === 'look' || command === 'l') {
             components: [
               {
                 type: "actionRow",
-                components: buttons,
+                components: navigationButtons,
               },
             ],
           };
