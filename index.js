@@ -189,6 +189,7 @@ if (command === 'stats') {
       const playerData = snapshot.val();
       const playerId = Object.keys(playerData)[0];
       const playerStats = playerData[playerId].stats;
+      const level = Math.floor(Math.sqrt(playerData.experience));
       const statsMessage = `╭─────────────────────╮\n│  ${playerName}'s Stats  │\n│  Level: ${level} (${playerData.experience} XP)  │\n│  Strength: ${playerStats.strength}  │\n│  Intelligence: ${playerStats.intelligence}  │\n│  Agility: ${playerStats.agility}  │\n│  Dexterity: ${playerStats.dexterity}  │\n╰─────────────────────╯`;
       message.reply(statsMessage);
     } else {
