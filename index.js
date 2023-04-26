@@ -187,6 +187,7 @@ if (command === 'start') {
 }
 
 // Handle the 'stats' command
+// Handle the 'stats' command
 if (command === 'stats') {
   const playerName = message.author.username;
   const playersRef = admin.database().ref(`test1/${serverName}/players`);
@@ -195,24 +196,25 @@ if (command === 'stats') {
       const playerData = snapshot.val();
       const playerId = Object.keys(playerData)[0];
       const playerStats = playerData[playerId].stats;
-      const experienceToNextLevel = Math.pow(playerStats.level, 2) * 100;
-      const experienceProgress = Math.round((playerStats.experience / experienceToNextLevel) * 10);
-      const progressBar = "[" + "#".repeat(experienceProgress) + "-".repeat(10 - experienceProgress) + "]";
-      console.log('strength', playerStats.strength);
+      const currentLevel = Math.floor(Math.sqrt(playerStats.experience / 100)) + 1;
+      const nextLevel = currentLevel + 1;
+      const experienceToNextLevel = Math.pow(nextLevel, 2) * 100;
+      const experienceProgress = Math.round((playerStats.experience / experienceToNextLevel) * 20);
+      const progressBar = "[" + "#".repeat(experienceProgress) + "-".repeat(20 - experienceProgress) + "]";
       const statsEmbed = new EmbedBuilder()      
-      .setColor('#0099ff')
-      .addFields(
-        { name: 'Strength', value: `${playerStats.strength}`, inline: true },
-        { name: 'Intelligence', value: `${playerStats.intelligence}`, inline: true },
-        { name: 'Agility', value: `${playerStats.agility}`, inline: true },
-        { name: 'Dexterity', value: `${playerStats.dexterity}`, inline: true },
-        { name: 'Experience', value: `${playerStats.experience}`, inline: true },
-        { name: 'Level', value: `${Math.floor(Math.sqrt(playerStats.experience / 100)) + 1}`, inline: true },
-        { name: 'Progress', value: `${progressBar}`, inline: false },
-      )
-      .setTitle(`${playerName}'s Stats`);
+        .setColor('#0099ff')
+        .addFields(
+          { name: 'Strength', value: `${playerStats.strength}`, inline: true },
+          { name: 'Intelligence', value: `${playerStats.intelligence}`, inline: true },
+          { name: 'Agility', value: `${playerStats.agility}`, inline: true },
+          { name: 'Dexterity', value: `${playerStats.dexterity}`, inline: true },
+          { name: 'Experience', value: `${playerStats.experience}`, inline: true },
+          { name: 'Level', value: `${currentLevel}`, inline: true },
+          { name: 'Progress', value: `Level ${currentLevel}: ${progressBar} Level ${nextLevel}`, inline: false },
+        )
+        .setTitle(`${playerName}'s Stats`);
 
-       message.reply({embeds: [statsEmbed]});
+      message.reply({embeds: [statsEmbed]});
     } else {
       message.reply(`You haven't started the game yet!`);
     }
@@ -221,6 +223,7 @@ if (command === 'stats') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
+
 
 
 // Handle the "setmaproom" command
