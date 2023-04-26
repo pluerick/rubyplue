@@ -191,9 +191,10 @@ if (command === 'stats') {
       const playerStats = playerData[playerId].stats;
       const experienceToNextLevel = Math.pow(playerStats.level, 2) * 100;
       const experienceProgress = Math.round((playerStats.experience / experienceToNextLevel) * 10);
-      const progressBar = "[" + "#".repeat(experienceProgress) + "-".repeat(10 - experienceProgress) + "]";
-
-      // const statsEmbed = new EmbedBuilder()      
+      
+      
+       const progressBar = "[" + "#".repeat(experienceProgress) + "-".repeat(10 - experienceProgress) + "]";
+       const statsEmbed = new EmbedBuilder()      
       // .setColor('#0099ff')
       // .setTitle(`${playerName}'s Stats`)
       // .addFields(
