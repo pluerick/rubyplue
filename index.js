@@ -191,27 +191,22 @@ if (command === 'stats') {
       const playerStats = playerData[playerId].stats;
       const experienceToNextLevel = Math.pow(playerStats.level, 2) * 100;
       const experienceProgress = Math.round((playerStats.experience / experienceToNextLevel) * 10);
-      
-      
-       const progressBar = "[" + "#".repeat(experienceProgress) + "-".repeat(10 - experienceProgress) + "]";
-       console.log('strength', playerStats.strength);
-       const statsEmbed = new EmbedBuilder()      
-       .setColor('#0099ff')
-       
-     
-       .addFields(
-        { name: 'Strength', value: '18', inline: true },
-       //  { name: 'Strength', value: playerStats.strength, inline: true },
-      //   { name: 'Intelligence', value: playerStats.intelligence, inline: true },
-      //   { name: 'Agility', value: playerStats.agility, inline: true },
-      //   { name: 'Dexterity', value: playerStats.dexterity, inline: true },
-      //   { name: 'Experience', value: playerStats.experience, inline: true },
-      //   { name: 'Level', value: Math.floor(Math.sqrt(playerStats.experience / 100)) + 1, inline: true },
-      //   { name: 'Experience to Next Level', value: experienceToNextLevel, inline: true },
-      //   { name: 'Progress', value: progressBar, inline: true },
-       )
-
+      const progressBar = "[" + "#".repeat(experienceProgress) + "-".repeat(10 - experienceProgress) + "]";
+      console.log('strength', playerStats.strength);
+      const statsEmbed = new EmbedBuilder()      
+      .setColor('#0099ff')
+      .addFields(
+        { name: 'Strength', value: `${playerStats.strength}`, inline: true },
+        { name: 'Intelligence', value: `${playerStats.intelligence}`, inline: true },
+        { name: 'Agility', value: `${playerStats.agility}`, inline: true },
+        { name: 'Dexterity', value: `${playerStats.dexterity}`, inline: true },
+        { name: 'Experience', value: `${playerStats.experience}`, inline: true },
+        { name: 'Level', value: `${Math.floor(Math.sqrt(playerStats.experience / 100)) + 1}`, inline: true },
+        { name: 'Experience to Next Level', value: `${experienceToNextLevel}`, inline: true },
+        { name: 'Progress', value: `${progressBar}`, inline: true },
+      )
       .setTitle(`${playerName}'s Stats`);
+
        message.reply({embeds: [statsEmbed]});
     } else {
       message.reply(`You haven't started the game yet!`);
