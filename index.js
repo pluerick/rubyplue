@@ -1,5 +1,4 @@
 const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
-const { createCanvas, loadImage } = require('canvas');
 const client = new Client({
    intents: [
 		GatewayIntentBits.Guilds,
@@ -798,18 +797,9 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
 }
 
 function drawCoolText(text, Discord) {
-  const canvas = createCanvas(300, 100);
-  const ctx = canvas.getContext('2d');
-  const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
-  gradient.addColorStop(0, '#f00');
-  gradient.addColorStop(0.5, '#0f0');
-  gradient.addColorStop(1, '#00f');
-  ctx.fillStyle = gradient;
-  ctx.font = 'bold 24px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText(text, canvas.width / 2, canvas.height / 2);
-  const attachment = new Discord.MessageAttachment(canvas.toBuffer(), 'text.png');
-  return attachment;
+message.reply(text);
+  return embed;
+
 }
 
   
