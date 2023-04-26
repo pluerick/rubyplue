@@ -693,7 +693,7 @@ try {
       console.log('othersherestring inside for loop: ', othersHereString);
     }
     othersHereString = othersHereString.slice(0, -2) + '.';
-    global.descString = currentRoom.description + '\n\n' + 'Players in this room: \n ' + othersHereString + '\n\n' + exitString;
+    global.descString = currentRoom.description + '\n\n' + '**Players in this room:** \n ' + othersHereString + '\n\n' + exitString;
     console.log('descString inside if statement: ', global.descString);
     console.log('othersherestring inside if statement: ', othersHereString);
   } else {
