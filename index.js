@@ -196,9 +196,9 @@ if (command === 'stats') {
        const progressBar = "[" + "#".repeat(experienceProgress) + "-".repeat(10 - experienceProgress) + "]";
        const statsEmbed = new EmbedBuilder()      
        .setColor('#0099ff')
-       .setTitle(`${playerName}'s Stats`);
-      // .addFields(
-      //   { name: 'Strength', value: playerStats.strength, inline: true },
+       
+       .addFields(
+         { name: 'Strength', value: playerStats.strength, inline: true },
       //   { name: 'Intelligence', value: playerStats.intelligence, inline: true },
       //   { name: 'Agility', value: playerStats.agility, inline: true },
       //   { name: 'Dexterity', value: playerStats.dexterity, inline: true },
@@ -206,7 +206,9 @@ if (command === 'stats') {
       //   { name: 'Level', value: Math.floor(Math.sqrt(playerStats.experience / 100)) + 1, inline: true },
       //   { name: 'Experience to Next Level', value: experienceToNextLevel, inline: true },
       //   { name: 'Progress', value: progressBar, inline: true },
-      // );
+       )
+
+      .setTitle(`${playerName}'s Stats`);
        message.reply({embeds: [statsEmbed]});
     } else {
       message.reply(`You haven't started the game yet!`);
