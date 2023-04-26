@@ -193,7 +193,7 @@ if (command === 'stats') {
       const experienceProgress = Math.round((playerStats.experience / experienceToNextLevel) * 10);
       const progressBar = "[" + "#".repeat(experienceProgress) + "-".repeat(10 - experienceProgress) + "]";
 
-      const statsEmbed = new Discord.MessageEmbed()
+      const statsEmbed = new EmbedBuilder()      
       .setColor('#0099ff')
       .setTitle(`${playerName}'s Stats`)
       .addFields(
