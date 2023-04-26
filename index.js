@@ -1,4 +1,5 @@
 const { Client, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { createCanvas, loadImage } = require('canvas');
 const client = new Client({
    intents: [
 		GatewayIntentBits.Guilds,
@@ -796,10 +797,8 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
   return GeneratedDesc;
 }
 
-function drawCoolText(text) {
-  const canvas = document.createElement('canvas');
-  canvas.width = 300;
-  canvas.height = 100;
+function drawCoolText(text, Discord) {
+  const canvas = createCanvas(300, 100);
   const ctx = canvas.getContext('2d');
   const gradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
   gradient.addColorStop(0, '#f00');
