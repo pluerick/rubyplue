@@ -558,19 +558,38 @@ if (command === 'newimage') {
          }
 }
 
-//Handle the "blast" command
+// Handle the "blast" command
 if (command === 'blast') {
   const rootRef = admin.database().ref();
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
-  
+  const playersRef = admin.database().ref(`test1/${serverName}/players`);
 
+  // Set all rooms to null
   roomsRef.remove()
-  .then(() => {
-    console.log('Rooms data removed successfully.');
-  })
-  .catch((error) => {
-    console.error('Error removing rooms data:', error);
+    .then(() => {
+      console.log('Rooms data removed successfully.');
+    })
+    .catch((error) => {
+      console.error('Error removing rooms data:', error);
+    });
+
+  // Set all players' current_room to "1"
+  playersRef.once('value', (snapshot) => {
+    const players = snapshot.val();
+    for (const playerID in players) {
+      const playerRef = playersRef.child(playerID);
+      playerRef.update({
+        current_room: "1"
+      })
+      .then(() => {
+        console.log(`Player ${playerID} current_room updated successfully.`);
+      })
+      .catch((error) => {
+        console.error(`Error updating player ${playerID} current_room:`, error);
+      });
+    }
   });
+
   message.reply('PEW PEW database ROOMS BALETED');
 }
 
