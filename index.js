@@ -530,7 +530,21 @@ if (command === 'newimage') {
     message.reply('Please specify a room number.');
   }else{
     if (roomArg === 'all'){
-      //code to loop through all rooms in db
+      const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
+      roomsRef.once('value', async (snapshot) => {
+        const rooms = snapshot.val();
+        for (const roomKey in rooms) {
+          if (Object.hasOwnProperty.call(rooms, roomKey)) {
+            message.reply(`Generating room images with Open AI for room number ${roomKey}! This may take a few seconds...`);
+            try {
+              await generateRoomImage(roomKey);    
+            } catch (error) {
+              console.error(`Error generating image for room ${roomKey}: ${error}`);
+              message.reply(`Error generating image for room ${roomKey}. Please try again later.`);
+            }
+          }
+        }
+      });
               }else{ 
                   message.reply(`Generating room images with Open AI for room number ${roomArg}! This may take a few seconds...`);
                   try {
