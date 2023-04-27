@@ -199,7 +199,7 @@ if (command === 'stats') {
       const currentLevel = Math.floor(Math.sqrt(playerStats.experience / 100)) + 1;
       const nextLevel = currentLevel + 1;
       const experienceProgress = Math.round((playerStats.experience / experienceToNextLevel) * 20);
-      const progressBar = "[" + "#".repeat(experienceProgress) + "-".repeat(20 - experienceProgress) + "]";
+      const progressBar = "[" + "#".repeat(Math.min(experienceProgress, 20)) + "-".repeat(Math.max(20 - experienceProgress, 0)) + "]";
       console.log('strength', playerStats.strength);
       const statsEmbed = new EmbedBuilder()      
       .setColor('#0099ff')
