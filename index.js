@@ -728,7 +728,7 @@ async function generateRoomImage(roomNumber) {
 
   try {
     console.log('debug1');
-    console.log(cmd);
+    //console.log(cmd);
     const { stdout } = await exec(cmd);
     const response = JSON.parse(stdout);
     const currentRoomImageUrl = response.data[0].url;
