@@ -426,7 +426,7 @@ if (command === 'generate') {
     {
       name: 'room 1',
       description: await generateDescription(args),
-      image: await generateRoomImage(1),
+      image: 'https://imgur.com/fePkCyU',
       north: 4,
       west: 0,
       east: 2,
@@ -435,7 +435,7 @@ if (command === 'generate') {
     {
       name: 'room 2',
       description: await generateDescription(args),
-      image: await generateRoomImage(2),
+      image: 'https://imgur.com/fePkCyU',
       north: 5,
       west: 1,
       east: 3,
@@ -518,13 +518,17 @@ if (command === 'generate') {
       roomsData.forEach((room) => {
         roomsRef.child(room.name).set(room);
       });
-      message.reply('Rooms data added to the database successfully!');
+      message.reply('Rooms descriptions added to the database successfully! Starting images...');
+      
     }
   });
 }
 
 if (command === 'newimage') {
   const roomArg = args[0];
+  if (!roomArg) {
+    message.reply('Please specify a room number.');
+  }else{
   message.reply(`Generating room images with Open AI for room number ${roomArg}! This may take a few seconds...`);
   try {
     await generateRoomImage(roomArg);
@@ -533,6 +537,7 @@ if (command === 'newimage') {
     console.error(`Error generating image for room ${roomArg}: ${error}`);
     message.reply(`Error generating image for room ${roomArg}. Please try again later.`);
   }
+}
 }
 
 //Handle the "blast" command
