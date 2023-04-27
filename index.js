@@ -537,10 +537,10 @@ if (command === 'newimage') {
           if (Object.hasOwnProperty.call(rooms, roomKey)) {
             message.reply(`Generating room images with Open AI for room number ${roomKey}! This may take a few seconds...`);
             try {
-              await generateRoomImage(roomKey);    
+              await generateRoomImage(roomNumber);    
             } catch (error) {
-              console.error(`Error generating image for room ${roomKey}: ${error}`);
-              message.reply(`Error generating image for room ${roomKey}. Please try again later.`);
+              console.error(`Error generating image for room ${roomNumber}: ${error}`);
+              message.reply(`Error generating image for room ${roomNumber}. Please try again later.`);
             }
           }
         }
