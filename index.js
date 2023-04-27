@@ -529,15 +529,18 @@ if (command === 'newimage') {
   if (!roomArg) {
     message.reply('Please specify a room number.');
   }else{
-  message.reply(`Generating room images with Open AI for room number ${roomArg}! This may take a few seconds...`);
-  try {
-    await generateRoomImage(roomArg);
-    message.reply(`Image for room ${roomArg} generated successfully!`);
-  } catch (error) {
-    console.error(`Error generating image for room ${roomArg}: ${error}`);
-    message.reply(`Error generating image for room ${roomArg}. Please try again later.`);
-  }
-}
+    if (roomArg === 'all'){
+      //code to loop through all rooms in db
+              }else{ 
+                  message.reply(`Generating room images with Open AI for room number ${roomArg}! This may take a few seconds...`);
+                  try {
+                    await generateRoomImage(roomArg);    
+                  } catch (error) {
+                    console.error(`Error generating image for room ${roomArg}: ${error}`);
+                    message.reply(`Error generating image for room ${roomArg}. Please try again later.`);
+                    }
+                  }
+         }
 }
 
 //Handle the "blast" command
