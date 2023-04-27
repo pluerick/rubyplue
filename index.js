@@ -518,7 +518,7 @@ if (command === 'generate') {
       roomsData.forEach((room) => {
         roomsRef.child(room.name).set(room);
       });
-      message.reply('Rooms descriptions added to the database successfully! Starting images...');
+      message.reply('Descriptions all added! now use ?newimage all to generate images.');
       
     }
   });
