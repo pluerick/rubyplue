@@ -526,8 +526,13 @@ if (command === 'generate') {
 if (command === 'newimage') {
   const roomArg = args[0];
   message.reply(`Generating room images with Open AI for room number ${roomArg}! This may take a few seconds...`);
-  await generateRoomImage(roomArg);
-  message.reply(`Image for room ${roomArg} generated successfully!`);
+  try {
+    await generateRoomImage(roomArg);
+    message.reply(`Image for room ${roomArg} generated successfully!`);
+  } catch (error) {
+    console.error(`Error generating image for room ${roomArg}: ${error}`);
+    message.reply(`Error generating image for room ${roomArg}. Please try again later.`);
+  }
 }
 
 
