@@ -198,23 +198,25 @@ if (command === 'stats') {
       const experienceToNextLevel = Math.pow(playerStats.level, 2) * 100;
       const currentLevel = Math.floor(Math.sqrt(playerStats.experience / 100)) + 1;
       const nextLevel = currentLevel + 1;
-      const experienceProgress = Math.round((playerStats.experience / experienceToNextLevel) * 20);
-      const progressBar = "[" + "#".repeat(Math.min(experienceProgress, 20)) + "-".repeat(Math.max(20 - experienceProgress, 0)) + "]";
-      console.log('strength', playerStats.strength);
+      let experienceProgress = Math.round((playerStats.experience / experienceToNextLevel) * 20);
+      if (currentLevel > 1) {
+        experienceProgress -= 20 * (currentLevel - 1);
+      }
+      const progressBar = "[" + "#".repeat(Math.max(experienceProgress, 0)) + "-".repeat(Math.max(20 - experienceProgress, 0)) + "]";
       const statsEmbed = new EmbedBuilder()      
-      .setColor('#0099ff')
-      .addFields(
-        { name: 'Strength', value: `${playerStats.strength}`, inline: true },
-        { name: 'Intelligence', value: `${playerStats.intelligence}`, inline: true },
-        { name: 'Agility', value: `${playerStats.agility}`, inline: true },
-        { name: 'Dexterity', value: `${playerStats.dexterity}`, inline: true },
-        { name: 'Experience', value: `${playerStats.experience}`, inline: true },
-        { name: 'Level', value: `${currentLevel} -> ${nextLevel}`, inline: true },
-        { name: 'Progress', value: `${progressBar}`, inline: false },
-      )
-      .setTitle(`${playerName}'s Stats`);
+        .setColor('#0099ff')
+        .addFields(
+          { name: 'Strength', value: `${playerStats.strength}`, inline: true },
+          { name: 'Intelligence', value: `${playerStats.intelligence}`, inline: true },
+          { name: 'Agility', value: `${playerStats.agility}`, inline: true },
+          { name: 'Dexterity', value: `${playerStats.dexterity}`, inline: true },
+          { name: 'Experience', value: `${playerStats.experience}`, inline: true },
+          { name: 'Level', value: `${currentLevel} -> ${nextLevel}`, inline: true },
+          { name: 'Progress', value: `${progressBar}`, inline: false },
+        )
+        .setTitle(`${playerName}'s Stats`);
 
-       message.reply({embeds: [statsEmbed]});
+      message.reply({embeds: [statsEmbed]});
     } else {
       message.reply(`You haven't started the game yet!`);
     }
