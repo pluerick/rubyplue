@@ -682,7 +682,7 @@ async function generateRoomImage(roomNumber) {
           const response = JSON.parse(stdout);
           const currentRoomImageUrl = response.data[0].url;
           //message.reply(currentRoomImageUrl);
-          message.reply('Done! Uploading image to Imgur...');
+          //message.reply('Done! Uploading image to Imgur...');
           axios.get(currentRoomImageUrl, { responseType: 'arraybuffer' })
             .then((response) => {
               const imageData = response.data;
@@ -700,15 +700,15 @@ async function generateRoomImage(roomNumber) {
                 .then((response) => {
                   const imgurUrl = response.data.data.link;
                   console.log(`Imgur URL:`, imgurUrl);
-                  message.reply('Done! Image uploaded to Imgur successfully!');
+                  //message.reply('Done! Image uploaded to Imgur successfully!');
       
                   // Update the image node for the current room 
                   roomRef.update({ image: `${imgurUrl}` }, (error) => {
                     if (error) {
                       console.error(`Failed to update image for room ${roomKey}:`, error);
                     } else {
-                      console.log(`Image for room ${roomKey} updated successfully`);
-                      message.reply('Done! Image for room updated successfully!');
+                      //console.log(`Image for room ${roomKey} updated successfully`);
+                      message.reply('Done! Image for room ' + roomKey + ' updated successfully!');
                     }
                   });
                 })
