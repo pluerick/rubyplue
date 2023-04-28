@@ -726,7 +726,15 @@ when making images the prompt will be
       const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
       const playersRef = admin.database().ref(`test1/${serverName}/players`);
 
-      // Set all rooms to null
+      // delete monsters
+      monstersRef.remove()
+
+      // delete items
+      itemsRef.remove()
+        
+
+
+      // delete rooms
       roomsRef
         .remove()
         .then(() => {
