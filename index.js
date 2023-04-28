@@ -993,7 +993,7 @@ when making images the prompt will be
           .orderByChild("room")
           .equalTo(currentRoomID)
           .once("value");
-        console.log("triggered");
+        console.log("triggered monsters here check");
         console.log(snapshot.val());
 
         if (snapshot.exists()) {
@@ -1020,7 +1020,7 @@ when making images the prompt will be
           .orderByChild("room")
           .equalTo(currentRoomID)
           .once("value");
-        console.log("triggered");
+          console.log("triggered items here check");
         console.log(snapshot.val());
 
         if (snapshot.exists()) {
