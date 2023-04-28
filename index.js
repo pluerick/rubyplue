@@ -202,7 +202,7 @@ if (command === 'stats') {
       if (currentLevel > 1) {
         experienceProgress -= 20 * (currentLevel - 1);
       }
-      const progressBar = "[" + "#".repeat(Math.max(experienceProgress, 0)) + "-".repeat(Math.max(20 - experienceProgress, 0)) + "]";
+
       const statsEmbed = new EmbedBuilder()      
         .setColor('#0099ff')
         .addFields(
@@ -212,7 +212,7 @@ if (command === 'stats') {
           { name: 'Dexterity', value: `${playerStats.dexterity}`, inline: true },
           { name: 'Experience', value: `${playerStats.experience}`, inline: true },
           { name: 'Level', value: `${currentLevel} -> ${nextLevel}`, inline: true },
-          { name: 'Progress', value: `${progressBar}`, inline: false },
+
         )
         .setTitle(`${playerName}'s Stats`);
 
