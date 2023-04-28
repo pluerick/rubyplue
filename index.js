@@ -665,7 +665,9 @@ when making images the prompt will be
           );
           //Call the generatMonsters function to generate monsters for each room
           generateMonsters();
-          
+          //Call the generateItems function to generate items for each room
+          generateItems();
+
         }
       });
     }
@@ -1050,31 +1052,45 @@ when making images the prompt will be
     async function generateMonsters(args) {
       console.log("generateMonsters triggered");
 
-          //delete (if it exists) and create a test1.<server name>.monsters node in the database
-          const monstersRef = admin
-            .database()
-            .ref(`test1/${serverName}/monsters`);
-          monstersRef.remove();
-          monstersRef.child("monster 1").set({
-            name: "monster 1",
-            description: "A monster",
-            image: "https://imgur.com/fePkCyU",
-            room: 1,
-            health: 100,
-            attack: 10,
-            defense: 10,
-            speed: 10,
-            special: 10,
-            experience: 10,
-            gold: 10,
-          });
+      //delete (if it exists) and create a test1.<server name>.monsters node in the database
+      const monstersRef = admin.database().ref(`test1/${serverName}/monsters`);
+      monstersRef.remove();
+      monstersRef.child("monster 1").set({
+        name: "Goblin",
+        description: "A goblin",
+        image: "https://imgur.com/fePkCyU",
+        room: 1,
+        health: 100,
+        attack: 10,
+        defense: 10,
+        speed: 10,
+        special: 10,
+        experience: 10,
+        gold: 10,
+      });
+
+    }
+
+    async function generateItems(args) {
+      console.log("generateItems triggered");
+
+      //delete (if it exists) and create a test1.<server name>.items node in the database
+      const itemsRef = admin.database().ref(`test1/${serverName}/items`);
+      itemsRef.remove();
+      itemsRef.child("item 1").set({
+        name: "dagger",
+        description: "A dagger",
+        image: "https://imgur.com/fePkCyU",
+        room: 1,
+        lootable: true,
+        consumable: false,
+        damage: 10,
+      });
 
     }
 
 
-
-
-  }
+  } // end of if (message.content.startsWith(?)) { ... } way up there ^
 });
 // }}});
 
