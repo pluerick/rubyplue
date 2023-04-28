@@ -23,6 +23,13 @@ let imagePrompt = "generate an image that looks photo realistic.";
 let descPrompt = 'From the second person perspective of a person as they enter a room, describe a room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room. Try not to use language that would be considered offensive when generating images later like blood';
 let worldDesc = 'a dark dank dungeon made of stone. there are torches on the walls every so often and creepy dripping sounds and small critters running around';
 global.descString =  'test 0';
+// Define progress bar symbols
+const progressBarLength = 20;
+const progressSymbols = '█';
+const emptySymbols = '░';
+
+
+
 
 
 // Parse the service account key JSON string from the environment variable
@@ -187,6 +194,7 @@ if (command === 'start') {
 }
 
 
+
 // Handle the 'stats' command
 if (command === 'stats') {
   const playerName = message.author.username;
@@ -199,12 +207,10 @@ if (command === 'stats') {
       const experienceToNextLevel = Math.pow(playerStats.level, 2) * 100;
       const currentLevel = Math.floor(Math.sqrt(playerStats.experience / 100)) + 1;
       const nextLevel = currentLevel + 1;
-      const progressSymbols = "█";
-      const emptySymbols = "░";
-      const progressPercentage = Math.round((playerStats.experience / experienceToNextLevel) * 100);
-      const progressBarLength = 10;
-      const progressBarFilled = progressPercentage / (100 / progressBarLength);
-      const progressBar = `${progressSymbols.repeat(progressBarFilled)}${emptySymbols.repeat(progressBarLength - progressBarFilled)}`;
+
+      // Calculate progress bar
+      const progressBarFilled = Math.floor((playerStats.experience / experienceToNextLevel) * progressBarLength);
+      const progressBar = progressBarFilled >= 0 ? `${progressSymbols.repeat(progressBarFilled)}${emptySymbols.repeat(progressBarLength - progressBarFilled)}` : '';
 
       const statsEmbed = new EmbedBuilder()      
         .setColor('#0099ff')
@@ -215,7 +221,7 @@ if (command === 'stats') {
           { name: 'Dexterity', value: `${playerStats.dexterity}`, inline: true },
           { name: 'Experience', value: `${playerStats.experience}`, inline: true },
           { name: 'Level', value: `${currentLevel} -> ${nextLevel}`, inline: true },
-          { name: 'Progress', value: `${progressBar} ${progressPercentage}%`, inline: false }
+          { name: 'Progress', value: `${progressBar}`, inline: true }
         )
         .setTitle(`${playerName}'s Stats`);
 
@@ -228,6 +234,7 @@ if (command === 'stats') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
+
 
 
 
