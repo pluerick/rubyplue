@@ -720,7 +720,7 @@ when making images the prompt will be
     }
 
     // Handle the "blast" command
-    // Deletes all rooms and sets all players' current_room to "1"
+    // Deletes all rooms, monsters, and items and sets all players' current_room to "1"
     if (command === "blast") {
       const rootRef = admin.database().ref();
       const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
