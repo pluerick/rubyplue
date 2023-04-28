@@ -186,6 +186,7 @@ if (command === 'start') {
   });
 }
 
+
 // Handle the 'stats' command
 if (command === 'stats') {
   const playerName = message.author.username;
@@ -198,10 +199,17 @@ if (command === 'stats') {
       const experienceToNextLevel = Math.pow(playerStats.level, 2) * 100;
       const currentLevel = Math.floor(Math.sqrt(playerStats.experience / 100)) + 1;
       const nextLevel = currentLevel + 1;
-      let experienceProgress = Math.round((playerStats.experience / experienceToNextLevel) * 20);
+
       if (currentLevel > 1) {
         experienceProgress -= 20 * (currentLevel - 1);
       }
+
+      const progressSymbols = "█";
+      const emptySymbols = "░";
+      const progressPercentage = Math.round((playerStats.experience / experienceToNextLevel) * 100);
+      const progressBarLength = 10;
+      const progressBarFilled = progressPercentage / (100 / progressBarLength);
+      const progressBar = `${progressSymbols.repeat(progressBarFilled)}${emptySymbols.repeat(progressBarLength - progressBarFilled)}`;
 
       const statsEmbed = new EmbedBuilder()      
         .setColor('#0099ff')
@@ -212,7 +220,7 @@ if (command === 'stats') {
           { name: 'Dexterity', value: `${playerStats.dexterity}`, inline: true },
           { name: 'Experience', value: `${playerStats.experience}`, inline: true },
           { name: 'Level', value: `${currentLevel} -> ${nextLevel}`, inline: true },
-
+          { name: 'Progress', value: `${progressBar} ${progressPercentage}%`, inline: false }
         )
         .setTitle(`${playerName}'s Stats`);
 
@@ -225,7 +233,6 @@ if (command === 'stats') {
     message.reply(`Sorry, there was an error accessing the database.`);
   });
 }
-
 
 
 
