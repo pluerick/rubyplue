@@ -663,25 +663,9 @@ when making images the prompt will be
           message.reply(
             "Rooms created and descriptions added! Now use [?newimage all] to generate images."
           );
-
-          //delete (if it exists) and create a test1.<server name>.monsters node in the database
-          const monstersRef = admin
-            .database()
-            .ref(`test1/${serverName}/monsters`);
-          monstersRef.remove();
-          monstersRef.child("monster 1").set({
-            name: "monster 1",
-            description: "A monster",
-            image: "https://imgur.com/fePkCyU",
-            room: 1,
-            health: 100,
-            attack: 10,
-            defense: 10,
-            speed: 10,
-            special: 10,
-            experience: 10,
-            gold: 10,
-          });
+          //Call the generatMonsters function to generate monsters for each room
+          generateMonsters();
+          
         }
       });
     }
@@ -780,8 +764,6 @@ when making images the prompt will be
 
     //Handle the "haiku" command
     if (command === "haiku") {
-      //message.author.send("TEST");
-
       const haiku = await generateHaiku();
       console.log("haiku ran 4");
       message.reply(haiku);
@@ -918,6 +900,8 @@ when making images the prompt will be
       }
     }
 
+
+
     async function lookAround(snapshot, roomsRef) {
       // Get the current room's data
       const currentRoom = snapshot.val();
@@ -936,9 +920,8 @@ when making images the prompt will be
           const neighborRoomName = neighborRoomNameSnapshot.exists()
             ? neighborRoomNameSnapshot.val()
             : `room ${neighborRoomID}`;
-          exitString += `**${
-            direction.charAt(0).toUpperCase() + direction.slice(1)
-          }**, `;
+          exitString += `**${direction.charAt(0).toUpperCase() + direction.slice(1)
+            }**, `;
         }
       }
 
@@ -1063,6 +1046,34 @@ when making images the prompt will be
       //console.log(GeneratedDesc);
       return GeneratedDesc;
     }
+
+    async function generateMonsters(args) {
+      console.log("generateMonsters triggered");
+
+          //delete (if it exists) and create a test1.<server name>.monsters node in the database
+          const monstersRef = admin
+            .database()
+            .ref(`test1/${serverName}/monsters`);
+          monstersRef.remove();
+          monstersRef.child("monster 1").set({
+            name: "monster 1",
+            description: "A monster",
+            image: "https://imgur.com/fePkCyU",
+            room: 1,
+            health: 100,
+            attack: 10,
+            defense: 10,
+            speed: 10,
+            special: 10,
+            experience: 10,
+            gold: 10,
+          });
+
+    }
+
+
+
+
   }
 });
 // }}});
