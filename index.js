@@ -208,9 +208,6 @@ if (command === 'stats') {
       const currentLevel = Math.floor(Math.sqrt(playerStats.experience / 100)) + 1;
       const nextLevel = currentLevel + 1;
 
-      // Calculate progress bar
-      const progressBarFilled = Math.floor((playerStats.experience / experienceToNextLevel) * progressBarLength);
-      const progressBar = progressBarFilled >= 0 ? `${progressSymbols.repeat(progressBarFilled)}${emptySymbols.repeat(progressBarLength - progressBarFilled)}` : '';
 
       const statsEmbed = new EmbedBuilder()      
         .setColor('#0099ff')
@@ -221,7 +218,7 @@ if (command === 'stats') {
           { name: 'Dexterity', value: `${playerStats.dexterity}`, inline: true },
           { name: 'Experience', value: `${playerStats.experience}`, inline: true },
           { name: 'Level', value: `${currentLevel} -> ${nextLevel}`, inline: true },
-          { name: 'Progress', value: `${progressBar}`, inline: true }
+          { name: 'Experience to Next Level', value: `${experienceToNextLevel}`, inline: false },
         )
         .setTitle(`${playerName}'s Stats`);
 
