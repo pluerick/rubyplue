@@ -23,6 +23,7 @@ const openaiapi = require("openai-api");
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const prefix = "?";
 let worldPrompt = "";
+
 clearchannelID = "";
 const openai = require("openai");
 const request = require("request");
@@ -942,13 +943,9 @@ when making images the prompt will be
 
       //Check every players entry that's in the same room as the current player, and lists them in a new field of the embed called "Players here"
       // the database is structured like this: test1 > serverName > players > playerID > current_room, name, etc.
-
-      const playersRef = admin.database().ref(`test1/${serverName}/players`);
       currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
       currentRoomID = currentRoomID.replace("room ", "");
       console.log("currentRoomID", currentRoomID);
-
-      global.descString = "test1";
       let othersHereString = "";
 
       try {
@@ -993,7 +990,12 @@ when making images the prompt will be
         console.error(error);
       }
 
-      console.log("descString outside if statement: ", global.descString);
+      // Check database for any monsters or items in this room and add them to the description
+      const monstersRef = admin.database().ref(`test1/${serverName}/monsters`);
+      const itemsRef = admin.database().ref(`test1/${serverName}/items`);
+
+  
+
 
       const embed = new EmbedBuilder()
         .setColor("#0099ff")
@@ -1065,7 +1067,6 @@ when making images the prompt will be
         defense: 10,
         speed: 10,
         special: 10,
-        experience: 10,
         gold: 10,
       });
 
