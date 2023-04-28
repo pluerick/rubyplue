@@ -199,11 +199,6 @@ if (command === 'stats') {
       const experienceToNextLevel = Math.pow(playerStats.level, 2) * 100;
       const currentLevel = Math.floor(Math.sqrt(playerStats.experience / 100)) + 1;
       const nextLevel = currentLevel + 1;
-
-      if (currentLevel > 1) {
-        experienceProgress -= 20 * (currentLevel - 1);
-      }
-
       const progressSymbols = "█";
       const emptySymbols = "░";
       const progressPercentage = Math.round((playerStats.experience / experienceToNextLevel) * 100);
