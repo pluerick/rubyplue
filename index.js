@@ -962,6 +962,9 @@ when making images the prompt will be
         console.log("triggered");
         console.log(snapshot.val());
 
+        global.descString = currentRoom.description;
+
+
         if (snapshot.exists()) {
           const players = snapshot.val();
           for (const playerID in players) {
@@ -969,28 +972,18 @@ when making images the prompt will be
             console.log(players[playerID].name);
             console.log(players[playerID].current_room);
             othersHereString += `${players[playerID].name}, `;
-            console.log("othersherestring inside for loop: ", othersHereString);
-          }
+            }
           othersHereString = othersHereString.slice(0, -2) + ".";
-          global.descString =
-            currentRoom.description +
-            "\n\n" +
+          global.descString +=
+             "\n\n" +
             "**Players in this room:** \n " +
             othersHereString +
             "\n\n" +
             exitString;
-          console.log("descString inside if statement: ", global.descString);
-          console.log(
-            "othersherestring inside if statement: ",
-            othersHereString
-          );
         } else {
-          global.descString =
-            currentRoom.description +
+          global.descString +=
             "\n\n" +
-            exitString +
-            "\n\n" +
-            "No one else is here.";
+            exitString;
         }
       } catch (error) {
         console.error(error);
@@ -1017,7 +1010,7 @@ when making images the prompt will be
           global.descString +=
             "\n\n" + "**Monsters in this room:** \n " + MonstersHereString;
         } else {
-          global.descString += "\n\n" + "No monsters here.";
+
         }
       } catch (error) {
         console.error(error);
@@ -1043,7 +1036,7 @@ when making images the prompt will be
           ItemsHereString = ItemsHereString.slice(0, -2) + ".";
           global.descString +=  "\n\n" + "**Items in this room:** \n " + ItemsHereString;
         } else {
-          global.descString += "\n\n" + "No items here.";
+
         }
       } catch (error) {
         console.error(error);
