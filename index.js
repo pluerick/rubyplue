@@ -58,14 +58,12 @@ client.on("messageCreate", async (message) => {
   // Get the name of the Discord server where the command was generated
   const serverName = message.guild.name;
 
-  // Set up a Firebase Realtime Database reference to the players table
-  const playersRef = admin.database().ref(`test1/${serverName}/players`);
-
-  // Set up a Firebase Realtime Database reference to the rooms table
-  const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
-
   // Set up a Firebase Realtime Database reference to the server's data
   const serverRef = admin.database().ref(`test1/${serverName}`);
+  const monstersRef = admin.database().ref(`test1/${serverName}/monsters`);
+  const itemsRef = admin.database().ref(`test1/${serverName}/items`);
+  const playersRef = admin.database().ref(`test1/${serverName}/players`);
+  const roomsRef = admin.database().ref(`test1/${message.guild.name}/rooms`);
 
   // Only respond to messages sent by humans (not bots)
   if (message.author.bot) return;
@@ -668,7 +666,6 @@ when making images the prompt will be
           generateMonsters();
           //Call the generateItems function to generate items for each room
           generateItems();
-
         }
       });
     }
@@ -903,8 +900,6 @@ when making images the prompt will be
       }
     }
 
-
-
     async function lookAround(snapshot, roomsRef) {
       // Get the current room's data
       const currentRoom = snapshot.val();
@@ -923,8 +918,9 @@ when making images the prompt will be
           const neighborRoomName = neighborRoomNameSnapshot.exists()
             ? neighborRoomNameSnapshot.val()
             : `room ${neighborRoomID}`;
-          exitString += `**${direction.charAt(0).toUpperCase() + direction.slice(1)
-            }**, `;
+          exitString += `**${
+            direction.charAt(0).toUpperCase() + direction.slice(1)
+          }**, `;
         }
       }
 
@@ -947,6 +943,7 @@ when making images the prompt will be
       currentRoomID = currentRoomID.replace("room ", "");
       console.log("currentRoomID", currentRoomID);
       let othersHereString = "";
+      let MonstersHereString = "";
 
       try {
         const snapshot = await playersRef
@@ -990,12 +987,58 @@ when making images the prompt will be
         console.error(error);
       }
 
-      // Check database for any monsters or items in this room and add them to the description
-      const monstersRef = admin.database().ref(`test1/${serverName}/monsters`);
-      const itemsRef = admin.database().ref(`test1/${serverName}/items`);
+      // Check database for any monsters in this room and add them to the description
+      try {
+        const snapshot = await monstersRef
+          .orderByChild("room")
+          .equalTo(currentRoomID)
+          .once("value");
+        console.log("triggered");
+        console.log(snapshot.val());
 
-  
+        if (snapshot.exists()) {
+          const monsters = snapshot.val();
+          for (const monsterID in monsters) {
+            console.log(monsterID);
+            console.log(monsters[monsterID].name);
+            console.log(monsters[monsterID].room);
+            MonstersHereString += `${monsters[monsterID].name}, `;
+          }
+          MonstersHereString = MonstersHereString.slice(0, -2) + ".";
+          global.descString +=
+            "\n\n" + "**Monsters in this room:** \n " + MonstersHereString;
+        } else {
+          global.descString += "\n\n" + "No monsters here.";
+        }
+      } catch (error) {
+        console.error(error);
+      }
 
+      // Check database for any items in this room and add them to the description
+      try {
+        const snapshot = await itemsRef
+          .orderByChild("room")
+          .equalTo(currentRoomID)
+          .once("value");
+        console.log("triggered");
+        console.log(snapshot.val());
+
+        if (snapshot.exists()) {
+          const items = snapshot.val();
+          for (const itemID in items) {
+            console.log(itemID);
+            console.log(items[itemID].name);
+            console.log(items[itemID].current_room);
+            ItemsHereString += `${items[itemID].name}, `;
+          }
+          ItemsHereString = ItemsHereString.slice(0, -2) + ".";
+          global.descString +=  "\n\n" + "**Items in this room:** \n " + ItemsHereString;
+        } else {
+          global.descString += "\n\n" + "No items here.";
+        }
+      } catch (error) {
+        console.error(error);
+      }
 
       const embed = new EmbedBuilder()
         .setColor("#0099ff")
@@ -1069,7 +1112,6 @@ when making images the prompt will be
         special: 10,
         gold: 10,
       });
-
     }
 
     async function generateItems(args) {
@@ -1087,12 +1129,8 @@ when making images the prompt will be
         consumable: false,
         damage: 10,
       });
-
     }
-
-
   } // end of if (message.content.startsWith(?)) { ... } way up there ^
 });
-// }}});
 
 client.login(process.env.TOKEN);
