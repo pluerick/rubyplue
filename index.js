@@ -5,7 +5,7 @@ const client = new Client({
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMembers,
-    ] 
+    ]
   });
 const axios = require('axios');
 const admin = require('firebase-admin');
@@ -19,17 +19,11 @@ let worldPrompt = '';
 clearchannelID = '';
 const openai = require('openai');
 const request = require('request');
+//set default prompt seeds
 let imagePrompt = "generate an image that looks photo realistic.";
 let descPrompt = 'From the second person perspective of a person as they enter a room, describe a room. Describe evidence and clues to things or creatures that may have been there previously.  Since other systems will come up with the monsters, traps, and weapons dont mention those. Dont mention actions taken by the player or changes to the room. Try not to use language that would be considered offensive when generating images later like blood';
 let worldDesc = 'a dark dank dungeon made of stone. there are torches on the walls every so often and creepy dripping sounds and small critters running around';
-global.descString =  'test 0';
-// Define progress bar symbols
-const progressBarLength = 20;
-const progressSymbols = '█';
-const emptySymbols = '░';
-
-
-
+global.descString =  '';
 
 
 // Parse the service account key JSON string from the environment variable
@@ -51,7 +45,7 @@ console.log('RubyBot lives!');
 client.on('messageCreate', async message => {
 
 
-// Get the player's Discord name  
+// Get the player's Discord name
 const playerName = message.author.username;
 
 // Get the name of the Discord server where the command was generated
@@ -93,7 +87,7 @@ promptsRef.once('value', (snapshot) => {
     }
   }
 }).catch((error) => {
-  console.error(error);  
+  console.error(error);
 });
 
 
@@ -126,7 +120,6 @@ when making images the prompt will be
 
 
   `;
-
   message.reply(helpMessage);
 }
 
@@ -209,7 +202,7 @@ if (command === 'stats') {
       const nextLevel = currentLevel + 1;
 
 
-      const statsEmbed = new EmbedBuilder()      
+      const statsEmbed = new EmbedBuilder()
         .setColor('#0099ff')
         .addFields(
           { name: 'Strength', value: `${playerStats.strength}`, inline: true },
@@ -407,13 +400,13 @@ if (command === 'north' || command === 'south' || command === 'east' || command 
                     message.reply(`Sorry, ${playerName}, the new room does not exist in the database.`);
                   } else {
                     const replyEmbed = await lookAround(snapshot, roomsRef);
-                    message.reply({ embeds: [replyEmbed]}); //, components: [row] 
+                    message.reply({ embeds: [replyEmbed]}); //, components: [row]
                     message.reply(global.descString);
                   }
                 });
               }
             });
-            
+
           } else {
             message.reply(`Sorry, ${playerName}, there is no room in that direction.`);
           }
@@ -519,19 +512,44 @@ if (command === 'generate') {
   roomsRef.once('value', (snapshot) => {
     const data = snapshot.val();
     if (data) {
-      console.log('Data already exists in the database. Skipping...');
       message.reply('Rooms data already exists in the database. Skipping...');
     } else {
-      console.log('Adding rooms data to the database...');
       roomsData.forEach((room) => {
         roomsRef.child(room.name).set(room);
       });
-      message.reply('Descriptions all added! now use ?newimage all to generate images.');
-      
+      message.reply('Rooms created and descriptions added! Now use [?newimage all] to generate images.');
+
+      //delete (if it exists) and create a test1.<server name>.monsters node in the database
+      const monstersRef = admin.database().ref(`test1/${serverName}/monsters`);
+      monstersRef.remove();
+      monstersRef.child('monster 1').set({
+        name: 'monster 1',
+        description: 'A monster',
+        image: 'https://imgur.com/fePkCyU',
+        room: 1,
+        health: 100,
+        attack: 10,
+        defense: 10,
+        speed: 10,
+        special: 10,
+        experience: 10,
+        gold: 10,
+      });
+
+
+
+
+
+
     }
+
+
   });
 }
 
+//Handle the "newimage" command
+//Generates images for all rooms if arg is "all" or for a specific room if arg is a room number.
+//TODO: detect if command is run from player in a room and only generate image for that room if no argument.
 if (command === 'newimage') {
   const roomArg = args[0];
   if (!roomArg) {
@@ -546,7 +564,7 @@ if (command === 'newimage') {
             message.reply(`Generating room images with Open AI for room number ${roomKey}! This may take a few seconds...`);
             try {
               const roomNumber = roomKey.match(/\d+/)[0];
-              await generateRoomImage(roomNumber);    
+              await generateRoomImage(roomNumber);
             } catch (error) {
               console.error(`Error generating image for room ${roomNumber}: ${error}`);
               message.reply(`Error generating image for room ${roomNumber}. Please try again later.`);
@@ -554,10 +572,10 @@ if (command === 'newimage') {
           }
         }
       });
-              }else{ 
+              }else{
                   message.reply(`Generating room images with Open AI for room number ${roomArg}! This may take a few seconds...`);
                   try {
-                    await generateRoomImage(roomArg);    
+                    await generateRoomImage(roomArg);
                   } catch (error) {
                     console.error(`Error generating image for room ${roomArg}: ${error}`);
                     message.reply(`Error generating image for room ${roomArg}. Please try again later.`);
@@ -567,6 +585,7 @@ if (command === 'newimage') {
 }
 
 // Handle the "blast" command
+// Deletes all rooms and sets all players' current_room to "1"
 if (command === 'blast') {
   const rootRef = admin.database().ref();
   const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
@@ -601,46 +620,9 @@ if (command === 'blast') {
   message.reply('PEW PEW database ROOMS BALETED');
 }
 
-// This command returns an image.
-if (command === 'image') {
-  message.reply('Creating AI image...');
-  const { exec } = require('child_process');
-  const openaiApiKey = process.env.OPENAI_API_KEY; // Replace with your OpenAI API key
-  const prompt = message.content.slice(7); // Get the prompt from the message content
-  const cmd = `curl https://api.openai.com/v1/images/generations \
-    -H "Content-Type: application/json" \
-    -H "Authorization: Bearer ${openaiApiKey}" \
-    -d '{
-      "prompt": "${prompt}",
-      "n": 2,
-      "size": "256x256"
-    }'`;
-
-
-  exec(cmd, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return;
-    }
-    const response = JSON.parse(stdout);
-    console.log('response:', response);
-    const imgURL = response.data[0].url;
-    const exampleEmbed = new EmbedBuilder()
-    .setColor('#0099ff')
-    .setTitle('Generated Image')
-    .setDescription(`Generated image for prompt: ${prompt}`)
-    .setImage(imgURL);
-
-    message.reply(exampleEmbed);
-  });
-
-}
-
-
-
 //Handle the "haiku" command
 if (command === 'haiku') {
-  
+
   //message.author.send("TEST");
 
   const haiku = await generateHaiku();
@@ -654,7 +636,7 @@ if (command === 'haiku') {
 if (command === 'look' || command === 'l') {
 
   // Check if the player exists in the database
-    
+
       const snapshot = await playersRef.orderByChild('name').equalTo(playerName).once('value', async (snapshot) => {
     if (!snapshot.exists()) {
       message.reply(`Sorry, ${playerName}, you are not registered in the game.`);
@@ -669,11 +651,11 @@ if (command === 'look' || command === 'l') {
           message.reply(`Sorry, ${playerName}, the current room does not exist in the database.`);
         } else {
           const replyEmbed = await lookAround(snapshot, roomsRef);
-          message.reply({ embeds: [replyEmbed]}); //, components: [row] 
+          message.reply({ embeds: [replyEmbed]}); //, components: [row]
           message.reply(global.descString);
         }
       });
-    } 
+    }
   }
   );
 }
@@ -695,7 +677,7 @@ async function generateRoomImage(roomNumber) {
         "prompt": "${imagePrompt} The room exists in a world described like this-- ${worldDesc}.END OF WORLD DESCRIPTION Here is a description of someone entering the room. Include all these details-- ${prompt}",
         "n": 2,
         "size": "1024x1024"
-      }'`;        
+      }'`;
 
   try {
     console.log('debug2');
@@ -733,8 +715,8 @@ async function generateRoomImage(roomNumber) {
                 const imgurUrl = response.data.data.link;
                 console.log(`Imgur URL:`, imgurUrl);
                // message.reply('Done! Image uploaded to Imgur successfully!');
-    
-                // Update the image node for the current room 
+
+                // Update the image node for the current room
                 roomRef.update({ image: `${imgurUrl}` }, (error) => {
                   if (error) {
                     console.error(`Failed to update image for room ${roomKey}:`, error);
@@ -775,7 +757,7 @@ for (const direction of directions) {
     const neighborRoomID = currentRoom[direction];
     const neighborRoomNameSnapshot = await roomsRef.child(neighborRoomID).child('name').once('value');
     const neighborRoomName = neighborRoomNameSnapshot.exists() ? neighborRoomNameSnapshot.val() : `room ${neighborRoomID}`;
-    exitString += `**${direction.charAt(0).toUpperCase() + direction.slice(1)}**, `; 
+    exitString += `**${direction.charAt(0).toUpperCase() + direction.slice(1)}**, `;
 
   }
 }
@@ -847,7 +829,7 @@ async function generateDescription(args) {
   const openai = new OpenAI(OPENAI_API_KEY);
   const subject  = args[0];
   let prompt = descPrompt;
-  
+
 
 // Set up a Firebase Realtime Database reference to the worldDesc property
 const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
@@ -888,8 +870,8 @@ const worldDescRef = admin.database().ref(`test1/${message.guild.name}`);
   return GeneratedDesc;
 }
 
-  
-  
+
+
 }});
 // }}});
 
