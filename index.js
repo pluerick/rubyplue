@@ -952,6 +952,7 @@ when making images the prompt will be
       console.log("currentRoomID", currentRoomID);
       let othersHereString = "";
       let MonstersHereString = "";
+      let ItemsHereString = "";
 
       try {
         const snapshot = await playersRef
