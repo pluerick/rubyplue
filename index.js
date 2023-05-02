@@ -977,14 +977,8 @@ when making images the prompt will be
           global.descString +=
              "\n\n" +
             "**Players in this room:** \n " +
-            othersHereString +
-            "\n\n" +
-            exitString;
-        } else {
-          global.descString +=
-            "\n\n" +
-            exitString;
-        }
+            othersHereString;
+        } 
       } catch (error) {
         console.error(error);
       }
@@ -1041,7 +1035,7 @@ when making images the prompt will be
       } catch (error) {
         console.error(error);
       }
-
+      global.descString += '\n\n' + exitString;
       const embed = new EmbedBuilder()
         .setColor("#0099ff")
         .setImage(currentRoom.image);
