@@ -233,69 +233,83 @@ when making images the prompt will be
       attack(message, args);
     }
 
-
     async function attack(message, args) {
-      // Check if the player has entered a target name
-      if (!args.length) {
-        message.reply("Please enter a target name.");
-        return;
-      }
-    
-      // Get the player's current room
-      const playerRef = admin.database().ref(`test1/${serverName}/players/${message.author.username}`);
-      const playerData = await playerRef.once("value");
-      console.log(playerData);
-      const playerRoom = playerData.val().current_room;
-    
-      // Get the list of monsters in the player's current room
-      const monstersRef = admin.database().ref(`test1/${serverName}/monsters/${playerRoom}`);
-      const monsters = await monstersRef.once("value");
-    
-      // Check if the target name is close to the name of a monster in the player's current room
-      const targetName = args[0];
-      for (const monster of monsters.val()) {
-        if (monster.name.toLowerCase().includes(targetName.toLowerCase())) {
-          // The target name is close to the name of a monster in the player's current room
-          // Roll an attack die
-          const attackRoll = Math.floor(Math.random() * 20) + 1;
-    
-          // Check if the attack roll is successful
-          if (attackRoll >= monster.defense) {
-            // The attack is successful!
-            // Deal damage to the monster
-            monster.health -= attackRoll;
-    
-            // Check if the monster is dead
-            if (monster.health <= 0) {
-              // The monster is dead!
-              // Remove the monster from the database
-              monstersRef.child(monster.id).remove();
-    
-              // Send a message to the player
-              message.reply(`You have defeated the ${monster.name}!`);
-            } else {
-              // The monster is still alive
-              // Send a message to the player
-              message.reply(`You have dealt ${attackRoll} damage to the ${monster.name}.`);
-            }
-          } else {
-            // The attack is unsuccessful!
-            // Send a message to the player
-            message.reply(`Your attack missed!`);
-          }
-    
-          // Break out of the loop
-          break;
+      try {
+        // Check if the player has entered a target name
+        if (!args.length) {
+          message.reply("Please enter a target name.");
+          return;
         }
-      }
     
-      // If the target name is not close to the name of a monster in the player's current room,
-      // send a message to the player saying that the target is not found
-      if (!targetName) {
-        message.reply(`The target is not found.`);
+        // Get the player's current room
+        const playerRef = admin.database().ref(`test1/${serverName}/players/${message.author.username}`);
+        const playerData = await playerRef.once("value");
+    
+        if (!playerData.exists()) {
+          message.reply("Player data not found.");
+          return;
+        }
+    
+        console.log(playerData);
+        const playerRoom = playerData.val().current_room;
+    
+        if (!playerRoom) {
+          message.reply("Player room not found.");
+          return;
+        }
+    
+        // Get the list of monsters in the player's current room
+        const monstersRef = admin.database().ref(`test1/${serverName}/monsters/${playerRoom}`);
+        const monsters = await monstersRef.once("value");
+    
+        // Check if the target name is close to the name of a monster in the player's current room
+        const targetName = args[0];
+        for (const monster of monsters.val()) {
+          if (monster.name.toLowerCase().includes(targetName.toLowerCase())) {
+            // The target name is close to the name of a monster in the player's current room
+            // Roll an attack die
+            const attackRoll = Math.floor(Math.random() * 20) + 1;
+    
+            // Check if the attack roll is successful
+            if (attackRoll >= monster.defense) {
+              // The attack is successful!
+              // Deal damage to the monster
+              monster.health -= attackRoll;
+    
+              // Check if the monster is dead
+              if (monster.health <= 0) {
+                // The monster is dead!
+                // Remove the monster from the database
+                monstersRef.child(monster.id).remove();
+    
+                // Send a message to the player
+                message.reply(`You have defeated the ${monster.name}!`);
+              } else {
+                // The monster is still alive
+                // Send a message to the player
+                message.reply(`You have dealt ${attackRoll} damage to the ${monster.name}.`);
+              }
+            } else {
+              // The attack is unsuccessful!
+              // Send a message to the player
+              message.reply(`Your attack missed!`);
+            }
+    
+            // Break out of the loop
+            break;
+          }
+        }
+    
+        // If the target name is not close to the name of a monster in the player's current room,
+        // send a message to the player saying that the target is not found
+        if (!targetName) {
+          message.reply(`The target is not found.`);
+        }
+      } catch (error) {
+        console.error(error);
+        message.reply("An error occurred.");
       }
     }
-
 
     // Handle the 'stats' command
     if (command === "stats") {
