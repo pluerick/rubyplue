@@ -222,6 +222,18 @@ when making images the prompt will be
       );
     }
 
+    if (command === "attack") {
+      // Check if the player has entered a target name
+      if (!args.length) {
+        message.reply("Please enter a target name.");
+        return;
+      }
+    
+      // Call the `attack` function
+      attack(message, args);
+    }
+
+
     async function attack(message, args) {
       // Check if the player has entered a target name
       if (!args.length) {
