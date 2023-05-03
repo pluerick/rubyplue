@@ -244,7 +244,7 @@ when making images the prompt will be
       // Get the player's current room
       const playerRef = admin.database().ref(`test1/${serverName}/players/${message.author.username}`);
       const playerData = await playerRef.once("value");
-      const playerRoom = playerData.val().room;
+      const playerRoom = playerData.val().current_room;
     
       // Get the list of monsters in the player's current room
       const monstersRef = admin.database().ref(`test1/${serverName}/monsters/${playerRoom}`);
