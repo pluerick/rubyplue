@@ -68,6 +68,9 @@ client.on("messageCreate", async (message) => {
   // Only respond to messages sent by humans (not bots)
   if (message.author.bot) return;
 
+
+
+
   // Check if the message starts with a question mark
   if (message.content.startsWith("?")) {
     // Parse the command and arguments
@@ -218,6 +221,68 @@ when making images the prompt will be
         }
       );
     }
+
+    async function attack(message, args) {
+      // Check if the player has entered a target name
+      if (!args.length) {
+        message.reply("Please enter a target name.");
+        return;
+      }
+    
+      // Get the player's current room
+      const playerRef = admin.database().ref(`test1/${serverName}/players/${message.author.username}`);
+      const playerData = await playerRef.once("value");
+      const playerRoom = playerData.val().room;
+    
+      // Get the list of monsters in the player's current room
+      const monstersRef = admin.database().ref(`test1/${serverName}/monsters/${playerRoom}`);
+      const monsters = await monstersRef.once("value");
+    
+      // Check if the target name is close to the name of a monster in the player's current room
+      const targetName = args[0];
+      for (const monster of monsters.val()) {
+        if (monster.name.toLowerCase().includes(targetName.toLowerCase())) {
+          // The target name is close to the name of a monster in the player's current room
+          // Roll an attack die
+          const attackRoll = Math.floor(Math.random() * 20) + 1;
+    
+          // Check if the attack roll is successful
+          if (attackRoll >= monster.defense) {
+            // The attack is successful!
+            // Deal damage to the monster
+            monster.health -= attackRoll;
+    
+            // Check if the monster is dead
+            if (monster.health <= 0) {
+              // The monster is dead!
+              // Remove the monster from the database
+              monstersRef.child(monster.id).remove();
+    
+              // Send a message to the player
+              message.reply(`You have defeated the ${monster.name}!`);
+            } else {
+              // The monster is still alive
+              // Send a message to the player
+              message.reply(`You have dealt ${attackRoll} damage to the ${monster.name}.`);
+            }
+          } else {
+            // The attack is unsuccessful!
+            // Send a message to the player
+            message.reply(`Your attack missed!`);
+          }
+    
+          // Break out of the loop
+          break;
+        }
+      }
+    
+      // If the target name is not close to the name of a monster in the player's current room,
+      // send a message to the player saying that the target is not found
+      if (!targetName) {
+        message.reply(`The target is not found.`);
+      }
+    }
+
 
     // Handle the 'stats' command
     if (command === "stats") {
@@ -731,7 +796,7 @@ when making images the prompt will be
 
       // delete items
       itemsRef.remove()
-        
+
 
 
       // delete rooms
@@ -926,9 +991,8 @@ when making images the prompt will be
           const neighborRoomName = neighborRoomNameSnapshot.exists()
             ? neighborRoomNameSnapshot.val()
             : `room ${neighborRoomID}`;
-          exitString += `**${
-            direction.charAt(0).toUpperCase() + direction.slice(1)
-          }**, `;
+          exitString += `**${direction.charAt(0).toUpperCase() + direction.slice(1)
+            }**, `;
         }
       }
 
@@ -972,10 +1036,10 @@ when making images the prompt will be
             console.log(players[playerID].name);
             console.log(players[playerID].current_room);
             othersHereString += `${players[playerID].name}, `;
-            }
+          }
           othersHereString = othersHereString.slice(0, -2) + ".";
           global.descString +=
-             "\n\n" +
+            "\n\n" +
             "**Players in this room:** \n " +
             othersHereString +
             "\n\n" +
@@ -1022,7 +1086,7 @@ when making images the prompt will be
           .orderByChild("room")
           .equalTo(currentRoomID)
           .once("value");
-          console.log("triggered items here check");
+        console.log("triggered items here check");
         console.log(snapshot.val());
 
         if (snapshot.exists()) {
@@ -1034,7 +1098,7 @@ when making images the prompt will be
             ItemsHereString += `${items[itemID].name}, `;
           }
           ItemsHereString = ItemsHereString.slice(0, -2) + ".";
-          global.descString +=  "\n\n" + "**Items in this room:** \n " + ItemsHereString;
+          global.descString += "\n\n" + "**Items in this room:** \n " + ItemsHereString;
         } else {
 
         }
