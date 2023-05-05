@@ -248,8 +248,8 @@ const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once(
 const playerData = snapshot.val();
 
 if (playerData) {
-  const currentRoomID = playerData[currentPlayerID].current_room;
-} else {
+  const currentRoomID = playerData[playerID].current_room;
+  } else {
   console.log(`Player ${playerName} not found.`);
 }
     
