@@ -273,9 +273,6 @@ when making images the prompt will be
             if (attackRoll >= monster.defense) {
             // The attack is successful!
             // Deal damage to the monster
-            console.log('Monster Health: ', monster.health);
-            console.log('Monster Defense: ', monster.defense);
-            console.log('Attack Roll: ', attackRoll);
             monster.health -= attackRoll - monster.defense;
 
             // Update the monster's health in the database
