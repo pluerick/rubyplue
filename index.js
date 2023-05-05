@@ -827,7 +827,7 @@ when making images the prompt will be
       roomsRef
         .remove()
         .then(() => {
-          console.log("Rooms data removed successfully.");
+
         })
         .catch((error) => {
           console.error("Error removing rooms data:", error);
@@ -843,9 +843,7 @@ when making images the prompt will be
               current_room: "1",
             })
             .then(() => {
-              console.log(
-                `Player ${playerID} current_room updated successfully.`
-              );
+
             })
             .catch((error) => {
               console.error(
@@ -862,7 +860,7 @@ when making images the prompt will be
     //Handle the "haiku" command
     if (command === "haiku") {
       const haiku = await generateHaiku();
-      console.log("haiku ran 4");
+      
       message.reply(haiku);
     }
 
@@ -922,8 +920,7 @@ when making images the prompt will be
       }'`;
 
       try {
-        console.log("debug2");
-        console.log(cmd);
+
         exec(cmd, (error, stdout, stderr) => {
           if (error) {
             console.error(`exec error: ${error}`);
@@ -963,7 +960,6 @@ when making images the prompt will be
                   })
                   .then((response) => {
                     const imgurUrl = response.data.data.link;
-                    console.log(`Imgur URL:`, imgurUrl);
                     // message.reply('Done! Image uploaded to Imgur successfully!');
 
                     // Update the image node for the current room
@@ -974,9 +970,6 @@ when making images the prompt will be
                           error
                         );
                       } else {
-                        console.log(
-                          `Image for room ${roomKey} updated successfully`
-                        );
                         // message.reply('Done! Image for room updated successfully!');
                       }
                     });
@@ -1037,7 +1030,6 @@ when making images the prompt will be
       // the database is structured like this: test1 > serverName > players > playerID > current_room, name, etc.
       currentRoomID = snapshot.key; //snapshot.key is the current room's ID (e.g. "room 1")
       currentRoomID = currentRoomID.replace("room ", "");
-      console.log("currentRoomID", currentRoomID);
       let othersHereString = "";
       let MonstersHereString = "";
       let ItemsHereString = "";
@@ -1072,15 +1064,10 @@ when making images the prompt will be
           .orderByChild("room")
           .equalTo(currentRoomID)
           .once("value");
-        console.log("triggered monsters here check");
-        console.log(snapshot.val());
 
         if (snapshot.exists()) {
           const monsters = snapshot.val();
           for (const monsterID in monsters) {
-            console.log(monsterID);
-            console.log(monsters[monsterID].name);
-            console.log(monsters[monsterID].room);
             MonstersHereString += `${monsters[monsterID].name}, `;
           }
           MonstersHereString = MonstersHereString.slice(0, -2) + ".";
@@ -1152,7 +1139,6 @@ when making images the prompt will be
       if (global.worldPrompt !== 0) {
         prompt += ` Here's a description of the world this game world exists in: ${global.worldPrompt}.`;
       }
-      console.log(prompt);
       const model = "text-davinci-002";
 
       const gptResponse = await openai.complete({
@@ -1165,12 +1151,10 @@ when making images the prompt will be
 
       const GeneratedDesc = gptResponse.data.choices[0].text.trim();
       global.currentRoomDesc = GeneratedDesc;
-      //console.log(GeneratedDesc);
       return GeneratedDesc;
     }
 
     async function generateMonsters(args) {
-      console.log("generateMonsters triggered");
 
       //delete (if it exists) and create a test1.<server name>.monsters node in the database
       const monstersRef = admin.database().ref(`test1/${serverName}/monsters`);
@@ -1190,7 +1174,6 @@ when making images the prompt will be
     }
 
     async function generateItems(args) {
-      console.log("generateItems triggered");
 
       //delete (if it exists) and create a test1.<server name>.items node in the database
       const itemsRef = admin.database().ref(`test1/${serverName}/items`);
