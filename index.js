@@ -271,26 +271,30 @@ when making images the prompt will be
     
             // Check if the attack roll is successful
             if (attackRoll >= monster.defense) {
-              // The attack is successful!
-              // Deal damage to the monster
-              console.log('Monster Health: ', monster.health);
-              console.log('Monster Defense: ', monster.defense);
-              console.log('Attack Roll: ', attackRoll);
-              monster.health -= attackRoll - monster.defense;
-    
-              // Check if the monster is dead
-              if (monster.health <= 0) {
-                // The monster is dead!
-                // Remove the monster from the database
-                monstersRef.child(monsterID).remove();
-    
-                // Send a message to the player
-                message.reply(`You have defeated the ${monster.name}!`);
-              } else {
-                // The monster is still alive
-                // Send a message to the player
-                message.reply(`You have dealt ${attackRoll} damage to the ${monster.name}.`);
-              }
+            // The attack is successful!
+            // Deal damage to the monster
+            console.log('Monster Health: ', monster.health);
+            console.log('Monster Defense: ', monster.defense);
+            console.log('Attack Roll: ', attackRoll);
+            monster.health -= attackRoll;
+
+            // Update the monster's health in the database
+            monstersRef.child(monsterID).update({ health: monster.health });
+
+            // Check if the monster is dead
+            if (monster.health <= 0) {
+              // The monster is dead!
+              // Remove the monster from the database
+              monstersRef.child(monsterID).remove();
+
+              // Send a message to the player
+              message.reply(`You have defeated the ${monster.name}!`);
+            } else {
+              // The monster is still alive
+              // Send a message to the player
+              message.reply(`You have dealt ${attackRoll} damage to the ${monster.name}.`);
+            }
+
             } else {
               // The attack is unsuccessful!
               // Send a message to the player
