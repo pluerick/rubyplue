@@ -305,6 +305,7 @@ when making images the prompt will be
         message.reply("An error occurred.");
       }
     }
+    
 
     // Handle the 'stats' command
     if (command === "stats") {
