@@ -1099,15 +1099,12 @@ when making images the prompt will be
           .orderByChild("room")
           .equalTo(currentRoomID)
           .once("value");
-        console.log("triggered items here check");
-        console.log(snapshot.val());
+        
+        
 
         if (snapshot.exists()) {
           const items = snapshot.val();
           for (const itemID in items) {
-            console.log(itemID);
-            console.log(items[itemID].name);
-            console.log(items[itemID].current_room);
             ItemsHereString += `${items[itemID].name}, `;
           }
           ItemsHereString = ItemsHereString.slice(0, -2) + ".";
@@ -1144,7 +1141,6 @@ when making images the prompt will be
         if (snapshot.exists()) {
           // If it exists, set a variable worldPrompt to the worldDesc value
           const worldDesc = snapshot.val();
-          console.log("debug 1", worldDesc);
           global.worldPrompt = `The world description: ${worldDesc}`;
           // // Send a message to the same channel with the worldDesc
           // message.channel.send(worldPrompt);
