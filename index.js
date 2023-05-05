@@ -240,20 +240,20 @@ when making images the prompt will be
           return;
         }
     
-// Get the player's current room ID
-const playersRef = admin.database().ref(`test1/${serverName}/players`);
-const playerName = message.author.username;
+      // Get the player's current room ID
+      const playersRef = admin.database().ref(`test1/${serverName}/players`);
+      const playerName = message.author.username;
 
-const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
-const playerData = snapshot.val();
+      const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
+      const playerData = snapshot.val();
 
-if (playerData) {
-  const playerID = Object.keys(playerData)[0]; // Extracts the player ID from the playerData object
-  const currentRoomID = playerData[playerID].current_room;
-  console.log(`Player ${playerName} is in room ${currentRoomID}.`);
-} else {
-  console.log(`Player ${playerName} not found.`);
-}
+      if (playerData) {
+        const playerID = Object.keys(playerData)[0]; // Extracts the player ID from the playerData object
+        const currentRoomID = playerData[playerID].current_room;
+        console.log(`Player ${playerName} is in room ${currentRoomID}.`);
+      } else {
+        console.log(`Player ${playerName} not found.`);
+      }
     
         // Get the list of monsters in the player's current room
         const monstersRef = admin.database().ref(`test1/${serverName}/monsters`);
@@ -273,6 +273,9 @@ if (playerData) {
             if (attackRoll >= monster.defense) {
               // The attack is successful!
               // Deal damage to the monster
+              console.log('Monster Health: ', monster.health);
+              console.log('Monster Defense: ', monster.defense);
+              console.log('Attack Roll: ', attackRoll);
               monster.health -= attackRoll;
     
               // Check if the monster is dead
