@@ -263,7 +263,7 @@ if (playerData) {
         // Check if the target name is close to the name of a monster in the player's current room
         const targetName = args[0];
         for (const monsterID in monsters) {
-          const monster = monsters.val()[monsterID];
+          const monster = monsters[monsterID];
           if (monster.name.toLowerCase().includes(targetName.toLowerCase())) {
             // The target name is close to the name of a monster in the player's current room
             // Roll an attack die
