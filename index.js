@@ -246,12 +246,7 @@ when making images the prompt will be
         
         const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
         const playerData = snapshot.val();        
-    
-        if (!playerData.exists()) {
-          message.reply("Player data not found.");
-          return;
-        }
-    
+       
         const currentRoomID = playerData.val().current_room;
     
         // Get the list of monsters in the player's current room
