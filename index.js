@@ -240,14 +240,18 @@ when making images the prompt will be
           return;
         }
     
-        // Get the player's current room ID
-        const playersRef = admin.database().ref(`test1/${serverName}/players`);
-        const playerName = message.author.username;
-        
-        const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
-        const playerData = snapshot.val();        
-       
-        const currentRoomID = playerData.val().current_room;
+// Get the player's current room ID
+const playersRef = admin.database().ref(`test1/${serverName}/players`);
+const playerName = message.author.username;
+
+const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
+const playerData = snapshot.val();
+
+if (playerData) {
+  const currentRoomID = playerData[currentPlayerID].current_room;
+} else {
+  console.log(`Player ${playerName} not found.`);
+}
     
         // Get the list of monsters in the player's current room
         const monstersRef = admin.database().ref(`test1/${serverName}/monsters/${currentRoomID}`);
