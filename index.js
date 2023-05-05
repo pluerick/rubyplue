@@ -244,6 +244,7 @@ when making images the prompt will be
         const playersRef = admin.database().ref(`test1/${serverName}/players`);
         const playerID = message.author.username;
         const playerData = await playersRef.child(playerID).once("value");
+        console.log(playerData);
     
         if (!playerData.exists()) {
           message.reply("Player data not found.");
