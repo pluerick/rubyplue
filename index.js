@@ -245,11 +245,7 @@ when making images the prompt will be
         const playerName = message.author.username;
         
         const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
-        const playerData = snapshot.val();     
-
-
-
-        
+        const playerData = snapshot.val();        
     
         if (!playerData.exists()) {
           message.reply("Player data not found.");
