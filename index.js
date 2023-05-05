@@ -256,8 +256,9 @@ if (playerData) {
 }
     
         // Get the list of monsters in the player's current room
-        const monstersRef = admin.database().ref(`test1/${serverName}/monsters/${currentRoomID}`);
-        const monsters = await monstersRef.once("value");
+        const monstersRef = admin.database().ref(`test1/${serverName}/monsters`);
+        const monstersnapshot = await monstersRef.orderByChild("room").equalTo(currentRoomID).once("value");
+        const monsters = monstersnapshot.val();
     
         // Check if the target name is close to the name of a monster in the player's current room
         const targetName = args[0];
