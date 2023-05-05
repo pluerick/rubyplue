@@ -243,7 +243,8 @@ when making images the prompt will be
         // Get the player's current room ID
         const playersRef = admin.database().ref(`test1/${serverName}/players`);
         const playerID = message.author.username;
-        const playerData = await playersRef.child(playerID).once("value");
+        const playerDataSnapshot = await playersRef.child(playerID).once("value");
+        const playerData = playerDataSnapshot.val();
         console.log(playerData.name);
     
         if (!playerData.exists()) {
