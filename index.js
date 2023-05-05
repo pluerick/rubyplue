@@ -1162,29 +1162,25 @@ when making images the prompt will be
     }
 
     async function generateMonsters(args) {
-      const serverName = args.serverName;
+
+      //delete (if it exists) and create a test1.<server name>.monsters node in the database
       const monstersRef = admin.database().ref(`test1/${serverName}/monsters`);
-    
-      // Remove existing monsters
-      await monstersRef.remove();
-    
-      // Create a monster for each room
-      const numRooms = 9;
-      for (let i = 1; i <= numRooms; i++) {
-        const monsterName = `Goblin ${i}`;
-        const monsterData = {
-          name: monsterName,
+      monstersRef.remove();
+        
+        
+      for (let i = 1; i <= 9; i++) {
+        monstersRef.child("monster " + i).set({
+          name: "Goblin",
           description: "A goblin",
           image: "https://imgur.com/fePkCyU",
-          room: `${i}`,
+          room: i.toString(),
           health: 100,
           attack: 10,
           defense: 10,
           speed: 10,
           special: 10,
           gold: 10,
-        };
-        await monstersRef.child(monsterName).set(monsterData);
+        });
       }
     }
 
