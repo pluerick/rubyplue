@@ -292,7 +292,7 @@ when making images the prompt will be
             } else {
               // The monster is still alive
               // Send a message to the player
-              message.reply(`You have dealt ${attackRoll - monster.health} damage to the ${monster.name}.`);
+              message.reply(`You have dealt ${attackRoll - monster.defense} damage to the ${monster.name}.`);
             }
 
             } else {
