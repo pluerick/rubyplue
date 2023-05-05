@@ -232,7 +232,6 @@ when making images the prompt will be
       // Call the `attack` function
       attack(message, args);
     }
-
     async function attack(message, args) {
       try {
         // Check if the player has entered a target name
@@ -241,30 +240,26 @@ when making images the prompt will be
           return;
         }
     
-        // Get the player's current room
-        const playerRef = admin.database().ref(`test1/${serverName}/players/${message.author.username}`);
-        const playerData = await playerRef.once("value");
+        // Get the player's current room ID
+        const playersRef = admin.database().ref(`test1/${serverName}/players`);
+        const playerID = message.author.username;
+        const playerData = await playersRef.child(playerID).once("value");
     
         if (!playerData.exists()) {
           message.reply("Player data not found.");
           return;
         }
     
-        console.log(playerData);
-        const playerRoom = playerData.val().current_room;
-    
-        if (!playerRoom) {
-          message.reply("Player room not found.");
-          return;
-        }
+        const currentRoomID = playerData.val().current_room;
     
         // Get the list of monsters in the player's current room
-        const monstersRef = admin.database().ref(`test1/${serverName}/monsters/${playerRoom}`);
+        const monstersRef = admin.database().ref(`test1/${serverName}/monsters/${currentRoomID}`);
         const monsters = await monstersRef.once("value");
     
         // Check if the target name is close to the name of a monster in the player's current room
         const targetName = args[0];
-        for (const monster of monsters.val()) {
+        for (const monsterID in monsters.val()) {
+          const monster = monsters.val()[monsterID];
           if (monster.name.toLowerCase().includes(targetName.toLowerCase())) {
             // The target name is close to the name of a monster in the player's current room
             // Roll an attack die
@@ -280,7 +275,7 @@ when making images the prompt will be
               if (monster.health <= 0) {
                 // The monster is dead!
                 // Remove the monster from the database
-                monstersRef.child(monster.id).remove();
+                monstersRef.child(monsterID).remove();
     
                 // Send a message to the player
                 message.reply(`You have defeated the ${monster.name}!`);
@@ -1050,8 +1045,6 @@ when making images the prompt will be
           .orderByChild("current_room")
           .equalTo(currentRoomID)
           .once("value");
-        console.log("triggered");
-        console.log(snapshot.val());
 
         global.descString = currentRoom.description;
 
@@ -1059,9 +1052,6 @@ when making images the prompt will be
         if (snapshot.exists()) {
           const players = snapshot.val();
           for (const playerID in players) {
-            console.log(playerID);
-            console.log(players[playerID].name);
-            console.log(players[playerID].current_room);
             othersHereString += `${players[playerID].name}, `;
           }
           othersHereString = othersHereString.slice(0, -2) + ".";
