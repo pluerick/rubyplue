@@ -241,23 +241,15 @@ when making images the prompt will be
         }
     
         // Get the player's current room ID
-        const playersRef = admin.database().ref(`test1/Plue's Flabby Bird House/players`);
+        const playersRef = admin.database().ref(`test1/${serverName}/players`);
         const playerName = message.author.username;
         
-        // Search for the player ID that corresponds to the given player name
         const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
-        const playerDataSnapshot = snapshot.val();
+        const playerData = snapshot.val();     
+
+
+
         
-        if (playerDataSnapshot) {
-          // Extract the player ID from the snapshot
-          const playerID = Object.keys(playerDataSnapshot)[0];
-        
-          // Retrieve the player data using the correct player ID
-          const playerData = playerDataSnapshot[playerID];
-          console.log(playerData.name);
-        } else {
-          console.log(`Player ${playerName} not found.`);
-        }
     
         if (!playerData.exists()) {
           message.reply("Player data not found.");
