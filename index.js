@@ -222,6 +222,38 @@ when making images the prompt will be
       );
     }
 
+    // Handle the 'take' command
+if (command === "take") {
+  const itemName = args.join(" ");
+  const playerRef = admin.database().ref(`test1/${serverName}/players/${playerId}`);
+  const itemsRef = admin.database().ref(`test1/${serverName}/items`);
+  
+  // Check if the item exists in the current room
+  itemsRef
+    .orderByChild("name")
+    .equalTo(itemName)
+    .once("value")
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const itemId = Object.keys(snapshot.val())[0];
+        const itemRef = itemsRef.child(itemId);
+        
+        // Move item from room to inventory
+        itemRef.update({ room: null, inventory: playerName });
+        playerRef.child("inventory").push(itemId);
+        
+        message.reply(`You have picked up ${itemName}.`);
+      } else {
+        message.reply(`That item is not in this room.`);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      message.reply(`Sorry, there was an error accessing the database.`);
+    });
+}
+
+
     if (command === "attack") {
       // Check if the player has entered a target name
       if (!args.length) {
