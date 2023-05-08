@@ -225,6 +225,10 @@ when making images the prompt will be
     // Handle the 'take' command
 if (command === "take") {
   const itemName = args.join(" ");
+  
+  const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
+  const playerData = snapshot.val();
+  const playerID = Object.keys(playerData)[0]; // Extracts the player ID from the playerData object
   const playerRef = admin.database().ref(`test1/${serverName}/players/${playerId}`);
   const itemsRef = admin.database().ref(`test1/${serverName}/items`);
   
