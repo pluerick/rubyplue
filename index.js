@@ -229,6 +229,7 @@ if (command === "take") {
   const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
   const playerData = snapshot.val();
   const playerID = Object.keys(playerData)[0]; // Extracts the player ID from the playerData object
+  console.log(playerID);
   const playerRef = admin.database().ref(`test1/${serverName}/players/${playerId}`);
   const itemsRef = admin.database().ref(`test1/${serverName}/items`);
   
