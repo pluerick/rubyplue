@@ -230,7 +230,7 @@ if (command === "take") {
   const playerData = snapshot.val();
   const playerID = Object.keys(playerData)[0]; // Extracts the player ID from the playerData object
   console.log(playerID);
-  const playerRef = admin.database().ref(`test1/${serverName}/players/${playerId}`);
+  const playerRef = admin.database().ref(`test1/${serverName}/players/${playerID}`);
   const itemsRef = admin.database().ref(`test1/${serverName}/items`);
   
   // Check if the item exists in the current room
