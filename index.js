@@ -225,7 +225,7 @@ when making images the prompt will be
     // Handle the 'take' command
 if (command === "take") {
   const itemName = args.join(" ");
-  
+  console.log(playerName);
   const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
   const playerData = snapshot.val();
   const playerID = Object.keys(playerData)[0]; // Extracts the player ID from the playerData object
