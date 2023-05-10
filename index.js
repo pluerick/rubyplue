@@ -1234,6 +1234,7 @@ if (command === "take") {
         lootable: true,
         consumable: false,
         damage: 10,
+        slot: "weapon"
       });
     }
   } // end of if (message.content.startsWith(?)) { ... } way up there ^
