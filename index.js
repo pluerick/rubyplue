@@ -646,6 +646,52 @@ if (command === "inventory") {
 }
 
 
+
+// Handle the 'equip' command
+if (command === "equip") {
+  const itemName = args.join(" ");
+  const playerName = message.author.username;
+  const playerId = message.author.id;
+  const playerRef = admin.database().ref(`test1/${serverName}/players/${playerId}/${playerName}`);
+  const inventoryRef = playerRef.child("inventory");
+  const equipmentRef = playerRef.child("equipment");
+
+  // Check if the item exists in the player's inventory
+  inventoryRef.orderByValue().equalTo(itemName).once("value")
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const itemId = Object.keys(snapshot.val())[0];
+
+        // Check if the item is already equipped
+        equipmentRef.once("value")
+          .then((equipmentSnapshot) => {
+            const equipment = equipmentSnapshot.val();
+
+            if (equipment && equipment[itemId]) {
+              // Item is already equipped, unequip it
+              equipmentRef.child(itemId).remove();
+              message.reply(`You have unequipped ${itemName}.`);
+            } else {
+              // Item is not equipped, equip it
+              equipmentRef.child(itemId).set(itemName);
+              message.reply(`You have equipped ${itemName}.`);
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            message.reply(`Sorry, there was an error accessing the database.`);
+          });
+      } else {
+        message.reply(`You don't have ${itemName} in your inventory.`);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      message.reply(`Sorry, there was an error accessing the database.`);
+    });
+}
+
+
     // Handle the movement commands
     if (
       command === "north" ||
