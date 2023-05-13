@@ -593,25 +593,40 @@ if (command === "take") {
 // Handle the 'inventory' command
 if (command === "inventory") {
   const playerName = message.author.username;
-  const playerRef = admin.database().ref(`test1/${serverName}/players/${playerName}`);
+  const playersRef = admin.database().ref(`test1/${serverName}/players`);
 
-  // Retrieve the player's inventory from the database
-  playerRef.child("inventory").once("value")
+  // Find the player's ID based on their name
+  playersRef.orderByChild("name").equalTo(playerName).once("value")
     .then((snapshot) => {
-      const inventory = snapshot.val();
-      
-      if (inventory) {
-        const itemIds = Object.values(inventory);
-        const itemsRef = admin.database().ref(`test1/${serverName}/items`);
-        
-        // Fetch item details for each item in the inventory
-        Promise.all(itemIds.map((itemId) => itemsRef.child(itemId).once("value")))
-          .then((itemSnapshots) => {
-            const itemNames = itemSnapshots.map((itemSnapshot) => itemSnapshot.child("name").val());
-            
-            if (itemNames.length > 0) {
-              const inventoryList = itemNames.join(", ");
-              message.reply(`Your inventory contains: ${inventoryList}`);
+      if (snapshot.exists()) {
+        const playerId = Object.keys(snapshot.val())[0];
+        const playerRef = playersRef.child(playerId);
+
+        // Retrieve the player's inventory from the database
+        playerRef.child("inventory").once("value")
+          .then((snapshot) => {
+            const inventory = snapshot.val();
+
+            if (inventory) {
+              const itemIds = Object.values(inventory);
+              const itemsRef = admin.database().ref(`test1/${serverName}/items`);
+
+              // Fetch item details for each item in the inventory
+              Promise.all(itemIds.map((itemId) => itemsRef.child(itemId).once("value")))
+                .then((itemSnapshots) => {
+                  const itemNames = itemSnapshots.map((itemSnapshot) => itemSnapshot.child("name").val());
+
+                  if (itemNames.length > 0) {
+                    const inventoryList = itemNames.join(", ");
+                    message.reply(`Your inventory contains: ${inventoryList}`);
+                  } else {
+                    message.reply(`Your inventory is empty.`);
+                  }
+                })
+                .catch((error) => {
+                  console.error(error);
+                  message.reply(`Sorry, there was an error accessing the database.`);
+                });
             } else {
               message.reply(`Your inventory is empty.`);
             }
@@ -621,7 +636,7 @@ if (command === "inventory") {
             message.reply(`Sorry, there was an error accessing the database.`);
           });
       } else {
-        message.reply(`Your inventory is empty.`);
+        message.reply(`You haven't started the game yet!`);
       }
     })
     .catch((error) => {
