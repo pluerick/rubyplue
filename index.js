@@ -1278,10 +1278,22 @@ if (command === "inventory") {
     }
 
     async function generateItems(args) {
-
-      //delete (if it exists) and create a test1.<server name>.items node in the database
+      // Reference to the items table
       const itemsRef = admin.database().ref(`test1/${serverName}/items`);
-      itemsRef.remove();
+    
+      // Retrieve the items from the items table
+      const snapshot = await itemsRef.once("value");
+      const items = snapshot.val();
+    
+      // Iterate over each item and remove if it has a room value
+      for (const itemKey in items) {
+        const item = items[itemKey];
+        if (item.room) {
+          itemsRef.child(itemKey).remove();
+        }
+      }
+    
+      // Create a new item entry
       itemsRef.child("item 1").set({
         name: "dagger",
         description: "A dagger",
