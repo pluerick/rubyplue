@@ -919,7 +919,20 @@ if (command === "inventory") {
       monstersRef.remove()
 
       // delete items
-      itemsRef.remove()
+  // Reference to the items table
+  const itemsRef = admin.database().ref(`test1/${serverName}/items`);
+
+  // Retrieve the items from the items table
+  const snapshot = await itemsRef.once("value");
+  const items = snapshot.val();
+
+  // Iterate over each item and remove if it has a room value
+  for (const itemKey in items) {
+    const item = items[itemKey];
+    if (item.room) {
+      itemsRef.child(itemKey).remove();
+    }
+  }
 
 
 
