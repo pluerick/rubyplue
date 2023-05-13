@@ -699,6 +699,7 @@ if (command === "equip") {
                 }
               });
             } else {
+              console.log(playerID, playerName, itemId, itemName);
               message.reply("The item does not exist in your inventory.");
             }
           });
