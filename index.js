@@ -591,11 +591,6 @@ if (command === "take") {
     }
 
 // Handle the 'equip' command
-// this command will check to see if the player has the item in their inventory
-// if they do, it will check to see if the item is equippable
-// if it is, it will check to see if the player has an item equipped in that slot
-// if they do, it will unequip the item and equip the new item
-// if they don't, it will equip the new item
 if (command === "equip") {
   const itemName = args.join(" ");
   const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
@@ -1394,6 +1389,7 @@ if (command === "inventory") {
         image: "https://imgur.com/fePkCyU",
         room: "1",
         lootable: true,
+        equippable: true,
         consumable: false,
         damage: 10,
         slot: "weapon"
