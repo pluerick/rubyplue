@@ -669,11 +669,12 @@ if (command === "equip") {
           .equalTo(itemName)
           .once("value")
           .then((inventorySnapshot) => {
+            console.log(itemRef);
+            console.log(itemRef.child("slot").val());
             if (inventorySnapshot.exists()) {
               const itemId = Object.keys(inventorySnapshot.val())[0];
               const itemRef = inventoryRef.child(itemId);
-              console.log(itemRef);
-              console.log(itemRef.child("slot").val());
+         
 
               // Check if the item is already equipped
               const equippedRef = playerRef.child("equipment").child(itemRef.child("slot").val());
