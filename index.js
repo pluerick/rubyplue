@@ -1384,8 +1384,11 @@ if (command === "inventory") {
         }
       }
     
-      // Create a new item entry
-      itemsRef.child("item 1").set({
+      // Generate a new unique ID for the item entry
+      const newItemRef = itemsRef.push();
+    
+      // Create a new item entry with the unique ID
+      newItemRef.set({
         name: "dagger",
         description: "A dagger",
         image: "https://imgur.com/fePkCyU",
@@ -1396,6 +1399,7 @@ if (command === "inventory") {
         slot: "weapon"
       });
     }
+    
   } // end of if (message.content.startsWith(?)) { ... } way up there ^
 });
 
