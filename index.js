@@ -590,6 +590,84 @@ if (command === "take") {
       }
     }
 
+// Handle the 'equip' command
+// this command will check to see if the player has the item in their inventory
+// if they do, it will check to see if the item is equippable
+// if it is, it will check to see if the player has an item equipped in that slot
+// if they do, it will unequip the item and equip the new item
+// if they don't, it will equip the new item
+if (command === "equip") {
+  const itemName = args.join(" ");
+  const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
+  const playerData = snapshot.val();  
+  const playerID = Object.keys(playerData)[0]; // Extracts the player ID from the playerData object
+  const playerRef = admin.database().ref(`test1/${serverName}/players/${playerID}`);
+  const itemsRef = admin.database().ref(`test1/${serverName}/items`);
+
+  // Check if the item exists in the player's inventory
+  itemsRef
+    .orderByChild("name")
+    .equalTo(itemName)
+    .once("value")
+    .then((snapshot) => {
+      if (snapshot.exists()) {
+        const itemId = Object.keys(snapshot.val())[0];
+        const itemRef = itemsRef.child(itemId);
+
+        // Check if the item is equippable
+        itemRef.child("equippable").once("value")
+
+          .then((snapshot) => {
+            const equippable = snapshot.val();
+
+            if (equippable) {
+              // Check if the player has an item equipped in that slot
+              itemRef.child("slot").once("value")
+
+
+                .then((snapshot) => {
+                  const slot = snapshot.val();
+
+                  if (slot) {
+                    // Unequip the item
+                    playerRef.child("equipped").child(slot).remove();
+
+                    // Equip the new item
+                    playerRef.child("equipped").child(slot).set(itemId);
+
+                    message.reply(`You have equipped ${itemName}.`);
+                  } else {
+                    // Equip the new item
+                    playerRef.child("equipped").child(slot).set(itemId);
+
+                    message.reply(`You have equipped ${itemName}.`);
+                  }
+                })
+                .catch((error) => {
+                  console.error(error);
+                  message.reply(`Sorry, there was an error accessing the database.`);
+                });
+            } else {
+              message.reply(`That item is not equippable.`);
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+            message.reply(`Sorry, there was an error accessing the database.`);
+          });
+      } else {
+        message.reply(`That item is not in your inventory.`);
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      message.reply(`Sorry, there was an error accessing the database.`);
+    });
+}
+
+
+
+
 // Handle the 'inventory' command
 if (command === "inventory") {
   const playerName = message.author.username;
