@@ -669,8 +669,7 @@ if (command === "equip") {
           .equalTo(itemName)
           .once("value")
           .then((inventorySnapshot) => {
-            console.log(itemRef);
-            console.log(itemRef.child("slot").val());
+            console.log(inventorySnapshot.val());
             if (inventorySnapshot.exists()) {
               const itemId = Object.keys(inventorySnapshot.val())[0];
               const itemRef = inventoryRef.child(itemId);
