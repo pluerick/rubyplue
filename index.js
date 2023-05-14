@@ -644,65 +644,7 @@ if (command === "inventory") {
       message.reply(`Sorry, there was an error accessing the database.`);
     });
 }
-if (command === "equip") {
-  const itemName = args.join(" ").trim().toLowerCase();
-  const playerId = message.author.id;
-  const playerRef = admin.database().ref(`test1/${serverName}/players`);
 
-  playerRef.child(playerId).child("inventory").once("value")
-    .then((snapshot) => {
-      console.log("Inventory snapshot:", snapshot.val()); // Log inventory snapshot
-
-      if (snapshot.exists()) {
-        let itemId = null;
-
-        snapshot.forEach((childSnapshot) => {
-          const childItemName = childSnapshot.val();
-
-          console.log("Child item name:", childItemName); // Log child item name
-
-          if (childItemName.toLowerCase() === itemName) {
-            itemId = childSnapshot.key;
-            console.log("Item found. Item ID:", itemId); // Log item ID
-            return true; // Exit the loop once the item is found
-          }
-        });
-
-        if (itemId) {
-          const itemRef = playerRef.child(playerId).child("inventory").child(itemId);
-
-          itemRef.child("equipped").once("value")
-            .then((equippedSnapshot) => {
-              console.log("Equipped snapshot:", equippedSnapshot.val()); // Log equipped snapshot
-
-              if (equippedSnapshot.exists()) {
-                itemRef.child("equipped").remove();
-                console.log(`Equipped field removed for ${itemName}.`);
-                message.reply(`You have unequipped the ${itemName}.`);
-              } else {
-                itemRef.child("equipped").set(true);
-                console.log(`Equipped field set to true for ${itemName}.`);
-                message.reply(`You have equipped the ${itemName}.`);
-              }
-            })
-            .catch((error) => {
-              console.error(error);
-              message.reply("Sorry, there was an error accessing the database.");
-            });
-        } else {
-          console.log(`Item ${itemName} not found in the inventory.`);
-          message.reply(`You don't have the ${itemName} in your inventory.`);
-        }
-      } else {
-        console.log("Inventory is empty.");
-        message.reply(`Your inventory is empty.`);
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-      message.reply("Sorry, there was an error accessing the database.");
-    });
-}
 
     // Handle the movement commands
     if (
