@@ -646,32 +646,46 @@ if (command === "inventory") {
 }
 
 if (command === "equip") {
-  const itemName = args.join(" ");
+  const itemName = args.join(" ").trim().toLowerCase(); // Trim and convert to lowercase for consistent matching
   const playerId = message.author.id;
   const playerRef = admin.database().ref(`test1/${serverName}/players`);
-  
-  playerRef.child(playerId).child("inventory").orderByValue().equalTo(itemName).once("value")
+
+  playerRef.child(playerId).child("inventory").once("value")
     .then((snapshot) => {
       if (snapshot.exists()) {
-        const itemId = Object.keys(snapshot.val())[0];
-        const itemRef = playerRef.child(playerId).child("inventory").child(itemId);
-        
-        itemRef.child("equipped").once("value")
-          .then((equippedSnapshot) => {
-            if (equippedSnapshot.exists()) {
-              itemRef.child("equipped").remove();
-              message.reply(`You have unequipped the ${itemName}.`);
-            } else {
-              itemRef.child("equipped").set(true);
-              message.reply(`You have equipped the ${itemName}.`);
-            }
-          })
-          .catch((error) => {
-            console.error(error);
-            message.reply("Sorry, there was an error accessing the database.");
-          });
+        let itemId = null;
+
+        snapshot.forEach((childSnapshot) => {
+          const childItemName = childSnapshot.val();
+
+          if (childItemName.toLowerCase() === itemName) {
+            itemId = childSnapshot.key;
+            return true; // Exit the loop once the item is found
+          }
+        });
+
+        if (itemId) {
+          const itemRef = playerRef.child(playerId).child("inventory").child(itemId);
+
+          itemRef.child("equipped").once("value")
+            .then((equippedSnapshot) => {
+              if (equippedSnapshot.exists()) {
+                itemRef.child("equipped").remove();
+                message.reply(`You have unequipped the ${itemName}.`);
+              } else {
+                itemRef.child("equipped").set(true);
+                message.reply(`You have equipped the ${itemName}.`);
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+              message.reply("Sorry, there was an error accessing the database.");
+            });
+        } else {
+          message.reply(`You don't have the ${itemName} in your inventory.`);
+        }
       } else {
-        message.reply(`You don't have the ${itemName} in your inventory.`);
+        message.reply(`Your inventory is empty.`);
       }
     })
     .catch((error) => {
@@ -679,7 +693,6 @@ if (command === "equip") {
       message.reply("Sorry, there was an error accessing the database.");
     });
 }
-
 
 
     // Handle the movement commands
