@@ -665,7 +665,7 @@ if (command === "equip") {
         // Check if the item exists in the player's inventory
         const inventoryRef = playerRef.child("inventory");
         inventoryRef
-          .orderByValue()
+          .orderByChild("name")
           .equalTo(itemName)
           .once("value")
           .then((inventorySnapshot) => {
