@@ -645,67 +645,33 @@ if (command === "inventory") {
     });
 }
 
-
-
-// Handle the 'equip' command
 if (command === "equip") {
-  const itemName = args.join(" "); // Assuming the item name is passed as arguments
-
-  // Retrieve the player's unique ID based on their name
-  const playersRef = admin.database().ref(`test1/${serverName}/players`);
-  playersRef
-    .orderByChild("name")
-    .equalTo(playerName)
-    .once("value")
+  const itemName = args.join(" ");
+  const playerId = message.author.id;
+  const playerRef = admin.database().ref(`test1/${serverName}/players`);
+  
+  playerRef.child(playerId).child("inventory").orderByValue().equalTo(itemName).once("value")
     .then((snapshot) => {
       if (snapshot.exists()) {
-        const playerId = Object.keys(snapshot.val())[0];
-        const playerRef = playersRef.child(playerId);
-
-        // Check if the item exists in the player's inventory
-        const inventoryRef = playerRef.child("inventory");
-        inventoryRef
-          .orderByChild("name")
-          .equalTo(itemName)
-          .once("value")
-          .then((inventorySnapshot) => {
-            console.log(inventorySnapshot.val());
-            if (inventorySnapshot.exists()) {
-              const itemId = Object.keys(inventorySnapshot.val())[0];
-              const itemRef = inventoryRef.child(itemId);
-         
-
-              // Check if the item is already equipped
-              const equippedRef = playerRef.child("equipment").child(itemRef.child("slot").val());
-              equippedRef.once("value").then((equippedSnapshot) => {
-                if (equippedSnapshot.exists()) {
-                  // Item is already equipped, so unequip it
-                  equippedRef.remove()
-                    .then(() => {
-                      message.reply(`You unequipped ${itemName}.`);
-                    })
-                    .catch((error) => {
-                      console.error(error);
-                      message.reply("Failed to unequip the item. Please try again.");
-                    });
-                } else {
-                  // Item is not equipped, so equip it
-                  equippedRef.set(itemName)
-                    .then(() => {
-                      message.reply(`You equipped ${itemName}.`);
-                    })
-                    .catch((error) => {
-                      console.error(error);
-                      message.reply("Failed to equip the item. Please try again.");
-                    });
-                }
-              });
+        const itemId = Object.keys(snapshot.val())[0];
+        const itemRef = playerRef.child(playerId).child("inventory").child(itemId);
+        
+        itemRef.child("equipped").once("value")
+          .then((equippedSnapshot) => {
+            if (equippedSnapshot.exists()) {
+              itemRef.child("equipped").remove();
+              message.reply(`You have unequipped the ${itemName}.`);
             } else {
-              message.reply("The item does not exist in your inventory.");
+              itemRef.child("equipped").set(true);
+              message.reply(`You have equipped the ${itemName}.`);
             }
+          })
+          .catch((error) => {
+            console.error(error);
+            message.reply("Sorry, there was an error accessing the database.");
           });
       } else {
-        message.reply("You haven't started the game yet!");
+        message.reply(`You don't have the ${itemName} in your inventory.`);
       }
     })
     .catch((error) => {
@@ -713,6 +679,7 @@ if (command === "equip") {
       message.reply("Sorry, there was an error accessing the database.");
     });
 }
+
 
 
     // Handle the movement commands
