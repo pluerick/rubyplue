@@ -222,14 +222,12 @@ when making images the prompt will be
       );
     }
 
-    // Handle the 'take' command
+// Handle the 'take' command
 if (command === "take") {
   const itemName = args.join(" ");
-  console.log(playerName);
   const snapshot = await playersRef.orderByChild("name").equalTo(playerName).once("value");
   const playerData = snapshot.val();
   const playerID = Object.keys(playerData)[0]; // Extracts the player ID from the playerData object
-  console.log(playerID);
   const playerRef = admin.database().ref(`test1/${serverName}/players/${playerID}`);
   const itemsRef = admin.database().ref(`test1/${serverName}/items`);
   
@@ -243,10 +241,10 @@ if (command === "take") {
         const itemId = Object.keys(snapshot.val())[0];
         const itemRef = itemsRef.child(itemId);
         
-        // Move item from room to inventory
+        // Move item from room to inventory and disassociate it from the room
         itemRef.update({ room: null, inventory: playerName });
         playerRef.child("inventory").push(itemId);
-        
+
         message.reply(`You have picked up ${itemName}.`);
       } else {
         message.reply(`That item is not in this room.`);
