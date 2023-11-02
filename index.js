@@ -1084,7 +1084,7 @@ if (command === "inventory") {
         });
     }
 
-    async function generateRoomImage(roomNumber) {
+    async function generateRoomImage(roomNumber, imagePrompt, worldDesc) {
       const roomsRef = admin.database().ref(`test1/${serverName}/rooms`);
       const snapshot = await roomsRef.once("value");
       const rooms = snapshot.val();
