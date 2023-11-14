@@ -1178,6 +1178,21 @@ if (command === "inventory") {
       }
     }
 
+    async function generateHaiku() {
+      const prompt = "Generate a haiku:";
+      const model = "text-davinci-002";
+    
+      const gptResponse = await openai.complete({
+        engine: model,
+        prompt: prompt,
+        maxTokens: 20,
+        temperature: 0.7,
+      });
+    
+      const generatedHaiku = gptResponse.data.choices[0].text.trim();
+      return generatedHaiku;
+    }
+
     async function lookAround(snapshot, roomsRef) {
       // Get the current room's data
       const currentRoom = snapshot.val();
