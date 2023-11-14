@@ -1048,6 +1048,10 @@ if (command === "inventory") {
       message.reply(haiku);
     }
 
+    if (command === "test") {
+      message.reply('test received');
+    }
+
     // Handle the "look" command
     if (command === "look" || command === "l") {
       // Check if the player exists in the database
